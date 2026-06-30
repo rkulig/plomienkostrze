@@ -1,0 +1,6 @@
+# SDKMAN environment for the Płomień Kostrze backend.
+# Pins the Java toolchain so `sdk env` (in this directory) selects a matching JDK.
+# Matches the system JDK installed via apt (openjdk 21.0.11). If SDKMAN reports this
+# exact build is unavailable, run `sdk list java` and pick the nearest 21.0.x-tem.
+# Fetch it with: sdk env install
+java=21.0.11-tem
