@@ -1,0 +1,10 @@
+.gcloudignore
+.git/
+.gitignore
+.gitattributes
+target/
+*.md
+.idea/
+*.iml
+.vscode/
+.sdkmanrc
