@@ -5,7 +5,7 @@ project_name: plomien-kostrze
 hints:
   language_family: js
   team_size: solo
-  deployment_target: google-cloud-run
+  deployment_target: firebase-hosting
   ci_provider: github-actions
   ci_default_flow: manual-promotion
   bootstrapper_confidence: verified
@@ -32,9 +32,14 @@ covers the frontend: an Angular (TypeScript) SPA that consumes the separate Spri
 Boot API (see tech-stack-backend.md). Angular was chosen over React on explicit
 preference; it clears all four agent-friendly gates (typed, convention-based,
 popular within the JS family, well-documented) and its bootstrapper confidence is
-verified, so scaffolding will be smooth. Deployment targets Google Cloud (Cloud
-Run) rather than the card's listed defaults, per the user's GCP requirement; CI runs
-on GitHub Actions with manual promotion after merge to gate live pushes. Auth (admin
+verified, so scaffolding will be smooth. Deployment targets Google Cloud per the
+user's GCP requirement (decided in `context/foundation/infrastructure.md`): the static
+Angular SPA ships to **Firebase Hosting** — GCP-native static hosting with a global CDN
+and a one-command `firebase deploy` — rather than an nginx container on Cloud Run, which
+would cost cold starts and the free CDN for no gain. The SPA calls the separate Spring
+Boot API on Cloud Run (`europe-central2`) over HTTPS with CORS configured to the SPA
+origin. CI runs on GitHub Actions with manual promotion after merge to gate live pushes.
+Auth (admin
 login, plus fan login via an external identity provider) and the AI news-generation
 flow are in MVP scope; payments, realtime, and background jobs are out per the PRD.
 Frontend and backend live together in a single monorepo — this Angular app under
