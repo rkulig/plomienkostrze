@@ -9,6 +9,8 @@ hints:
   database: cloud-sql-postgres
   ci_provider: github-actions
   ci_default_flow: auto-deploy-on-merge  # changed 2026-07-04, was: manual-promotion
+  identity_provider: firebase-auth  # decided 2026-07-04
+  llm_provider: openrouter  # decided 2026-07-04
   bootstrapper_confidence: verified
   path_taken: custom
   quality_override: false
@@ -71,3 +73,29 @@ rolls back instantly but a database migration does **not**, so migrations must s
 backward-compatible with the previous app revision. Cost reality: Cloud SQL does **not**
 scale to zero, so it is the project's ~$7–10/mo always-on floor cost regardless of traffic;
 storage auto-grows but cannot shrink in place.
+
+## AI / LLM layer
+
+**OpenRouter** is the LLM gateway (decided 2026-07-04; the PRD had deferred the choice
+to the tech-selection step). It exposes an OpenAI-compatible API over many models
+(Claude, Gemini, GPT, and others), so switching the generation model is a config-string
+change, not a code change — which directly serves the PRD's riskiest assumption: at
+least 75% of generated proposals must be accepted by the admin, and finding the model
+with the best Polish sports prose is an experiment, not a foregone conclusion. The
+~5% routing fee and the extra network hop were reviewed and accepted: at a few
+generations per week the cost is negligible, and the routing overhead (tens of
+milliseconds) is invisible next to multi-second model generation; streaming passes
+through, so perceived responsiveness matches a direct connection. The single
+`OPENROUTER_API_KEY` lives in Secret Manager and is mounted into Cloud Run via
+`--set-secrets`. The concrete model (and any pinned upstream provider preference) is
+selected and recorded during `/10x-plan` of the `gated-news-generation` slice.
+
+## Identity
+
+**Firebase Authentication** is the external identity provider (decided 2026-07-04) —
+the same choice recorded in `tech-stack.md`, shared across both apps. The backend acts
+as a stateless resource server: it verifies the Firebase ID token (JWT) from the
+Authorization header against Google's public JWKS keys on every request — no sessions,
+no passwords stored, per the PRD's NFR. The admin role is granted via a Firebase custom
+claim (or a DB allowlist — settled in the `manual-news-publishing` slice plan); fan
+login (Google now, Facebook later) reuses the same verification path in the fast-follow.

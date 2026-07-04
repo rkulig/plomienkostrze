@@ -8,6 +8,7 @@ hints:
   deployment_target: firebase-hosting
   ci_provider: github-actions
   ci_default_flow: auto-deploy-on-merge  # changed 2026-07-04, was: manual-promotion
+  identity_provider: firebase-auth  # decided 2026-07-04
   bootstrapper_confidence: verified
   path_taken: custom
   quality_override: false
@@ -40,9 +41,12 @@ would cost cold starts and the free CDN for no gain. The SPA calls the separate 
 Boot API on Cloud Run (`europe-central2`) over HTTPS with CORS configured to the SPA
 origin. CI runs on GitHub Actions with automatic deploy on merge to master (changed
 2026-07-04 from manual promotion — PR review + merge is the human gate).
-Auth (admin
-login, plus fan login via an external identity provider) and the AI news-generation
-flow are in MVP scope; payments, realtime, and background jobs are out per the PRD.
+Auth is delegated to
+**Firebase Authentication** (decided 2026-07-04): the SPA integrates the Firebase Auth
+SDK — Google sign-in now, Facebook in the fan-login fast-follow — and sends the Firebase
+ID token in the Authorization header on calls to the Cloud Run API; admin login is in MVP
+scope, and the AI news-generation flow is in MVP scope as well; payments, realtime, and
+background jobs are out per the PRD.
 Frontend and backend live together in a single monorepo — this Angular app under
 frontend/, the Spring API under backend/ — sharing agents, skills, and the context/
 foundation at the repo root while staying decoupled across the HTTP API boundary.
