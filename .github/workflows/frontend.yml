@@ -2,6 +2,10 @@ name: frontend
 
 # Path-filtered: only frontend/** changes trigger this. A PR touching only
 # context/**, CLAUDE.md, or backend/** triggers neither pipeline.
+#
+# Model (decided 2026-07-04): PR -> build only (no GCP access, safe for fork
+# PRs); merge to master -> build + deploy to the LIVE Hosting channel. The
+# human gate is PR review + merge. Rollback: firebase hosting:rollback.
 on:
   push:
     branches: [master]
@@ -9,13 +13,13 @@ on:
   pull_request:
     paths: ['frontend/**']
 
-# Keyless auth via Workload Identity Federation — no JSON key in the repo.
 permissions:
   contents: read
-  id-token: write
 
 jobs:
-  deploy:
+  # PRs: prove the production build passes. No GCP credentials.
+  build:
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -29,6 +33,32 @@ jobs:
           cache: npm
           cache-dependency-path: frontend/package-lock.json
 
+      - run: npm ci
+      - run: npm run build
+
+  # Merges to master: build and deploy straight to the live channel.
+  deploy:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    # Keyless auth via Workload Identity Federation — no JSON key in the repo.
+    permissions:
+      contents: read
+      id-token: write
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: frontend/.nvmrc
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - run: npm ci
+      - run: npm run build
+
       - id: auth
         uses: google-github-actions/auth@v2
         with:
@@ -36,19 +66,13 @@ jobs:
           workload_identity_provider: projects/714793368062/locations/global/workloadIdentityPools/github/providers/github-oidc
           service_account: gh-deployer@plomien-kostrze.iam.gserviceaccount.com
 
-      - run: npm ci
-      - run: npm run build
-
       - name: Install firebase-tools
         run: npm i -g firebase-tools
 
-      # firebase-tools reads Application Default Credentials from the credentials file
-      # emitted by google-github-actions/auth (NOT the deprecated firebase login:ci token).
-      # Deploys to a PREVIEW channel; promotion to live stays a manual human step:
-      # firebase deploy --only hosting.
-      - name: Deploy preview channel
+      # firebase-tools reads Application Default Credentials from the credentials
+      # file emitted by google-github-actions/auth (NOT the deprecated
+      # firebase login:ci token). Live channel — this IS the production deploy.
+      - name: Deploy to live Hosting channel
         env:
           GOOGLE_APPLICATION_CREDENTIALS: ${{ steps.auth.outputs.credentials_file_path }}
-        run: |
-          firebase hosting:channel:deploy "ci-${GITHUB_SHA::12}" \
-            --project plomien-kostrze --expires 7d
+        run: firebase deploy --only hosting --project plomien-kostrze

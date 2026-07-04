@@ -323,8 +323,10 @@ manual-promotion posture; CLAUDE.md / infrastructure.md / tech-stack*.md updated
   ⚠️ Scope the SA to **this project only** (no billing, no org IAM) per infrastructure.md
   "Production-access boundary". Confirm the provider's `--attribute-condition` pins
   `rkulig/plomienkostrze` — without it any GitHub repo could mint tokens for your pool.
-- [ ] **`.github/workflows/backend.yml`** — split by event (currently both `push` and
+- [x] **`.github/workflows/backend.yml`** — split by event (currently both `push` and
   `pull_request` deploy a no-traffic revision):
+  > Done 2026-07-04 on `M1L5-addDeployFiles`: `build-test` job (PR, no GCP) +
+  > `deploy` job (push to master, `mvnw verify` gates, deploy takes traffic).
   - `pull_request` on `backend/**`: **build + test only** (`./mvnw -B verify` +
     `docker build`) — no GCP auth needed, so fork PRs can't touch the WIF pool.
   - `push` to `master` on `backend/**`: build & push image, then
@@ -333,7 +335,9 @@ manual-promotion posture; CLAUDE.md / infrastructure.md / tech-stack*.md updated
   ⚠️ Safety net that makes auto-promotion acceptable: a revision that fails to start
   never receives traffic — Cloud Run keeps serving the previous revision and the
   workflow step exits non-zero (visible in the PR's checks history).
-- [ ] **`.github/workflows/frontend.yml`** — same split:
+- [x] **`.github/workflows/frontend.yml`** — same split:
+  > Done 2026-07-04 on `M1L5-addDeployFiles`: `build` job (PR, no GCP) +
+  > `deploy` job (push to master → live Hosting channel).
   - `pull_request` on `frontend/**`: `npm ci && npm run build` only (optionally a
     preview channel — requires WIF, so skip for fork PRs).
   - `push` to `master` on `frontend/**`: build, then `firebase deploy --only hosting`

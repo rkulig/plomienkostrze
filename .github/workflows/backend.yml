@@ -2,6 +2,11 @@ name: backend
 
 # Path-filtered: only backend/** changes trigger this. A PR touching only
 # context/**, CLAUDE.md, or frontend/** triggers neither pipeline.
+#
+# Model (decided 2026-07-04): PR -> build + test only (no GCP access, safe for
+# fork PRs); merge to master -> build, push image, deploy WITH traffic. The
+# human gate is PR review + merge; a revision that fails its startup probe
+# never takes traffic (Cloud Run keeps serving the previous revision).
 on:
   push:
     branches: [master]
@@ -9,10 +14,8 @@ on:
   pull_request:
     paths: ['backend/**']
 
-# Keyless auth via Workload Identity Federation — no JSON key in the repo.
 permissions:
   contents: read
-  id-token: write
 
 env:
   PROJECT_ID: plomien-kostrze
@@ -20,13 +23,49 @@ env:
   IMG: europe-central2-docker.pkg.dev/plomien-kostrze/plomien/plomien-api
 
 jobs:
-  deploy:
+  # PRs: compile, run tests, prove the image builds. No GCP credentials.
+  build-test:
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: backend
     steps:
       - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+          cache-dependency-path: backend/pom.xml
+
+      - run: ./mvnw -B verify
+
+      - run: docker build -t plomien-api:pr-check .
+
+  # Merges to master: full auto-deploy (tests still gate the deploy).
+  deploy:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    # Keyless auth via Workload Identity Federation — no JSON key in the repo.
+    permissions:
+      contents: read
+      id-token: write
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+          cache-dependency-path: backend/pom.xml
+
+      - run: ./mvnw -B verify
 
       - id: auth
         uses: google-github-actions/auth@v2
@@ -48,12 +87,12 @@ jobs:
           docker build -t "${IMG}:${TAG}" .
           docker push "${IMG}:${TAG}"
 
-      # Deploy a NO-TRAFFIC tagged revision. Promotion to production traffic stays a
-      # manual human step: gcloud run services update-traffic plomien-api --to-latest.
-      - name: Deploy no-traffic revision
+      # Deploys WITH traffic (no --no-traffic). Service-level config set outside
+      # CI (network/secrets/env vars/max-instances) carries over between revisions.
+      # Rollback: gcloud run services update-traffic plomien-api --to-revisions <PREV>=100
+      - name: Deploy to Cloud Run (takes traffic)
         run: |
           TAG="ci-${GITHUB_SHA::12}"
           gcloud run deploy plomien-api \
             --image "${IMG}:${TAG}" \
-            --region "${REGION}" \
-            --no-traffic --tag "${TAG}"
+            --region "${REGION}"
