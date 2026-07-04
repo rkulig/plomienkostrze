@@ -7,10 +7,12 @@ recommended_platform: Google Cloud (Cloud Run + Firebase Hosting + Cloud SQL)
 region: europe-central2 (Warsaw)
 github_repo: rkulig/plomienkostrze
 context_type: mvp
-status: draft — not yet executed
+status: "Phase A executed 2026-07-02; Phase B + WIF/IAM executed 2026-07-04 — remaining: workflow rewrite (Phase 5) + Phase C code"
 decisions:
-  db_infra: deferred (Phase B — provision Cloud SQL/VPC/Secret Manager only when backend grows persistence/LLM/auth code)
+  db_infra: ACTIVE since 2026-07-04 — trigger satisfied by the E2E test-flow milestone (Phase C); supersedes "deferred"
   build_method: explicit multi-stage Dockerfile (backend/Dockerfile)
+  ci_flow: auto-deploy on merge to master (2026-07-04 — supersedes manual promotion; PR review + merge becomes the human gate)
+  e2e_probe: test endpoint SPA → API → DB (simple text saved to a test table) proves the full data path
   deliverable: written runbook only (no GCP mutations performed by this plan)
 ---
 
@@ -49,6 +51,26 @@ Provisioning an always-on `db-f1-micro` + hourly-billed VPC connector now would 
 Intended outcome: a public, reproducible MVP deployment with a human gate before any
 production traffic shift, matching infrastructure.md's operational story.
 
+**Update 2026-07-04 — Phase A shipped; next stage decided.** Both apps are live
+(SPA `https://plomien-kostrze.web.app`, API `https://plomien-api-714793368062.europe-central2.run.app`).
+The workflow files exist (committed on `M1L5-addDeployFiles`) but CI is not yet
+operational: the WIF pool + `github-oidc` provider exist in GCP (verified 2026-07-04),
+while the `gh-deployer` service account they reference does **not** — both workflows
+would fail at the auth step today. Cloud SQL remains untouched (`sqladmin` API disabled,
+no instances). Three decisions extend the plan:
+
+1. **Phase B is now active** — the E2E test-flow milestone (Phase C, below) is the
+   persistence feature that satisfies its trigger.
+2. **CI flow changes to auto-deploy on merge** — merging a PR to `master` builds,
+   deploys, and promotes to live traffic automatically. This supersedes the
+   manual-promotion posture in `CLAUDE.md` / `infrastructure.md` / `tech-stack*.md`
+   (all updated 2026-07-04). The human gate moves from "promote by hand after merge"
+   to "review + merge the PR"; a failed-to-start revision still never takes traffic
+   (Cloud Run keeps serving the previous revision), which is the safety net that makes
+   auto-promotion acceptable.
+3. **Phase C (new)** — a test endpoint proving the full data path: the SPA accepts a
+   simple text, POSTs it to the API, the API persists it in a test table.
+
 ---
 
 ## Legend
@@ -63,23 +85,30 @@ production traffic shift, matching infrastructure.md's operational story.
 
 ## Prerequisites (one-time, manual)
 
-- [ ] 🔒 GCP account with **billing enabled** and a project created
+All satisfied — verified against live GCP state on 2026-07-04.
+
+- [x] 🔒 GCP account with **billing enabled** and a project created
   (suggested id: `plomien-kostrze`; capture the real `PROJECT_ID`).
-- [ ] 🔒 **Billing budget alert** set at **$25 / $50** before any resource is created
+  > `PROJECT_ID=plomien-kostrze`, project number `714793368062`, billing account linked.
+- [x] 🔒 **Billing budget alert** set at **$25 / $50** before any resource is created
   (infrastructure.md risk: "Real MVP cost is ~$15–40/mo, not free").
   `gcloud billing budgets create` or the Billing console.
-- [ ] 🔒 Firebase project **linked to the same GCP project** (Firebase console → Add
+  > Budget **"plomien-kostrze MVP" ($50)** exists on the project's billing account.
+- [x] 🔒 Firebase project **linked to the same GCP project** (Firebase console → Add
   project → *select the existing GCP project*, do **not** create a new one).
   ⚠️ Firebase and GCP are the same project but two consoles — first-timer trap from
   infrastructure.md "Unknown Unknowns". Linking them now avoids a split project later.
-- [ ] 🤖 Install/auth CLIs:
+  > Confirmed: Hosting live at `plomien-kostrze.web.app` under the same project.
+- [x] 🤖 Install/auth CLIs:
   - `gcloud components update`
   - `gcloud auth login` · `gcloud config set project <PROJECT_ID>`
   - `gcloud config set run/region europe-central2`
   - `npm i -g firebase-tools` · `firebase login`
-- [ ] 🤖 Confirm toolchains: backend `sdk use java 21.0.11-tem` (JDK, per `.sdkmanrc`);
+  > Both CLIs authed (`gcloud` queries the project; `firebase deploy` already ran).
+- [x] 🤖 Confirm toolchains: backend `sdk use java 21.0.11-tem` (JDK, per `.sdkmanrc`);
   frontend `nvm use` (Node 24.18.0, per `.nvmrc` — system default 24.14.0 is too old
   for the Angular 22 CLI).
+  > Proven by the executed Phase 2/3 builds.
 
 ---
 
@@ -267,21 +296,19 @@ you add a custom domain later, all live origins must be in `ALLOWED_ORIGINS`.
 
 ---
 
-## Phase 5 — CI/CD: keyless GitHub Actions, path-filtered, manual promotion 🤖 + 🔒
+## Phase 5 — CI/CD: keyless GitHub Actions, path-filtered, auto-deploy on merge 🤖 + 🔒
 
 Implements infrastructure.md "Secrets" (Workload Identity Federation, no JSON key in repo)
-and CLAUDE.md's path-filtered + manual-promotion mandate.
+and the path-filtered mandate. **Decision 2026-07-04: auto-deploy on merge** — merging a
+PR to `master` builds, deploys, and promotes to live automatically; the human gate is PR
+review + merge, not a post-merge promotion command. (Supersedes the original
+manual-promotion posture; CLAUDE.md / infrastructure.md / tech-stack*.md updated.)
 
-- [ ] 🔒 **Set up Workload Identity Federation** (one-time, IAM-touching — do by hand):
+- [x] 🔒 **Workload Identity Federation** (one-time, IAM-touching — do by hand).
+  > **Completed 2026-07-04 (by hand):** pool `github` + provider `github-oidc` pre-existed
+  > (provider condition verified: pins `rkulig/plomienkostrze`); `gh-deployer` SA created
+  > with exactly the four project-level roles below + `workloadIdentityUser` binding.
   ```
-  # Pool + OIDC provider, restricted to THIS repo (confused-deputy guard)
-  gcloud iam workload-identity-pools create github --location=global
-  gcloud iam workload-identity-pools providers create-oidc github-oidc \
-    --location=global --workload-identity-pool=github \
-    --issuer-uri="https://token.actions.githubusercontent.com" \
-    --attribute-mapping="google.subject=assertion.sub,attribute.repository=assertion.repository" \
-    --attribute-condition="assertion.repository=='rkulig/plomienkostrze'"
-
   # Deployer service account + scoped roles (Cloud Run + Artifact Registry + Firebase Hosting)
   gcloud iam service-accounts create gh-deployer
   # roles/run.admin, roles/iam.serviceAccountUser, roles/artifactregistry.writer,
@@ -289,35 +316,60 @@ and CLAUDE.md's path-filtered + manual-promotion mandate.
 
   # Let the repo's tokens impersonate the deployer SA
   gcloud iam service-accounts add-iam-policy-binding \
-    gh-deployer@<PROJECT_ID>.iam.gserviceaccount.com \
+    gh-deployer@plomien-kostrze.iam.gserviceaccount.com \
     --role=roles/iam.workloadIdentityUser \
-    --member="principalSet://iam.googleapis.com/projects/<NUM>/locations/global/workloadIdentityPools/github/attribute.repository/rkulig/plomienkostrze"
+    --member="principalSet://iam.googleapis.com/projects/714793368062/locations/global/workloadIdentityPools/github/attribute.repository/rkulig/plomienkostrze"
   ```
   ⚠️ Scope the SA to **this project only** (no billing, no org IAM) per infrastructure.md
-  "Production-access boundary". The `attribute-condition` pinning the repo is non-optional
-  — without it any GitHub repo could mint tokens for your pool.
-- [ ] **`.github/workflows/backend.yml`** — trigger on `backend/**`, set
-  `permissions: id-token: write`, use `google-github-actions/auth@v2` (WIF), then
-  `gcloud run deploy plomien-api --source backend/ --no-traffic --tag ci-<sha>`.
-  **Stop at no-traffic** — promotion stays a 🔒 manual `gcloud ... update-traffic` step.
-- [ ] **`.github/workflows/frontend.yml`** — trigger on `frontend/**`, WIF auth, then
-  `firebase hosting:channel:deploy ci-<sha>` (preview). Live promotion stays 🔒 manual.
+  "Production-access boundary". Confirm the provider's `--attribute-condition` pins
+  `rkulig/plomienkostrze` — without it any GitHub repo could mint tokens for your pool.
+- [x] **`.github/workflows/backend.yml`** — split by event (currently both `push` and
+  `pull_request` deploy a no-traffic revision):
+  > Done 2026-07-04 on `M1L5-addDeployFiles`: `build-test` job (PR, no GCP) +
+  > `deploy` job (push to master, `mvnw verify` gates, deploy takes traffic).
+  - `pull_request` on `backend/**`: **build + test only** (`./mvnw -B verify` +
+    `docker build`) — no GCP auth needed, so fork PRs can't touch the WIF pool.
+  - `push` to `master` on `backend/**`: build & push image, then
+    `gcloud run deploy plomien-api --image … ` **without `--no-traffic`** — the new
+    revision takes 100% traffic once it passes its startup probe.
+  ⚠️ Safety net that makes auto-promotion acceptable: a revision that fails to start
+  never receives traffic — Cloud Run keeps serving the previous revision and the
+  workflow step exits non-zero (visible in the PR's checks history).
+- [x] **`.github/workflows/frontend.yml`** — same split:
+  > Done 2026-07-04 on `M1L5-addDeployFiles`: `build` job (PR, no GCP) +
+  > `deploy` job (push to master → live Hosting channel).
+  - `pull_request` on `frontend/**`: `npm ci && npm run build` only (optionally a
+    preview channel — requires WIF, so skip for fork PRs).
+  - `push` to `master` on `frontend/**`: build, then `firebase deploy --only hosting`
+    (live channel, automatic).
   ⚠️ firebase-tools in CI reads Application Default Credentials — point
   `GOOGLE_APPLICATION_CREDENTIALS` at the credentials file emitted by
   `google-github-actions/auth@v2` (do **not** use the deprecated `firebase login:ci` token).
 - [ ] ⚠️ **Monorepo path-filter gotcha:** a PR touching only `context/` or `CLAUDE.md`
   should trigger **neither** pipeline. Verify the `paths:` filters exclude shared/root files
   so doc changes don't trigger deploys.
+- [ ] ⚠️ **Auto-deploy × DB migrations:** once Phase B lands, a merged migration reaches
+  production without a manual gate. Migrations must be additive/backward-compatible with
+  the previous revision (see Phase B); destructive schema changes (drop/rename) remain
+  🔒 human-planned, two-step (expand → contract in separate releases).
 
 ---
 
-## Phase B (DEFERRED) — Cloud SQL + VPC + Secret Manager 🔒-heavy
+## Phase B (ACTIVE since 2026-07-04) — Cloud SQL + Secret Manager 🔒-heavy
 
-**Trigger to start this phase:** the backend PR that first adds a PostgreSQL driver + JPA,
-the LLM client, or external-IdP auth. Not before — there is nothing to connect until then.
+**Trigger to start this phase:** ~~the backend PR that first adds a PostgreSQL driver + JPA,
+the LLM client, or external-IdP auth~~ → **satisfied**: Phase C (the E2E test-flow
+endpoint) is that persistence feature. Provision B, then land C.
 
-- [ ] Enable the deferred APIs: `gcloud services enable sqladmin.googleapis.com vpcaccess.googleapis.com secretmanager.googleapis.com`.
-- [ ] 🔒 Create the DB (smallest, no HA, **private IP only**):
+- [x] Enable the deferred APIs: `gcloud services enable sqladmin.googleapis.com secretmanager.googleapis.com`
+  (add `vpcaccess.googleapis.com` only if the fallback connector below is needed).
+  > Done 2026-07-04 (+ `servicenetworking`, `compute` — required for Private Services
+  > Access, which `--no-assign-ip` needs: allocated range `google-managed-services-default`
+  > /16 + VPC peering on network `default`).
+- [x] 🔒 Create the DB (smallest, no HA, **private IP only**):
+  > Done 2026-07-04: `plomien-db` RUNNABLE, private IP `10.10.0.3`, database `plomien`,
+  > user `plomien`; password generated straight into Secret Manager (`db-password` v1,
+  > `secretAccessor` granted to the runtime SA), never displayed anywhere.
   ```
   gcloud sql instances create plomien-db --database-version=POSTGRES_16 \
     --tier=db-f1-micro --region=europe-central2 --no-assign-ip
@@ -326,29 +378,89 @@ the LLM client, or external-IdP auth. Not before — there is nothing to connect
   weak password sat exposed for weeks"). Generate a strong password into Secret Manager,
   never into the repo or chat:
   `gcloud secrets create db-password --data-file=-` (pipe a generated value).
-- [ ] 🔒 Create the Serverless VPC Access connector (hourly-billed — this is part of the
-  ~$15–40/mo floor):
+- [x] 🔒 Private connectivity Cloud Run → Cloud SQL — **prefer Direct VPC egress** (GA,
+  no hourly-billed connector; deviation from infrastructure.md's VPC-connector wording,
+  motivated by its own cost risk register): deploy the service with
+  `--network=default --subnet=default --vpc-egress=private-ranges-only`.
+  ⚠️ Verify region support for `europe-central2` first; **fallback** is the original
+  Serverless VPC Access connector (hourly-billed, part of the ~$15–40/mo floor):
   `gcloud compute networks vpc-access connectors create plomien-vpc --region=europe-central2 --range=10.8.0.0/28`.
-- [ ] Wire Cloud Run → Cloud SQL:
+- [x] Wire Cloud Run → Cloud SQL:
+  > **Done 2026-07-04** (rev `plomien-api-00003`, `/api/ping` still 200). Two deviations:
+  > (1) Direct VPC egress **requires `--max-instances ≤ 10`** — the service was at 12,
+  > first attempt failed; retried with `--max-instances=10` (harmless at this traffic).
+  > (2) `--add-cloudsql-instances` skipped — connection is direct to the private IP
+  > (`DB_HOST=10.10.0.3`), no unix-socket mount needed.
   ```
-  gcloud run services update plomien-api \
-    --add-cloudsql-instances <CONNECTION_NAME> \
-    --vpc-connector plomien-vpc \
-    --set-secrets DB_PASSWORD=db-password:latest,LLM_API_KEY=llm-api-key:latest \
-    --min-instances=1
+  gcloud run services update plomien-api --region=europe-central2 \
+    --max-instances=10 \
+    --network=default --subnet=default --vpc-egress=private-ranges-only \
+    --set-secrets DB_PASSWORD=db-password:latest \
+    --update-env-vars DB_HOST=10.10.0.3,DB_NAME=plomien,DB_USER=plomien
   ```
-  ⚠️ **Flip `--min-instances=1` here** (not in Phase A): once the admin LLM-generation flow
-  exists, the JVM cold-start NFR ("potwierdzenie bez zauważalnej zwłoki") becomes binding.
-- [ ] Add a forward-only migration tool (Flyway/Liquibase). ⚠️ infrastructure.md "Rollback"
-  caveat: a code rollback does **not** roll back a schema migration — design migrations
-  reversible / additive.
+  (swap the `--network/--subnet/--vpc-egress` trio for `--vpc-connector plomien-vpc` if
+  the fallback was needed; add `LLM_API_KEY=llm-api-key:latest` to `--set-secrets` when
+  the LLM client lands — not part of Phase C.)
+  ⚠️ **`--min-instances` stays 0 for Phase C** — the test endpoint is not
+  latency-sensitive. Flip to 1 only when the admin LLM-generation flow ships and the JVM
+  cold-start NFR ("potwierdzenie bez zauważalnej zwłoki") becomes binding.
+- [ ] Add the persistence stack to `backend/pom.xml`: `spring-boot-starter-data-jpa`,
+  `org.postgresql:postgresql`, Flyway (`flyway-core` + `flyway-database-postgresql`) as
+  the forward-only migration tool. ⚠️ infrastructure.md "Rollback" caveat: a code rollback
+  does **not** roll back a schema migration — design migrations additive/backward-compatible
+  (binding under Phase 5's auto-deploy: the previous revision keeps serving during rollout
+  and must tolerate the new schema).
+- [ ] Local dev parity: run PostgreSQL locally (e.g. Docker) with the same `DB_*` env-var
+  contract; `application.properties` reads
+  `spring.datasource.url=jdbc:postgresql://${DB_HOST:localhost}:5432/${DB_NAME:plomien}` etc.,
+  so the image is identical across environments.
 - [ ] Store the LLM API key and IdP client secret in Secret Manager (same pattern as
   `db-password`); reference the latest Claude model per the project's AI guidance when the
-  client is added.
+  client is added. **Deferred past Phase C** — the test flow needs only the DB password.
 
 ⚠️ **Edge case — storage can't shrink:** Cloud SQL storage auto-grows and cannot be reduced
 in place (infrastructure.md). Cap DB log verbosity; if it balloons, dump → restore to a
 smaller instance → delete the original.
+
+---
+
+## Phase C (NEW, 2026-07-04) — E2E test data flow: SPA → API → DB 🤖
+
+**Goal / milestone finale:** a test endpoint on the frontend accepts a simple text,
+sends it to the backend, and the backend persists it in a test table — confirming the
+full data path (browser → Firebase Hosting SPA → CORS → Cloud Run API → Cloud SQL) and,
+merged via a PR, exercising the Phase 5 auto-deploy pipeline end-to-end. Requires Phase B
+provisioned and Phase 5 operational (this is deliberately the first PR that rides
+auto-deploy all the way to production).
+
+Everything here is application code — reviewable in a PR, no direct GCP mutations.
+
+- [ ] **Migration `V1__create_test_messages.sql`** (`backend/src/main/resources/db/migration/`):
+  ```sql
+  CREATE TABLE test_messages (
+    id         BIGSERIAL PRIMARY KEY,
+    content    TEXT NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+  );
+  ```
+  Flyway runs it at app startup. ⚠️ If startup-time migration ever gets slow/risky, split
+  migration out of the request path — fine at this scale.
+- [ ] **Backend** (`com.plomienkostrze.web`, same package convention as `PingController`):
+  `TestMessageController` — `POST /api/test-messages` accepting `{"content": "<text>"}`
+  (validate non-blank, cap length e.g. 1 kB), persisting via a Spring Data JPA
+  repository/entity, returning `201` with the saved row (`id`, `content`, `createdAt`);
+  `GET /api/test-messages` returning the latest N rows (proves read-back without DB
+  console access). ⚠️ CORS: `POST` with a JSON body triggers a preflight — already
+  handled by `CorsConfig` reading `ALLOWED_ORIGINS`, verify in devtools, not just curl.
+- [ ] **Frontend**: a minimal standalone component (signals, per frontend/CLAUDE.md) on a
+  test route (e.g. `/test-flow`): one input + submit button POSTing via `HttpClient` to
+  `${apiBaseUrl}/api/test-messages`, then re-fetching the GET list and rendering it —
+  the round-trip visible in one screen. Mark it clearly as a temporary diagnostic view.
+- [ ] **Ship it through the pipeline:** open a PR (build+test checks run), review, merge
+  to `master` → both path-filtered workflows auto-deploy (backend image + hosting).
+- [ ] 🔒 **Retire the probe later:** drop the route/component and endpoint once real
+  features land; the `test_messages` table can stay until the first real migration
+  removes it (additive-only rule applies).
 
 ---
 
@@ -380,11 +492,20 @@ smaller instance → delete the original.
 4. **Rollback drill (no-op safe):** `gcloud run revisions list --service plomien-api` shows
    ≥1 retained revision; confirm `update-traffic --to-revisions <PREV>=100` is available.
    `firebase hosting:rollback` is available on the Hosting side.
-5. **CI dry run:** push a trivial `backend/**` change → backend workflow deploys a
-   `--no-traffic` revision and **does not** auto-promote; a `context/`-only change triggers
-   neither workflow.
-6. **Cost guard:** confirm the budget alert exists and Phase A shows scale-to-zero
-   (Cloud Run min-instances=0, no Cloud SQL) so the floor is ~$0 until Phase B.
+5. **CI (auto-deploy model):** open a PR with a trivial `backend/**` change → only the
+   build+test check runs (no deploy); merge it → the backend workflow builds, deploys,
+   and the new revision serves 100% traffic without manual steps; a `context/`-only
+   change triggers neither workflow. Same shape for `frontend/**` → live Hosting deploy
+   on merge.
+6. **Cost guard:** confirm the budget alert exists; after Phase B the floor is the
+   always-on `db-f1-micro` (~$7–10/mo) — verify no VPC connector is billing if Direct
+   VPC egress was used, and Cloud Run still shows `min-instances=0`.
+7. **E2E data flow (Phase C finale):** on the live SPA open `/test-flow`, submit a text,
+   and see it come back in the rendered list (id + timestamp) — proving
+   browser → Firebase Hosting → CORS preflight → Cloud Run → Cloud SQL write → read-back.
+   Cross-check server-side: `gcloud run services logs read plomien-api --region
+   europe-central2 --limit 20` shows the POST, and `curl <api>/api/test-messages`
+   returns the row.
 
 ---
 

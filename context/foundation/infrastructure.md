@@ -139,10 +139,13 @@ How Google Cloud actually operates day to day for this project. One concrete ans
   migrations do **not** roll back automatically — a forward-only migration (e.g.
   Flyway/Liquibase) outlives a code rollback, so plan reversible migrations.
 - **Approval**: agent may run unattended — build, deploy a `--no-traffic` revision, tail
-  logs, list revisions. **Human-only (panel/CLI by hand):** promoting traffic to 100% in
-  production, rotating the primary DB/IdP secret, dropping the Cloud SQL instance or
-  database, changing IAM bindings. Tokens are scoped (Cloud Run Admin + Cloud SQL Client
-  on this project only — no billing, no org-level IAM).
+  logs, list revisions. **Human-only (panel/CLI by hand):** rotating the primary DB/IdP
+  secret, dropping the Cloud SQL instance or database, changing IAM bindings, destructive
+  schema changes. Tokens are scoped (Cloud Run Admin + Cloud SQL Client on this project
+  only — no billing, no org-level IAM). *Updated 2026-07-04:* production promotion moved
+  from "human runs `update-traffic` after merge" to **auto-deploy on merge to `master`**
+  — the human gate is PR review + merge; a revision that fails its startup probe never
+  takes traffic (see `context/changes/deployment/deployment-plan.md`, Phase 5).
 - **Logs**: read-only via
   `gcloud run services logs read <svc> --region europe-central2 --limit 100` for runtime,
   and `gcloud builds log <BUILD_ID>` for the build pipeline; structured JSON is available
@@ -158,7 +161,7 @@ How Google Cloud actually operates day to day for this project. One concrete ans
 | Cloud SQL exposed via public IP + weak auth during setup | Pre-mortem | M | H | Use **private IP** + Serverless VPC Access connector (or the Cloud SQL Auth Proxy); never assign a public IP; strong generated password in Secret Manager. |
 | Cloud SQL storage auto-grows and can't shrink | Research finding | M | M | Set sensible initial storage; cap log verbosity to DB; if it balloons, dump → restore to a smaller instance → delete original. |
 | VPC connector / IAM misconfiguration eats the timeline (new to GCP) | Pre-mortem | M | M | Follow a written setup runbook in the deploy plan; enable APIs explicitly; lean on the learn-GCP goal but timebox investigation and use `gcloud --format=json` for predictable output. |
-| Two-service split: CORS + two pipelines + two domains | Devil's advocate | M | M | Define the API base URL + allowed origins as config; wire path-filtered GitHub Actions (`frontend/**` → Firebase, `backend/**` → Cloud Run) with manual promotion as already specified in CLAUDE.md. |
+| Two-service split: CORS + two pipelines + two domains | Devil's advocate | M | M | Define the API base URL + allowed origins as config; wire path-filtered GitHub Actions (`frontend/**` → Firebase, `backend/**` → Cloud Run). *Updated 2026-07-04:* deploy is automatic on merge to `master` (PR review is the gate), superseding the original manual-promotion posture. |
 | `gcloud run deploy --source` quietly enables Cloud Build + Artifact Registry billing | Unknown unknowns | M | L | Be deliberate: either accept buildpacks or supply a Dockerfile; clean up old Artifact Registry images; include build APIs in the budget alert. |
 | GraalVM native image needs reflection/AOT hints for AI/LLM client | Unknown unknowns | L | M | Treat native image as a planned milestone, not a quick switch; validate the LLM client under native build early if pursued. |
 | europe-central2 feature gaps vs us-central1 | Unknown unknowns | L | L | Check feature/region availability before relying on any preview capability; fall back to a GA feature or a different region only if forced. |

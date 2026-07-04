@@ -7,7 +7,7 @@ hints:
   team_size: solo
   deployment_target: firebase-hosting
   ci_provider: github-actions
-  ci_default_flow: manual-promotion
+  ci_default_flow: auto-deploy-on-merge  # changed 2026-07-04, was: manual-promotion
   bootstrapper_confidence: verified
   path_taken: custom
   quality_override: false
@@ -38,7 +38,8 @@ Angular SPA ships to **Firebase Hosting** — GCP-native static hosting with a g
 and a one-command `firebase deploy` — rather than an nginx container on Cloud Run, which
 would cost cold starts and the free CDN for no gain. The SPA calls the separate Spring
 Boot API on Cloud Run (`europe-central2`) over HTTPS with CORS configured to the SPA
-origin. CI runs on GitHub Actions with manual promotion after merge to gate live pushes.
+origin. CI runs on GitHub Actions with automatic deploy on merge to master (changed
+2026-07-04 from manual promotion — PR review + merge is the human gate).
 Auth (admin
 login, plus fan login via an external identity provider) and the AI news-generation
 flow are in MVP scope; payments, realtime, and background jobs are out per the PRD.
