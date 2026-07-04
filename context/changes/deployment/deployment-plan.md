@@ -7,7 +7,7 @@ recommended_platform: Google Cloud (Cloud Run + Firebase Hosting + Cloud SQL)
 region: europe-central2 (Warsaw)
 github_repo: rkulig/plomienkostrze
 context_type: mvp
-status: "Phase A executed 2026-07-02; Phase B + WIF/IAM executed 2026-07-04 — remaining: workflow rewrite (Phase 5) + Phase C code"
+status: "COMPLETE 2026-07-04 — Phases A, B, 5 and C executed; E2E data flow (SPA → API → Cloud SQL) confirmed live"
 decisions:
   db_infra: ACTIVE since 2026-07-04 — trigger satisfied by the E2E test-flow milestone (Phase C); supersedes "deferred"
   build_method: explicit multi-stage Dockerfile (backend/Dockerfile)
@@ -470,8 +470,12 @@ Everything here is application code — reviewable in a PR, no direct GCP mutati
   > repo in `com.plomienkostrze.testmessage` on the backend side). Both apps verified
   > locally: `mvnw verify` green, `npm run build` green, live round-trip against a
   > Docker `postgres:16` confirmed.
-- [ ] **Ship it through the pipeline:** open a PR (build+test checks run), review, merge
+- [x] **Ship it through the pipeline:** open a PR (build+test checks run), review, merge
   to `master` → both path-filtered workflows auto-deploy (backend image + hosting).
+  > **Done 2026-07-04 — milestone confirmed live:** text submitted on
+  > `plomien-kostrze.web.app/test-flow` persisted to Cloud SQL and read back in the SPA.
+  > One follow-up PR (`M1L5-appShell`) was needed: the 344-line scaffold placeholder in
+  > `app.html` buried the router-outlet below the fold, hiding routed views.
 - [ ] 🔒 **Retire the probe later:** drop the route/component and endpoint once real
   features land; the `test_messages` table can stay until the first real migration
   removes it (additive-only rule applies).
