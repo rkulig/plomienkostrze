@@ -7,7 +7,7 @@ recommended_platform: Google Cloud (Cloud Run + Firebase Hosting + Cloud SQL)
 region: europe-central2 (Warsaw)
 github_repo: rkulig/plomienkostrze
 context_type: mvp
-status: Phase A executed 2026-07-02; Phase B + WIF/IAM executed 2026-07-04 — remaining: workflow rewrite (Phase 5) + Phase C code
+status: "Phase A executed 2026-07-02; Phase B + WIF/IAM executed 2026-07-04 — remaining: workflow rewrite (Phase 5) + Phase C code"
 decisions:
   db_infra: ACTIVE since 2026-07-04 — trigger satisfied by the E2E test-flow milestone (Phase C); supersedes "deferred"
   build_method: explicit multi-stage Dockerfile (backend/Dockerfile)
