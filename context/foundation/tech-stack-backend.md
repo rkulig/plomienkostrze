@@ -8,7 +8,7 @@ hints:
   deployment_target: google-cloud-run
   database: cloud-sql-postgres
   ci_provider: github-actions
-  ci_default_flow: manual-promotion
+  ci_default_flow: auto-deploy-on-merge  # changed 2026-07-04, was: manual-promotion
   bootstrapper_confidence: verified
   path_taken: custom
   quality_override: false
@@ -41,8 +41,9 @@ a Serverless VPC connector) — the data layer the PRD left deferred is now deci
 To hold the PRD's sub-2s latency NFR against JVM/Spring Boot cold starts (5–15s), the
 service runs with `min-instances=1` for the MVP, with Spring Boot AOT / GraalVM
 native-image as the planned durable fix. Secrets (DB password, LLM API key, IdP client
-secret) live in Secret Manager; CI runs on GitHub Actions with manual promotion after
-merge. Auth (admin login plus external-IdP fan login) and the LLM news-generation
+secret) live in Secret Manager; CI runs on GitHub Actions with automatic deploy on
+merge to master (changed 2026-07-04 from manual promotion — PR review + merge is the
+human gate). Auth (admin login plus external-IdP fan login) and the LLM news-generation
 pipeline are in MVP scope; payments, realtime, and background jobs are out per the
 PRD. Frontend and backend live together in a single monorepo — the Angular app under
 frontend/, this Spring API under backend/ — sharing agents, skills, and the context/

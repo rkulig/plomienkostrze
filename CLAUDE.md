@@ -31,10 +31,13 @@ plomienkostrze/            # repo root — shared tooling + context
 
 ### Build, deploy, CI
 
-- **Deploy:** Google Cloud — Cloud Run for both apps (containerized).
+- **Deploy:** Google Cloud (`europe-central2`) — backend on **Cloud Run** (containerized,
+  `backend/Dockerfile`), frontend SPA on **Firebase Hosting**, database on **Cloud SQL
+  for PostgreSQL**. Runbook: `context/changes/deployment/deployment-plan.md`.
 - **CI:** GitHub Actions with **path-filtered** workflows — the frontend job triggers
-  on `frontend/**`, the backend job on `backend/**` — and **manual promotion** after
-  merge (deploy is a separate step, not automatic on merge).
+  on `frontend/**`, the backend job on `backend/**` — and **automatic deploy on merge
+  to `master`** (changed 2026-07-04, was manual promotion; PR review + merge is the
+  human gate, PRs run build+test only).
 
 ### Stack hand-offs
 
