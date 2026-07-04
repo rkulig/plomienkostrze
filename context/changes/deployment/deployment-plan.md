@@ -404,16 +404,24 @@ endpoint) is that persistence feature. Provision B, then land C.
   ⚠️ **`--min-instances` stays 0 for Phase C** — the test endpoint is not
   latency-sensitive. Flip to 1 only when the admin LLM-generation flow ships and the JVM
   cold-start NFR ("potwierdzenie bez zauważalnej zwłoki") becomes binding.
-- [ ] Add the persistence stack to `backend/pom.xml`: `spring-boot-starter-data-jpa`,
+- [x] Add the persistence stack to `backend/pom.xml`: `spring-boot-starter-data-jpa`,
   `org.postgresql:postgresql`, Flyway (`flyway-core` + `flyway-database-postgresql`) as
-  the forward-only migration tool. ⚠️ infrastructure.md "Rollback" caveat: a code rollback
+  the forward-only migration tool.
+  > Done 2026-07-04 (branch `M1L5-testDataFlow`). **Gotcha found the hard way:** Spring
+  > Boot 4 modularized auto-config — `org.springframework.boot:spring-boot-flyway` is
+  > **also required**, or migrations silently never run (`flyway-core` alone is ignored;
+  > the app then fails Hibernate `validate` with "missing table"). Tests run on H2 with
+  > `flyway.enabled=false` + `ddl-auto=create-drop` (CI has no PostgreSQL); note that
+  > `src/test/resources/application.properties` *shadows* the main file entirely. ⚠️ infrastructure.md "Rollback" caveat: a code rollback
   does **not** roll back a schema migration — design migrations additive/backward-compatible
   (binding under Phase 5's auto-deploy: the previous revision keeps serving during rollout
   and must tolerate the new schema).
-- [ ] Local dev parity: run PostgreSQL locally (e.g. Docker) with the same `DB_*` env-var
+- [x] Local dev parity: run PostgreSQL locally (e.g. Docker) with the same `DB_*` env-var
   contract; `application.properties` reads
   `spring.datasource.url=jdbc:postgresql://${DB_HOST:localhost}:5432/${DB_NAME:plomien}` etc.,
   so the image is identical across environments.
+  > Done 2026-07-04; verified end-to-end against a local `postgres:16` container
+  > (Flyway applied V1, POST persisted a row, GET read it back, blank content → 400).
 - [ ] Store the LLM API key and IdP client secret in Secret Manager (same pattern as
   `db-password`); reference the latest Claude model per the project's AI guidance when the
   client is added. **Deferred past Phase C** — the test flow needs only the DB password.
@@ -435,27 +443,33 @@ auto-deploy all the way to production).
 
 Everything here is application code — reviewable in a PR, no direct GCP mutations.
 
-- [ ] **Migration `V1__create_test_messages.sql`** (`backend/src/main/resources/db/migration/`):
+- [x] **Migration `V1__create_test_messages.sql`** (`backend/src/main/resources/db/migration/`):
   ```sql
   CREATE TABLE test_messages (
     id         BIGSERIAL PRIMARY KEY,
-    content    TEXT NOT NULL,
+    content    VARCHAR(1024) NOT NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT now()
   );
   ```
   Flyway runs it at app startup. ⚠️ If startup-time migration ever gets slow/risky, split
   migration out of the request path — fine at this scale.
-- [ ] **Backend** (`com.plomienkostrze.web`, same package convention as `PingController`):
+  > Done 2026-07-04. Deviation: `VARCHAR(1024)` instead of `TEXT` — matches the API's
+  > 1 kB cap and keeps Hibernate `ddl-auto=validate` clean against the entity mapping.
+- [x] **Backend** (`com.plomienkostrze.web`, same package convention as `PingController`):
   `TestMessageController` — `POST /api/test-messages` accepting `{"content": "<text>"}`
   (validate non-blank, cap length e.g. 1 kB), persisting via a Spring Data JPA
   repository/entity, returning `201` with the saved row (`id`, `content`, `createdAt`);
   `GET /api/test-messages` returning the latest N rows (proves read-back without DB
   console access). ⚠️ CORS: `POST` with a JSON body triggers a preflight — already
   handled by `CorsConfig` reading `ALLOWED_ORIGINS`, verify in devtools, not just curl.
-- [ ] **Frontend**: a minimal standalone component (signals, per frontend/CLAUDE.md) on a
+- [x] **Frontend**: a minimal standalone component (signals, per frontend/CLAUDE.md) on a
   test route (e.g. `/test-flow`): one input + submit button POSTing via `HttpClient` to
   `${apiBaseUrl}/api/test-messages`, then re-fetching the GET list and rendering it —
   the round-trip visible in one screen. Mark it clearly as a temporary diagnostic view.
+  > Done 2026-07-04: lazy-loaded route `/test-flow` (`TestFlow` component, entity +
+  > repo in `com.plomienkostrze.testmessage` on the backend side). Both apps verified
+  > locally: `mvnw verify` green, `npm run build` green, live round-trip against a
+  > Docker `postgres:16` confirmed.
 - [ ] **Ship it through the pipeline:** open a PR (build+test checks run), review, merge
   to `master` → both path-filtered workflows auto-deploy (backend image + hosting).
 - [ ] 🔒 **Retire the probe later:** drop the route/component and endpoint once real

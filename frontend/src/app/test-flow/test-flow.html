@@ -1,0 +1,38 @@
+<section class="test-flow">
+  <h1>Test przepływu danych</h1>
+  <p class="note">
+    Widok diagnostyczny (tymczasowy): tekst poniżej przechodzi trasę
+    SPA → API (Cloud Run) → baza (Cloud SQL) i wraca z listą zapisanych wierszy.
+  </p>
+
+  <form (submit)="send(); $event.preventDefault()">
+    <input
+      type="text"
+      name="content"
+      placeholder="Wpisz dowolny tekst…"
+      maxlength="1024"
+      [value]="content()"
+      (input)="onInput($event)"
+    />
+    <button type="submit" [disabled]="busy() || !content().trim()">Wyślij</button>
+  </form>
+
+  @if (error(); as message) {
+    <p class="error">{{ message }}</p>
+  }
+
+  <h2>Ostatnie wpisy w bazie</h2>
+  @if (messages().length === 0) {
+    <p class="note">Brak wpisów — wyślij pierwszy tekst.</p>
+  } @else {
+    <ul>
+      @for (message of messages(); track message.id) {
+        <li>
+          <span class="id">#{{ message.id }}</span>
+          <span class="content">{{ message.content }}</span>
+          <span class="date">{{ message.createdAt | date: 'yyyy-MM-dd HH:mm:ss' }}</span>
+        </li>
+      }
+    </ul>
+  }
+</section>
