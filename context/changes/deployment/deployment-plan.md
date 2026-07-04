@@ -155,14 +155,14 @@ reversible and reviewable in a PR. **None touch GCP.**
 
 ## Phase 1 — Enable APIs & Artifact Registry 🤖 (one-time)
 
-- [ ] Enable exactly the APIs Phase A needs (defer `sqladmin`/`vpcaccess` to Phase B):
+- [x] Enable exactly the APIs Phase A needs (defer `sqladmin`/`vpcaccess` to Phase B):
   ```
   gcloud services enable run.googleapis.com cloudbuild.googleapis.com \
     artifactregistry.googleapis.com iamcredentials.googleapis.com
   ```
   ⚠️ infrastructure.md's bulk-enable line includes `sqladmin.googleapis.com` and
   `vpcaccess.googleapis.com` — intentionally **omitted here** because Phase A has no DB.
-- [ ] Create an Artifact Registry Docker repo in-region (explicit, so we control image
+- [x] Create an Artifact Registry Docker repo in-region (explicit, so we control image
   storage — infrastructure.md note: `--source` silently creates one and bills for it):
   ```
   gcloud artifacts repositories create plomien \
@@ -173,8 +173,16 @@ reversible and reviewable in a PR. **None touch GCP.**
 
 ## Phase 2 — Deploy backend to Cloud Run 🤖 (with 🔒 promotion gate)
 
-- [ ] Build & deploy a **no-traffic** revision first (agent-safe per infrastructure.md
+- [x] Build & deploy a **no-traffic** revision first (agent-safe per infrastructure.md
   "Approval"). Using `--source .` with the committed `backend/Dockerfile`:
+  > **Executed 2026-07-02, with two deviations:** (1) `--no-traffic` is **not supported when
+  > creating a new service**, so the first revision (`plomien-api-00001`) took 100% traffic
+  > directly — acceptable per the plan's fallback (it only serves `/api/ping`); no-traffic
+  > applies from the 2nd deploy on. (2) Built **locally via Docker → `docker push`** to the
+  > `plomien` AR repo, not `gcloud builds submit` — Cloud Build hit `PERMISSION_DENIED`
+  > (fresh-project default-SA/logs-bucket quirk) and local Docker's `credsStore:"desktop"`
+  > was gpg-locked (worked around with a temp `DOCKER_CONFIG`). CI (Phase 5) builds on the
+  > runner for the same reason. Image: `…/plomien/plomien-api:v1`.
   ```
   cd backend
   gcloud run deploy plomien-api --source . \
@@ -191,12 +199,17 @@ reversible and reviewable in a PR. **None touch GCP.**
   - ⚠️ `--allow-unauthenticated` makes the API public (correct: the public news list needs
     no login per PRD). Admin auth is enforced *in-app* via the external IdP later, not via
     Cloud Run IAM.
-- [ ] Smoke-test the **tagged staging URL** (`https://staging---plomien-api-...run.app/api/ping`).
-- [ ] 🔒 **Promote to production traffic** (human-only — first production exposure):
+- [x] Smoke-test the **tagged staging URL** (`https://staging---plomien-api-...run.app/api/ping`).
+  > Smoke-tested the **live service URL** instead (no `staging` tag on the first deploy):
+  > `/api/ping` → `{"status":"ok"}` 200, `/actuator/health` → `UP` 200.
+- [x] 🔒 **Promote to production traffic** (human-only — first production exposure):
+  > Collapsed into the first deploy (the new-service revision necessarily served traffic).
+  > The explicit `update-traffic` gate applies to all subsequent revisions.
   ```
   gcloud run services update-traffic plomien-api --to-latest --region europe-central2
   ```
-- [ ] Capture the stable service URL → it becomes `apiBaseUrl` in Phase 4.
+- [x] Capture the stable service URL → it becomes `apiBaseUrl` in Phase 4.
+  > `https://plomien-api-714793368062.europe-central2.run.app`
 
 ⚠️ **Edge case — JVM cold start under buildpacks vs Dockerfile:** we chose a Dockerfile to
 avoid surprise Cloud Build/Artifact Registry billing and to control the JRE. First build is
@@ -207,15 +220,20 @@ concern, pre-build the jar locally and `COPY` it instead of building in-image.
 
 ## Phase 3 — Deploy frontend to Firebase Hosting 🤖 (with 🔒 promotion gate)
 
-- [ ] Build the SPA: `cd frontend && nvm use && npm ci && npm run build`.
+- [x] Build the SPA: `cd frontend && nvm use && npm ci && npm run build`.
   Verify `dist/plomien-kostrze/browser/index.html` exists.
-- [ ] Deploy to a **preview channel** first (shareable, non-prod — infrastructure.md
+  > Built with `apiBaseUrl` already set to the Cloud Run URL (baked in before this build, so
+  > Phase 4 needed no frontend rebuild). Output confirmed at `dist/plomien-kostrze/browser/`.
+- [x] Deploy to a **preview channel** first (shareable, non-prod — infrastructure.md
   "Preview deploys"):
   ```
   firebase hosting:channel:deploy preview-initial --expires 7d
   ```
-- [ ] Open the preview URL, confirm the app loads and SPA deep-link rewrite works.
-- [ ] 🔒 **Promote to the live channel** (human-only):
+- [x] Open the preview URL, confirm the app loads and SPA deep-link rewrite works.
+  > Preview `https://plomien-kostrze--preview-initial-3zefzghp.web.app`: root 200, deep link
+  > `/some/deep/route` served `index.html` (200, not 404) — rewrite confirmed.
+- [x] 🔒 **Promote to the live channel** (human-only):
+  > Live at `https://plomien-kostrze.web.app` (root 200).
   ```
   firebase deploy --only hosting
   ```
@@ -229,12 +247,17 @@ config. The two committed files are sufficient; skip init.
 
 ## Phase 4 — Wire frontend ↔ backend 🤖
 
-- [ ] Set `apiBaseUrl` in `frontend/src/environments/environment.production.ts` to the
-  Cloud Run service URL from Phase 2.
-- [ ] Set the backend's `ALLOWED_ORIGINS` env var to the **live Firebase Hosting URL**
+- [x] Set `apiBaseUrl` in `frontend/src/environments/environment.production.ts` to the
+  Cloud Run service URL from Phase 2. *(Done before the Phase 3 build — uncommitted on master.)*
+- [x] Set the backend's `ALLOWED_ORIGINS` env var to the **live Firebase Hosting URL**
   (`https://<PROJECT_ID>.web.app` and/or the custom domain) via
   `gcloud run services update plomien-api --update-env-vars ALLOWED_ORIGINS=https://<PROJECT_ID>.web.app`.
-- [ ] Rebuild + redeploy frontend (Phase 3) and confirm a real cross-origin call succeeds.
+- [x] Rebuild + redeploy frontend (Phase 3) and confirm a real cross-origin call succeeds.
+  > No frontend rebuild needed (URL was baked before the Phase 3 build). Set via
+  > `gcloud run services update … --update-env-vars "^##^ALLOWED_ORIGINS=https://plomien-kostrze.web.app,https://plomien-kostrze.firebaseapp.com"`
+  > (rev `plomien-api-00002`). CORS verified by curl preflight: **200 + `Access-Control-Allow-Origin`**
+  > for `web.app`, **403** for a disallowed origin. (In-app SPA→API ping widget deferred — no
+  > component calls the API yet.)
 
 ⚠️ **Edge case — CORS preflight:** browsers send an `OPTIONS` preflight for non-simple
 requests. The `WebMvcConfigurer` must allow the needed methods/headers, and Cloud Run must
