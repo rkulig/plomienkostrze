@@ -1,0 +1,59 @@
+name: backend
+
+# Path-filtered: only backend/** changes trigger this. A PR touching only
+# context/**, CLAUDE.md, or frontend/** triggers neither pipeline.
+on:
+  push:
+    branches: [master]
+    paths: ['backend/**']
+  pull_request:
+    paths: ['backend/**']
+
+# Keyless auth via Workload Identity Federation — no JSON key in the repo.
+permissions:
+  contents: read
+  id-token: write
+
+env:
+  PROJECT_ID: plomien-kostrze
+  REGION: europe-central2
+  IMG: europe-central2-docker.pkg.dev/plomien-kostrze/plomien/plomien-api
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+
+      - id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          project_id: plomien-kostrze
+          workload_identity_provider: projects/714793368062/locations/global/workloadIdentityPools/github/providers/github-oidc
+          service_account: gh-deployer@plomien-kostrze.iam.gserviceaccount.com
+
+      - uses: google-github-actions/setup-gcloud@v2
+
+      # Build on the runner (not Cloud Build) — keeps the deployer SA's roles minimal
+      # (no cloudbuild/storage) and mirrors the initial manual deploy.
+      - name: Configure Docker for Artifact Registry
+        run: gcloud auth configure-docker ${REGION}-docker.pkg.dev --quiet
+
+      - name: Build & push image
+        run: |
+          TAG="ci-${GITHUB_SHA::12}"
+          docker build -t "${IMG}:${TAG}" .
+          docker push "${IMG}:${TAG}"
+
+      # Deploy a NO-TRAFFIC tagged revision. Promotion to production traffic stays a
+      # manual human step: gcloud run services update-traffic plomien-api --to-latest.
+      - name: Deploy no-traffic revision
+        run: |
+          TAG="ci-${GITHUB_SHA::12}"
+          gcloud run deploy plomien-api \
+            --image "${IMG}:${TAG}" \
+            --region "${REGION}" \
+            --no-traffic --tag "${TAG}"

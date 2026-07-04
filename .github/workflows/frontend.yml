@@ -1,0 +1,54 @@
+name: frontend
+
+# Path-filtered: only frontend/** changes trigger this. A PR touching only
+# context/**, CLAUDE.md, or backend/** triggers neither pipeline.
+on:
+  push:
+    branches: [master]
+    paths: ['frontend/**']
+  pull_request:
+    paths: ['frontend/**']
+
+# Keyless auth via Workload Identity Federation — no JSON key in the repo.
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: frontend/.nvmrc
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          project_id: plomien-kostrze
+          workload_identity_provider: projects/714793368062/locations/global/workloadIdentityPools/github/providers/github-oidc
+          service_account: gh-deployer@plomien-kostrze.iam.gserviceaccount.com
+
+      - run: npm ci
+      - run: npm run build
+
+      - name: Install firebase-tools
+        run: npm i -g firebase-tools
+
+      # firebase-tools reads Application Default Credentials from the credentials file
+      # emitted by google-github-actions/auth (NOT the deprecated firebase login:ci token).
+      # Deploys to a PREVIEW channel; promotion to live stays a manual human step:
+      # firebase deploy --only hosting.
+      - name: Deploy preview channel
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ steps.auth.outputs.credentials_file_path }}
+        run: |
+          firebase hosting:channel:deploy "ci-${GITHUB_SHA::12}" \
+            --project plomien-kostrze --expires 7d
