@@ -406,13 +406,13 @@ Details. Wszystkie migracje forward-only (konwencja `tech-stack-backend.md`).
 
 #### Automated
 
-- [x] 3.1 Backend builduje się i testy przechodzą (`./mvnw test`)
-- [x] 3.2 Frontend builduje się (`npm run build`)
-- [x] 3.3 Grep nie znajduje śladów probe'a w `frontend/src` i `backend/src/main/java` (migracje poza zakresem)
+- [x] 3.1 Backend builduje się i testy przechodzą (`./mvnw test`) — 6612687
+- [x] 3.2 Frontend builduje się (`npm run build`) — 6612687
+- [x] 3.3 Grep nie znajduje śladów probe'a w `frontend/src` i `backend/src/main/java` (migracje poza zakresem) — 6612687
 
 #### Manual
 
-- [x] 3.4 Smoke lokalny: V4 aplikuje się, `/` i `/news/:id` działają
-- [ ] 3.5 `min-instances=1` potwierdzone (lub ustawione) przed pomiarem NFR
-- [ ] 3.6 Produkcja po auto-deployu: lista i szczegół działają, pierwsza treść < 2 s
-- [ ] 3.7 Produkcja: `GET /api/test-messages` → `404`, `/api/ping` → OK
+- [x] 3.4 Smoke lokalny: V4 aplikuje się, `/` i `/news/:id` działają — 6612687
+- [x] 3.5 `min-instances=1` potwierdzone (lub ustawione) przed pomiarem NFR
+- [x] 3.6 Produkcja po auto-deployu: lista i szczegół działają, pierwsza treść < 2 s
+- [x] 3.7 Produkcja: `GET /api/test-messages` → `404`, `/api/ping` → OK
