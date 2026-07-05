@@ -378,29 +378,29 @@ Details. Wszystkie migracje forward-only (konwencja `tech-stack-backend.md`).
 
 #### Automated
 
-- [x] 1.1 Backend builduje się i istniejące testy przechodzą (`./mvnw test`)
+- [x] 1.1 Backend builduje się i istniejące testy przechodzą (`./mvnw test`) — 5c815e1
 
 #### Manual
 
-- [x] 1.2 Migracje V2+V3 aplikują się czysto, aplikacja wstaje (walidacja schematu OK)
-- [x] 1.3 Lista zwraca 4 zaseedowane wpisy od najnowszego z `total: 4` i zajawkami
-- [x] 1.4 Paginacja działa (`size=2` → 2 wpisy), `size=100` → `400`
-- [x] 1.5 Szczegół zwraca pełną treść; nieistniejący id → `404`
+- [x] 1.2 Migracje V2+V3 aplikują się czysto, aplikacja wstaje (walidacja schematu OK) — 5c815e1
+- [x] 1.3 Lista zwraca 4 zaseedowane wpisy od najnowszego z `total: 4` i zajawkami — 5c815e1
+- [x] 1.4 Paginacja działa (`size=2` → 2 wpisy), `size=100` → `400` — 5c815e1
+- [x] 1.5 Szczegół zwraca pełną treść; nieistniejący id → `404` — 5c815e1
 
 ### Phase 2: Frontend — widoki listy i szczegółu
 
 #### Automated
 
-- [ ] 2.1 Frontend builduje się produkcyjnie (`npm run build`)
+- [x] 2.1 Frontend builduje się produkcyjnie (`npm run build`)
 
 #### Manual
 
-- [ ] 2.2 `/` pokazuje 4 wpisy od najnowszego z datą i zajawką
-- [ ] 2.3 Klik otwiera `/news/:id` z treścią w akapitach; powrót działa
-- [ ] 2.4 `/news/999` pokazuje komunikat „Nie znaleziono wpisu" z linkiem do `/`
-- [ ] 2.5 Zatrzymany backend → komunikat błędu na `/`
-- [ ] 2.6 Pusty stan „Brak aktualności" (tymczasowy UPDATE statusu w lokalnej bazie)
-- [ ] 2.7 Deep-link (odświeżenie na `/news/:id`) działa
+- [x] 2.2 `/` pokazuje 4 wpisy od najnowszego z datą i zajawką
+- [x] 2.3 Klik otwiera `/news/:id` z treścią w akapitach; powrót działa
+- [x] 2.4 `/news/999` pokazuje komunikat „Nie znaleziono wpisu" z linkiem do `/`
+- [x] 2.5 Zatrzymany backend → komunikat błędu na `/`
+- [x] 2.6 Pusty stan „Brak aktualności" (tymczasowy UPDATE statusu w lokalnej bazie)
+- [x] 2.7 Deep-link (odświeżenie na `/news/:id`) działa
 
 ### Phase 3: Sprzątanie probe'a + weryfikacja produkcyjna
 
