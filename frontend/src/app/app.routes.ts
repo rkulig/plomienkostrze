@@ -8,5 +8,9 @@ export const routes: Routes = [
   {
     path: 'news/:id',
     loadComponent: () => import('./news/news-detail').then((m) => m.NewsDetail)
+  },
+  {
+    path: '**',
+    redirectTo: ''
   }
 ];

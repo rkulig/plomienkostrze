@@ -38,7 +38,10 @@ export class NewsList {
     this.error.set(null);
     this.api.list(this.nextPage, PAGE_SIZE).subscribe({
       next: (page) => {
-        this.items.update((current) => [...current, ...page.items]);
+        this.items.update((current) => [
+          ...current,
+          ...page.items.filter((item) => !current.some((existing) => existing.id === item.id))
+        ]);
         this.total.set(page.total);
         this.nextPage++;
         this.busy.set(false);
