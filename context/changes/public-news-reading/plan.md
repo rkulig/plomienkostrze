@@ -391,28 +391,28 @@ Details. Wszystkie migracje forward-only (konwencja `tech-stack-backend.md`).
 
 #### Automated
 
-- [x] 2.1 Frontend builduje się produkcyjnie (`npm run build`)
+- [x] 2.1 Frontend builduje się produkcyjnie (`npm run build`) — ecaacf3
 
 #### Manual
 
-- [x] 2.2 `/` pokazuje 4 wpisy od najnowszego z datą i zajawką
-- [x] 2.3 Klik otwiera `/news/:id` z treścią w akapitach; powrót działa
-- [x] 2.4 `/news/999` pokazuje komunikat „Nie znaleziono wpisu" z linkiem do `/`
-- [x] 2.5 Zatrzymany backend → komunikat błędu na `/`
-- [x] 2.6 Pusty stan „Brak aktualności" (tymczasowy UPDATE statusu w lokalnej bazie)
-- [x] 2.7 Deep-link (odświeżenie na `/news/:id`) działa
+- [x] 2.2 `/` pokazuje 4 wpisy od najnowszego z datą i zajawką — ecaacf3
+- [x] 2.3 Klik otwiera `/news/:id` z treścią w akapitach; powrót działa — ecaacf3
+- [x] 2.4 `/news/999` pokazuje komunikat „Nie znaleziono wpisu" z linkiem do `/` — ecaacf3
+- [x] 2.5 Zatrzymany backend → komunikat błędu na `/` — ecaacf3
+- [x] 2.6 Pusty stan „Brak aktualności" (tymczasowy UPDATE statusu w lokalnej bazie) — ecaacf3
+- [x] 2.7 Deep-link (odświeżenie na `/news/:id`) działa — ecaacf3
 
 ### Phase 3: Sprzątanie probe'a + weryfikacja produkcyjna
 
 #### Automated
 
-- [ ] 3.1 Backend builduje się i testy przechodzą (`./mvnw test`)
-- [ ] 3.2 Frontend builduje się (`npm run build`)
-- [ ] 3.3 Grep nie znajduje śladów probe'a w `frontend/src` i `backend/src/main/java` (migracje poza zakresem)
+- [x] 3.1 Backend builduje się i testy przechodzą (`./mvnw test`)
+- [x] 3.2 Frontend builduje się (`npm run build`)
+- [x] 3.3 Grep nie znajduje śladów probe'a w `frontend/src` i `backend/src/main/java` (migracje poza zakresem)
 
 #### Manual
 
-- [ ] 3.4 Smoke lokalny: V4 aplikuje się, `/` i `/news/:id` działają
+- [x] 3.4 Smoke lokalny: V4 aplikuje się, `/` i `/news/:id` działają
 - [ ] 3.5 `min-instances=1` potwierdzone (lub ustawione) przed pomiarem NFR
 - [ ] 3.6 Produkcja po auto-deployu: lista i szczegół działają, pierwsza treść < 2 s
 - [ ] 3.7 Produkcja: `GET /api/test-messages` → `404`, `/api/ping` → OK

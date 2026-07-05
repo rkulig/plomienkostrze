@@ -8,10 +8,5 @@ export const routes: Routes = [
   {
     path: 'news/:id',
     loadComponent: () => import('./news/news-detail').then((m) => m.NewsDetail)
-  },
-  // Temporary diagnostic view (deploy-plan Phase C) — remove with the probe.
-  {
-    path: 'test-flow',
-    loadComponent: () => import('./test-flow/test-flow').then((m) => m.TestFlow)
   }
 ];
