@@ -4,6 +4,9 @@
   } @else if (notFound()) {
     <p class="error">Nie znaleziono wpisu.</p>
     <a routerLink="/">Wróć do listy aktualności</a>
+  } @else if (error(); as error) {
+    <p class="error">{{ error }}</p>
+    <a routerLink="/">Wróć do listy aktualności</a>
   } @else if (post(); as post) {
     <header>
       <h1>{{ post.title }}</h1>
