@@ -1,0 +1,29 @@
+<section class="news-list">
+  <h1>Aktualności</h1>
+
+  @if (error(); as message) {
+    <p class="error">{{ message }}</p>
+  }
+
+  @if (items().length === 0 && !busy() && !error()) {
+    <p class="note">Brak aktualności</p>
+  }
+
+  <ul>
+    @for (post of items(); track post.id) {
+      <li>
+        <a class="title" [routerLink]="['/news', post.id]">{{ post.title }}</a>
+        <span class="date">{{ post.publishedAt | date: 'dd.MM.yyyy' }}</span>
+        <p class="excerpt">{{ post.excerpt }}</p>
+      </li>
+    }
+  </ul>
+
+  @if (busy()) {
+    <p class="note">Ładowanie…</p>
+  }
+
+  @if (hasMore() && !busy()) {
+    <button type="button" (click)="loadMore()">Pokaż starsze</button>
+  }
+</section>
