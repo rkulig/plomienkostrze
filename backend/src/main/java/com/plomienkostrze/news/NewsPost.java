@@ -44,6 +44,20 @@ public class NewsPost {
 		// JPA
 	}
 
+	/**
+	 * Creates a post published in one step (roadmap S-02, FR-006). The factory
+	 * guarantees the S-01 review invariant: a PUBLISHED post always carries
+	 * published_at (a NULL would sort first under DESC and render an empty date).
+	 */
+	public static NewsPost published(String title, String content) {
+		NewsPost post = new NewsPost();
+		post.title = title;
+		post.content = content;
+		post.status = NewsPostStatus.PUBLISHED;
+		post.publishedAt = Instant.now();
+		return post;
+	}
+
 	@PrePersist
 	void onCreate() {
 		if (createdAt == null) {
