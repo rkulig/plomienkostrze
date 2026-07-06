@@ -547,28 +547,28 @@ Rollback rewizji Cloud Run nie wymaga cofania migracji.
 
 #### Automated
 
-- [x] 2.1 Build produkcyjny przechodzi: `npm run build`
+- [x] 2.1 Build produkcyjny przechodzi: `npm run build` — e85b759
 
 #### Manual
 
-- [x] 2.2 Lokalne e2e: „Zaloguj" w nagłówku → redirect Google → powrót z „Wyloguj"
-- [x] 2.3 Sekwencja UID: brak „Dodaj post" → UID z konsoli → `ADMIN_UIDS` → „Dodaj post" → formularz
-- [x] 2.4 Publikacja: formularz → `/news/:id`, wpis pierwszy na liście z poprawną datą
-- [x] 2.5 Walidacja formularza + obsługa błędu API bez utraty treści
-- [x] 2.6 Nie-admin: brak „Dodaj post", deep-link `/admin` → redirect na `/`, „Wyloguj" działa
-- [x] 2.7 Preflight CORS dla POST z Authorization przechodzi z localhost:4200
-- [x] 2.8 Bez regresji publicznych widoków (gość nie widzi zmian poza „Zaloguj" w nagłówku)
+- [x] 2.2 Lokalne e2e: „Zaloguj" w nagłówku → redirect Google → powrót z „Wyloguj" — e85b759
+- [x] 2.3 Sekwencja UID: brak „Dodaj post" → UID z konsoli → `ADMIN_UIDS` → „Dodaj post" → formularz — e85b759
+- [x] 2.4 Publikacja: formularz → `/news/:id`, wpis pierwszy na liście z poprawną datą — e85b759
+- [x] 2.5 Walidacja formularza + obsługa błędu API bez utraty treści — e85b759
+- [x] 2.6 Nie-admin: brak „Dodaj post", deep-link `/admin` → redirect na `/`, „Wyloguj" działa — e85b759
+- [x] 2.7 Preflight CORS dla POST z Authorization przechodzi z localhost:4200 — e85b759
+- [x] 2.8 Bez regresji publicznych widoków (gość nie widzi zmian poza „Zaloguj" w nagłówku) — e85b759
 
 ### Phase 3: Produkcja — konfiguracja + weryfikacja e2e
 
 #### Automated
 
-- [ ] 3.1 CI zielone na PR; po merge oba workflow deploy przechodzą
+- [x] 3.1 CI zielone na PR; po merge oba workflow deploy przechodzą
 
 #### Manual
 
-- [ ] 3.2 `ADMIN_UIDS` ustawione na Cloud Run (gcloud, krok ludzki)
-- [ ] 3.3 Authorized domains zweryfikowane w konsoli Firebase
+- [x] 3.2 `ADMIN_UIDS` ustawione na Cloud Run (gcloud, krok ludzki)
+- [x] 3.3 Authorized domains zweryfikowane w konsoli Firebase
 - [ ] 3.4 Prod e2e: login na `web.app` → „Dodaj post" → publikacja → wpis publicznie widoczny
-- [ ] 3.5 `POST /api/news-posts` bez tokenu na prod → 401
+- [x] 3.5 `POST /api/news-posts` bez tokenu na prod → 401
 - [ ] 3.6 Publiczne czytanie bez regresji na produkcji
