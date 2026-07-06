@@ -1,7 +1,7 @@
 ---
 change_id: manual-news-publishing
 title: Manual news publishing
-status: impl_reviewed
+status: implemented
 created: 2026-07-06
 updated: 2026-07-06
 archived_at: null
