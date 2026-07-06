@@ -24,8 +24,8 @@ export interface NewsPostList {
 }
 
 /**
- * Jedyne miejsce rozmowy SPA z publicznym API newsów (GET /api/news-posts) —
- * komponenty nie dotykają HttpClient.
+ * Jedyne miejsce rozmowy SPA z API newsów (/api/news-posts) — komponenty nie
+ * dotykają HttpClient. Zapis (create) wymaga admina; token dokleja interceptor.
  */
 @Injectable({ providedIn: 'root' })
 export class NewsApi {
@@ -38,5 +38,9 @@ export class NewsApi {
 
   get(id: number): Observable<NewsPost> {
     return this.http.get<NewsPost>(`${this.url}/${id}`);
+  }
+
+  create(title: string, content: string): Observable<NewsPost> {
+    return this.http.post<NewsPost>(this.url, { title, content });
   }
 }

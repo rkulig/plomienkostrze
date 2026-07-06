@@ -1,0 +1,32 @@
+<section class="admin-panel">
+  @if (ready() === true) {
+    <h1>Nowy wpis</h1>
+
+    <form [formGroup]="form" (ngSubmit)="publish()">
+      <label>
+        Tytuł
+        <input type="text" formControlName="title" maxlength="200" />
+      </label>
+
+      <label>
+        Treść
+        <textarea
+          formControlName="content"
+          maxlength="10000"
+          rows="12"
+          placeholder="Czysty tekst — akapity oddzielaj pustą linią."
+        ></textarea>
+      </label>
+
+      @if (error(); as error) {
+        <p class="error">{{ error }}</p>
+      }
+
+      <button type="submit" [disabled]="form.invalid || sending()">
+        {{ sending() ? 'Publikowanie…' : 'Opublikuj' }}
+      </button>
+    </form>
+  } @else {
+    <p class="note">Ładowanie…</p>
+  }
+</section>
