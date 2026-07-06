@@ -1,10 +1,10 @@
 ---
 change_id: manual-news-publishing
 title: Manual news publishing
-status: implemented
+status: archived
 created: 2026-07-06
 updated: 2026-07-06
-archived_at: null
+archived_at: 2026-07-06T19:59:12Z
 ---
 
 ## Notes

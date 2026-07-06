@@ -3,7 +3,7 @@ project: "Płomień Kostrze"
 version: 1
 status: draft
 created: 2026-07-04
-updated: 2026-07-04
+updated: 2026-07-06
 prd_version: 1
 main_goal: market-feedback
 top_blocker: none  # was: decisions — dostawca tożsamości i dostawca LLM rozstrzygnięci 2026-07-04
@@ -43,7 +43,7 @@ propozycje są na tyle dobre, że administrator akceptuje co najmniej 75% z nich
 | ID   | Change ID              | Outcome (user can …)                                                  | Prerequisites | PRD refs                     | Status   |
 | ---- | ---------------------- | --------------------------------------------------------------------- | ------------- | ---------------------------- | -------- |
 | S-01 | public-news-reading    | Gość czyta listę i treść opublikowanych aktualności bez logowania      | —             | US-02, FR-009                | ready    |
-| S-02 | manual-news-publishing | Administrator loguje się i publikuje wpis utworzony ręcznie            | S-01          | FR-001, FR-006               | proposed |
+| S-02 | manual-news-publishing | Administrator loguje się i publikuje wpis utworzony ręcznie            | S-01          | FR-001, FR-006               | done |
 | S-03 | gated-news-generation  | Administrator generuje propozycję wpisu z danych meczowych i publikuje ją po akceptacji | S-02          | US-01, FR-003, FR-004, FR-005 | proposed |
 | S-04 | news-post-management   | Administrator edytuje i usuwa opublikowane wpisy                       | S-02          | FR-007, FR-008               | proposed |
 
@@ -93,7 +93,7 @@ pracą horyzontalną bez odbiorcy.
 - **Blockers:** —
 - **Unknowns:** — (rozstrzygnięte 2026-07-04: Firebase Authentication — zob. `tech-stack.md` i sekcję Identity w `tech-stack-backend.md`)
 - **Risk:** Ścieżka ręczna celowo wyprzedza generowanie — daje działający kanał publikacji i chronione narzędzia administratora, na których S-03 tylko dokłada generację; minimalny zakres auth (jeden administrator, bez logowania kibiców) trzyma slice w ryzach.
-- **Status:** proposed
+- **Status:** done
 
 ### S-03: Administrator generuje wpis z danych meczowych i publikuje po akceptacji
 
@@ -149,3 +149,5 @@ statusy z tego pliku (synchronizowane 2026-07-04).
 ## Done
 
 (Empty on first generation. `/10x-archive` appends an entry here — and flips that item's `Status` to `done` — when a change whose `Change ID` matches the item is archived. Do NOT pre-populate.)
+
+- **S-02: Administrator loguje się kontem zewnętrznego dostawcy tożsamości, tworzy wpis ręcznie i publikuje go — wpis natychmiast widać w publicznych aktualnościach z S-01.** — Archived 2026-07-06 → `context/archive/2026-07-06-manual-news-publishing/`. Lesson: —.
