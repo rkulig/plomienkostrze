@@ -563,12 +563,12 @@ Rollback rewizji Cloud Run nie wymaga cofania migracji.
 
 #### Automated
 
-- [x] 3.1 CI zielone na PR; po merge oba workflow deploy przechodzą
+- [x] 3.1 CI zielone na PR; po merge oba workflow deploy przechodzą — f1e0660
 
 #### Manual
 
-- [x] 3.2 `ADMIN_UIDS` ustawione na Cloud Run (gcloud, krok ludzki)
-- [x] 3.3 Authorized domains zweryfikowane w konsoli Firebase
-- [ ] 3.4 Prod e2e: login na `web.app` → „Dodaj post" → publikacja → wpis publicznie widoczny
-- [x] 3.5 `POST /api/news-posts` bez tokenu na prod → 401
-- [ ] 3.6 Publiczne czytanie bez regresji na produkcji
+- [x] 3.2 `ADMIN_UIDS` ustawione na Cloud Run (gcloud, krok ludzki) — f1e0660
+- [x] 3.3 Authorized domains zweryfikowane w konsoli Firebase — f1e0660
+- [x] 3.4 Prod e2e: login na `web.app` → „Dodaj post" → publikacja → wpis publicznie widoczny — f1e0660
+- [x] 3.5 `POST /api/news-posts` bez tokenu na prod → 401 — f1e0660
+- [x] 3.6 Publiczne czytanie bez regresji na produkcji — f1e0660
