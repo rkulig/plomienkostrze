@@ -532,32 +532,32 @@ Rollback rewizji Cloud Run nie wymaga cofania migracji.
 
 #### Automated
 
-- [x] 1.1 Build przechodzi: `./mvnw -DskipTests package`
-- [x] 1.2 Istniejące testy przechodzą na H2 bez sieci: `./mvnw test`
+- [x] 1.1 Build przechodzi: `./mvnw -DskipTests package` — 89eb59b
+- [x] 1.2 Istniejące testy przechodzą na H2 bez sieci: `./mvnw test` — 89eb59b
 
 #### Manual
 
-- [x] 1.3 Flyway stosuje V5 przy lokalnym starcie
-- [x] 1.4 Publiczne GET-y newsów bez tokenu → 200 (bez regresji S-01)
-- [x] 1.5 `POST /api/news-posts` bez tokenu i ze śmieciowym tokenem → 401
-- [x] 1.6 `GET /api/me` bez tokenu → 401
-- [x] 1.7 `GET /api/ping` i `/actuator/health` bez tokenu → 200
+- [x] 1.3 Flyway stosuje V5 przy lokalnym starcie — 89eb59b
+- [x] 1.4 Publiczne GET-y newsów bez tokenu → 200 (bez regresji S-01) — 89eb59b
+- [x] 1.5 `POST /api/news-posts` bez tokenu i ze śmieciowym tokenem → 401 — 89eb59b
+- [x] 1.6 `GET /api/me` bez tokenu → 401 — 89eb59b
+- [x] 1.7 `GET /api/ping` i `/actuator/health` bez tokenu → 200 — 89eb59b
 
 ### Phase 2: Frontend — logowanie + panel admina
 
 #### Automated
 
-- [ ] 2.1 Build produkcyjny przechodzi: `npm run build`
+- [x] 2.1 Build produkcyjny przechodzi: `npm run build`
 
 #### Manual
 
-- [ ] 2.2 Lokalne e2e: „Zaloguj" w nagłówku → redirect Google → powrót z „Wyloguj"
-- [ ] 2.3 Sekwencja UID: brak „Dodaj post" → UID z konsoli → `ADMIN_UIDS` → „Dodaj post" → formularz
-- [ ] 2.4 Publikacja: formularz → `/news/:id`, wpis pierwszy na liście z poprawną datą
-- [ ] 2.5 Walidacja formularza + obsługa błędu API bez utraty treści
-- [ ] 2.6 Nie-admin: brak „Dodaj post", deep-link `/admin` → redirect na `/`, „Wyloguj" działa
-- [ ] 2.7 Preflight CORS dla POST z Authorization przechodzi z localhost:4200
-- [ ] 2.8 Bez regresji publicznych widoków (gość nie widzi zmian poza „Zaloguj" w nagłówku)
+- [x] 2.2 Lokalne e2e: „Zaloguj" w nagłówku → redirect Google → powrót z „Wyloguj"
+- [x] 2.3 Sekwencja UID: brak „Dodaj post" → UID z konsoli → `ADMIN_UIDS` → „Dodaj post" → formularz
+- [x] 2.4 Publikacja: formularz → `/news/:id`, wpis pierwszy na liście z poprawną datą
+- [x] 2.5 Walidacja formularza + obsługa błędu API bez utraty treści
+- [x] 2.6 Nie-admin: brak „Dodaj post", deep-link `/admin` → redirect na `/`, „Wyloguj" działa
+- [x] 2.7 Preflight CORS dla POST z Authorization przechodzi z localhost:4200
+- [x] 2.8 Bez regresji publicznych widoków (gość nie widzi zmian poza „Zaloguj" w nagłówku)
 
 ### Phase 3: Produkcja — konfiguracja + weryfikacja e2e
 

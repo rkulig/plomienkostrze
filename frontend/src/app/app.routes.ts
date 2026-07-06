@@ -10,6 +10,10 @@ export const routes: Routes = [
     loadComponent: () => import('./news/news-detail').then((m) => m.NewsDetail)
   },
   {
+    path: 'admin',
+    loadComponent: () => import('./admin/admin-panel').then((m) => m.AdminPanel)
+  },
+  {
     path: '**',
     redirectTo: ''
   }

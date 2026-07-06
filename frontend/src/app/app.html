@@ -1,5 +1,16 @@
 <header class="app-header">
   <a class="app-title" routerLink="/">{{ title() }}</a>
+
+  <nav class="app-auth">
+    @if (user() === null) {
+      <button type="button" (click)="signIn()">Zaloguj</button>
+    } @else if (user()) {
+      @if (isAdmin() === true) {
+        <a class="add-post" routerLink="/admin">Dodaj post</a>
+      }
+      <button type="button" (click)="signOut()">Wyloguj</button>
+    }
+  </nav>
 </header>
 
 <main class="app-main">
