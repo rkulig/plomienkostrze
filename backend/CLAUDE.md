@@ -16,7 +16,7 @@ Repo-wide monorepo rules live in `../CLAUDE.md` (Claude Code loads it automatica
 ## Conventions
 
 - **Base package `com.plomienkostrze`.** New code lives under it; main class is `PlomienKostrzeApiApplication` (`@backend/src/main/java/com/plomienkostrze/PlomienKostrzeApiApplication.java`).
-- **API-first, no UI.** Dependencies are `web` (Spring MVC) + `devtools` only (`@backend/pom.xml`). This service exposes HTTP for the Angular SPA and future mobile clients — don't add server-side templating/views or couple it to `frontend/`.
+- **API-first, no UI.** Dependencies live in `@backend/pom.xml` (Spring MVC, JPA + Flyway + PostgreSQL, security/OAuth2 resource server, validation, actuator, devtools). This service exposes HTTP for the Angular SPA and future mobile clients — don't add server-side templating/views or couple it to `frontend/`.
 - Config goes in `@backend/src/main/resources/application.properties`.
 
 ## Tripwires
