@@ -399,11 +399,12 @@ endpoint) is that persistence feature. Provision B, then land C.
     --update-env-vars DB_HOST=10.10.0.3,DB_NAME=plomien,DB_USER=plomien
   ```
   (swap the `--network/--subnet/--vpc-egress` trio for `--vpc-connector plomien-vpc` if
-  the fallback was needed; add `LLM_API_KEY=llm-api-key:latest` to `--set-secrets` when
-  the LLM client lands — not part of Phase C.)
-  ⚠️ **`--min-instances` stays 0 for Phase C** — the test endpoint is not
-  latency-sensitive. Flip to 1 only when the admin LLM-generation flow ships and the JVM
-  cold-start NFR ("potwierdzenie bez zauważalnej zwłoki") becomes binding.
+  the fallback was needed; ~~add `LLM_API_KEY=llm-api-key:latest` to `--set-secrets` when
+  the LLM client lands~~ → done 2026-07-08 (S-03) as `OPENROUTER_API_KEY=openrouter-api-key:latest`
+  — name unified with tech-stack-backend.md, not the placeholder above.)
+  ⚠️ ~~**`--min-instances` stays 0 for Phase C**~~ → **flipped to 1 on 2026-07-08** (S-03:
+  the admin LLM-generation flow shipped, JVM cold-start NFR became binding; rev
+  `plomien-api-00010-x7d` carries both the secret and `min-instances=1`).
 - [x] Add the persistence stack to `backend/pom.xml`: `spring-boot-starter-data-jpa`,
   `org.postgresql:postgresql`, Flyway (`flyway-core` + `flyway-database-postgresql`) as
   the forward-only migration tool.
@@ -422,9 +423,13 @@ endpoint) is that persistence feature. Provision B, then land C.
   so the image is identical across environments.
   > Done 2026-07-04; verified end-to-end against a local `postgres:16` container
   > (Flyway applied V1, POST persisted a row, GET read it back, blank content → 400).
-- [ ] Store the LLM API key and IdP client secret in Secret Manager (same pattern as
+- [x] Store the LLM API key ~~and IdP client secret~~ in Secret Manager (same pattern as
   `db-password`); reference the latest Claude model per the project's AI guidance when the
-  client is added. **Deferred past Phase C** — the test flow needs only the DB password.
+  client is added. ~~**Deferred past Phase C** — the test flow needs only the DB password.~~
+  > Done 2026-07-08 (S-03): secret `openrouter-api-key` (env `OPENROUTER_API_KEY` — name
+  > per tech-stack-backend.md, supersedes the `LLM_API_KEY` placeholder), `secretAccessor`
+  > granted to the runtime SA, wired via `--update-secrets`. IdP client secret is moot:
+  > auth is a stateless resource server on Firebase JWKS — no server-side IdP secret exists.
 
 ⚠️ **Edge case — storage can't shrink:** Cloud SQL storage auto-grows and cannot be reduced
 in place (infrastructure.md). Cap DB log verbosity; if it balloons, dump → restore to a

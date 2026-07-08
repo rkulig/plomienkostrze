@@ -24,6 +24,8 @@ import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.web.SecurityFilterChain;
 
+import jakarta.servlet.DispatcherType;
+
 import static org.springframework.security.config.Customizer.withDefaults;
 
 /**
@@ -62,11 +64,16 @@ public class SecurityConfig {
 				.cors(withDefaults())
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authorizeHttpRequests(auth -> auth
+						// Container-internal ERROR dispatches (sendError → /error) must pass,
+						// or denyAll rewrites every ResponseStatusException to 401/403.
+						// Clients cannot forge a dispatcher type; direct GET /error stays denied.
+						.dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
 						.requestMatchers(HttpMethod.GET, "/api/news-posts/**").permitAll()
 						.requestMatchers(HttpMethod.GET, "/api/ping").permitAll()
 						.requestMatchers("/actuator/health").permitAll()
 						.requestMatchers(HttpMethod.GET, "/api/me").authenticated()
 						.requestMatchers(HttpMethod.POST, "/api/news-posts").hasRole("ADMIN")
+						.requestMatchers(HttpMethod.POST, "/api/news-posts/generate").hasRole("ADMIN")
 						.anyRequest().denyAll())
 				.oauth2ResourceServer(oauth2 -> oauth2
 						.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())));

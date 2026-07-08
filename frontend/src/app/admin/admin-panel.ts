@@ -12,6 +12,11 @@ import { NewsApi } from '../news/news-api';
  * w nagłówku. Deep-link bez uprawnień (wylogowany albo rozstrzygnięte
  * isAdmin=false) przekierowuje na `/`; przy nierozstrzygniętym statusie (null)
  * czekamy — obrona i tak jest w backendzie.
+ *
+ * S-03: druga ścieżka tworzenia wpisu — „Generuj z ostatniego meczu" wypełnia
+ * te same kontrolki propozycją z backendu. Propozycja żyje wyłącznie tutaj
+ * (odświeżenie strony ją traci); publikacja to zwykłe publish(), odrzucenie
+ * niczego nie zapisuje.
  */
 @Component({
   selector: 'app-admin-panel',
@@ -29,6 +34,9 @@ export class AdminPanel {
   protected readonly ready = this.adminStatus.isAdmin;
   protected readonly sending = signal(false);
   protected readonly error = signal<string | null>(null);
+  protected readonly generating = signal(false);
+  protected readonly generationError = signal<string | null>(null);
+  protected readonly hasProposal = signal(false);
 
   protected readonly form = this.formBuilder.group({
     title: ['', [Validators.required, Validators.maxLength(200)]],
@@ -43,6 +51,36 @@ export class AdminPanel {
         this.router.navigate(['']);
       }
     });
+  }
+
+  protected generate(): void {
+    if (this.generating()) {
+      return;
+    }
+    this.generating.set(true);
+    this.generationError.set(null);
+    this.newsApi.generateFromLastMatch().subscribe({
+      next: (proposal) => {
+        this.form.patchValue({ title: proposal.title, content: proposal.content });
+        this.hasProposal.set(true);
+        this.generating.set(false);
+      },
+      error: (err: HttpErrorResponse) => {
+        // 424 = backend nie zdobył danych meczu (scraper); reszta = błąd generacji.
+        this.generationError.set(
+          err.status === 424
+            ? 'Nie udało się pobrać danych ostatniego meczu (HTTP 424)'
+            : `Nie udało się wygenerować propozycji (HTTP ${err.status})`
+        );
+        this.generating.set(false);
+      }
+    });
+  }
+
+  protected reject(): void {
+    this.form.reset();
+    this.hasProposal.set(false);
+    this.generationError.set(null);
   }
 
   protected publish(): void {
