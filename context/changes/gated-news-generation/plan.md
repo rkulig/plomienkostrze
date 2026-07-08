@@ -508,11 +508,11 @@ S-03 (np. persystowane szkice, albo przechwyt składów/strzelców z ŁNP przez 
 
 #### Automated
 
-- [ ] 3.1 CI na PR zielone; merge uruchamia auto-deploy (push/PR wykonuje użytkownik)
+- [x] 3.1 CI na PR zielone; merge uruchamia auto-deploy (push/PR wykonuje użytkownik) — PR #21, merge 2026-07-08, joby backend+frontend zielone (PR i push/master)
 
 #### Manual
 
 - [x] 3.2 Rewizja Cloud Run ma `OPENROUTER_API_KEY` i `min-instances=1` — zweryfikowane 2026-07-08 (`gcloud describe`: rewizja plomien-api-00010-x7d, minScale=1, sekret openrouter-api-key:latest)
-- [ ] 3.3 Pełne e2e na produkcji: generuj z ostatniego meczu → edytuj → publikuj → widoczne publicznie
-- [ ] 3.4 Odrzucenie na produkcji bez śladu w publicznej liście
+- [x] 3.3 Pełne e2e na produkcji: generuj z ostatniego meczu → edytuj → publikuj → widoczne publicznie — potwierdzone przez użytkownika 2026-07-08
+- [x] 3.4 Odrzucenie na produkcji bez śladu w publicznej liście — potwierdzone przez użytkownika 2026-07-08
 - [x] 3.5 Runbook deploymentu zaktualizowany (nazwa sekretu + odhaczone checkboxy) — 2026-07-08
