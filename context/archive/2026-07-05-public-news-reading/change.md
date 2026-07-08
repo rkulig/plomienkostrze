@@ -1,10 +1,10 @@
 ---
 change_id: public-news-reading
 title: Publiczna lista i widok opublikowanych aktualności
-status: impl_reviewed
+status: archived
 created: 2026-07-05
-updated: 2026-07-05
-archived_at: null
+updated: 2026-07-08
+archived_at: 2026-07-08T21:37:29Z
 ---
 
 ## Notes

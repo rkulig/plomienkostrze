@@ -42,7 +42,7 @@ propozycje są na tyle dobre, że administrator akceptuje co najmniej 75% z nich
 
 | ID   | Change ID              | Outcome (user can …)                                                  | Prerequisites | PRD refs                     | Status   |
 | ---- | ---------------------- | --------------------------------------------------------------------- | ------------- | ---------------------------- | -------- |
-| S-01 | public-news-reading    | Gość czyta listę i treść opublikowanych aktualności bez logowania      | —             | US-02, FR-009                | ready    |
+| S-01 | public-news-reading    | Gość czyta listę i treść opublikowanych aktualności bez logowania      | —             | US-02, FR-009                | done    |
 | S-02 | manual-news-publishing | Administrator loguje się i publikuje wpis utworzony ręcznie            | S-01          | FR-001, FR-006               | done |
 | S-03 | gated-news-generation  | Administrator generuje propozycję wpisu z wyniku ostatniego meczu (scrape z 90minut.pl) i publikuje ją po akceptacji | S-02          | US-01, FR-003, FR-004, FR-005 | done |
 | S-04 | news-post-management   | Administrator edytuje i usuwa opublikowane wpisy                       | S-02          | FR-007, FR-008               | proposed |
@@ -81,7 +81,7 @@ pracą horyzontalną bez odbiorcy.
 - **Blockers:** —
 - **Unknowns:** —
 - **Risk:** Pierwszy slice przecina wszystkie warstwy (model wpisu → API → widoki SPA → deploy) na najprostszym możliwym przypadku; treść startowa jest zasiana danymi, bo narzędzia administratora przychodzą dopiero w S-02 — to świadomy koszt cienkiego pionowego startu.
-- **Status:** ready
+- **Status:** done
 
 ### S-02: Administrator loguje się i publikuje wpis ręcznie
 
@@ -153,3 +153,4 @@ statusy z tego pliku (synchronizowane 2026-07-04).
 
 - **S-02: Administrator loguje się kontem zewnętrznego dostawcy tożsamości, tworzy wpis ręcznie i publikuje go — wpis natychmiast widać w publicznych aktualnościach z S-01.** — Archived 2026-07-06 → `context/archive/2026-07-06-manual-news-publishing/`. Lesson: —.
 - **S-03: Administrator jednym kliknięciem generuje propozycję wpisu z wyniku ostatniego meczu (zaciągniętego automatycznie z 90minut.pl), edytuje ją w razie potrzeby i publikuje po jawnej akceptacji (albo odrzuca) — nic nie trafia do publicznych aktualności samoczynnie.** — Archived 2026-07-08 → `context/archive/2026-07-08-gated-news-generation/`. Lesson: —.
+- **S-01: Gość (bez logowania) widzi listę opublikowanych wpisów aktualności i otwiera dowolny do przeczytania.** — Archived 2026-07-08 → `context/archive/2026-07-05-public-news-reading/`. Lesson: —.
