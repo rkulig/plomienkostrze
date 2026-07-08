@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.openai.errors.OpenAIException;
 import com.plomienkostrze.news.MatchDataUnavailableException;
 import com.plomienkostrze.news.NewsGenerationService;
 import com.plomienkostrze.news.NewsGenerationService.ProposalDraft;
@@ -43,7 +44,7 @@ public class NewsGenerationController {
 		} catch (MatchDataUnavailableException e) {
 			log.warn("match data unavailable", e);
 			throw new ResponseStatusException(HttpStatus.FAILED_DEPENDENCY, "match data unavailable");
-		} catch (RuntimeException e) {
+		} catch (OpenAIException e) {
 			log.error("news generation failed", e);
 			throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, "news generation failed");
 		}
