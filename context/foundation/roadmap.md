@@ -3,7 +3,7 @@ project: "Płomień Kostrze"
 version: 1
 status: draft
 created: 2026-07-04
-updated: 2026-07-06
+updated: 2026-07-08
 prd_version: 1
 main_goal: market-feedback
 top_blocker: none  # was: decisions — dostawca tożsamości i dostawca LLM rozstrzygnięci 2026-07-04
@@ -44,7 +44,7 @@ propozycje są na tyle dobre, że administrator akceptuje co najmniej 75% z nich
 | ---- | ---------------------- | --------------------------------------------------------------------- | ------------- | ---------------------------- | -------- |
 | S-01 | public-news-reading    | Gość czyta listę i treść opublikowanych aktualności bez logowania      | —             | US-02, FR-009                | ready    |
 | S-02 | manual-news-publishing | Administrator loguje się i publikuje wpis utworzony ręcznie            | S-01          | FR-001, FR-006               | done |
-| S-03 | gated-news-generation  | Administrator generuje propozycję wpisu z danych meczowych i publikuje ją po akceptacji | S-02          | US-01, FR-003, FR-004, FR-005 | proposed |
+| S-03 | gated-news-generation  | Administrator generuje propozycję wpisu z wyniku ostatniego meczu (scrape z 90minut.pl) i publikuje ją po akceptacji | S-02          | US-01, FR-003, FR-004, FR-005 | proposed |
 | S-04 | news-post-management   | Administrator edytuje i usuwa opublikowane wpisy                       | S-02          | FR-007, FR-008               | proposed |
 
 ## Baseline
@@ -97,16 +97,17 @@ pracą horyzontalną bez odbiorcy.
 
 ### S-03: Administrator generuje wpis z danych meczowych i publikuje po akceptacji
 
-- **Outcome:** Administrator wprowadza surowe dane meczowe ze wskazaniem tonu/stylu, otrzymuje wygenerowaną propozycję wpisu, edytuje ją w razie potrzeby i publikuje po jawnej akceptacji (albo odrzuca) — nic nie trafia do publicznych aktualności samoczynnie.
+- **Outcome:** Administrator jednym kliknięciem generuje propozycję wpisu z wyniku ostatniego meczu (zaciągniętego automatycznie z 90minut.pl), edytuje ją w razie potrzeby i publikuje po jawnej akceptacji (albo odrzuca) — nic nie trafia do publicznych aktualności samoczynnie.
 - **Change ID:** gated-news-generation
 - **PRD refs:** US-01, FR-003, FR-004, FR-005, NFR „widoczny postęp każdej operacji > ~2 s", §Business Logic
 - **Prerequisites:** S-02
 - **Parallel with:** S-04
 - **Blockers:** —
+- **Decyzja o źródle danych (2026-07-08):** wejściem generacji jest **wyłącznie wynik meczu scrapowany z 90minut.pl** (data, rozgrywki+kolejka, gospodarz, gość, wynik), zamiast pierwotnego „surowy tekst + ton/styl". Rezygnujemy z podawania tonu — post generowany jednym kliknięciem z ostatniego meczu. Pełne dane meczowe (składy, strzelcy, zmiany) są na `laczynaspilka.pl`, ale ich API jest zabramkowane reCAPTCHA v3 i niedostępne z backendu (serwerowy headless → 403); dostęp możliwy tylko z zaufanej przeglądarki administratora — odłożone jako przyszłe rozszerzenie (zob. `context/changes/gated-news-generation/research-scraping-90minut.md`). jsoup wystarcza do 90minut (statyczny HTML, `ISO-8859-2`, bez auth).
 - **Unknowns:**
   - ~~Który dostawca/model LLM generuje propozycje?~~ — rozstrzygnięte 2026-07-04: OpenRouter (zob. sekcję AI/LLM layer w `tech-stack-backend.md`); konkretny model wybierany w `/10x-plan` tego slice'a.
   - Jak zliczać akceptacje/odrzucenia propozycji, by zmierzyć próg 75% z Kryteriów sukcesu? — Owner: team. Block: no.
-- **Risk:** To gwiazda przewodnia i najryzykowniejsze założenie produktu — jeśli jakość generacji nie dowiezie progu 75% akceptacji, rdzeń wartości wymaga rewizji; dlatego slice wchodzi natychmiast po tym, jak S-02 da ścieżkę publikacji, na której można oprzeć bramkę akceptacji.
+- **Risk:** To gwiazda przewodnia i najryzykowniejsze założenie produktu — jeśli jakość generacji nie dowiezie progu 75% akceptacji, rdzeń wartości wymaga rewizji; dlatego slice wchodzi natychmiast po tym, jak S-02 da ścieżkę publikacji, na której można oprzeć bramkę akceptacji. **Dodatkowe ryzyko chudego wejścia:** przy samym wyniku (bez składów/strzelców) prompt musi twardo zabraniać modelowi zmyślania nazwisk i przebiegu bramek — inaczej konfabulacje obniżą akceptację.
 - **Status:** proposed
 
 ### S-04: Administrator edytuje i usuwa opublikowane wpisy
@@ -144,7 +145,7 @@ statusy z tego pliku (synchronizowane 2026-07-04).
 - **Forum i interakcje kibiców (FR-002, FR-011–FR-016: logowanie kibiców, reakcje, komentarze, moderacja, forum)** — Why parked: PRD §Non-Goals — jawnie poza MVP jako fast-follow; MVP obsługuje wyłącznie publikację i czytanie aktualności.
 - **Import plików (PDF/DOCX itp.) przy tworzeniu wpisów** — Why parked: PRD §Non-Goals — dane meczowe wprowadzane luźnym tekstem.
 - **Natywna aplikacja mobilna (iOS/Android)** — Why parked: PRD §Non-Goals — na początek wyłącznie web; odsprzęglone API trzyma tę furtkę otwartą bez dodatkowej pracy teraz.
-- **Automatyczne pobieranie danych meczowych z zewnętrznych źródeł** — Why parked: PRD §Non-Goals — administrator wprowadza dane ręcznie.
+- **Automatyczne pobieranie danych meczowych z zewnętrznych źródeł** — Częściowo odblokowane 2026-07-08 dla S-03: **wynik meczu** jest teraz automatycznie scrapowany z 90minut.pl (odwrócenie tego Non-Goala w wąskim zakresie — jedynie publiczny wynik, źródło statyczne i bez auth). Nadal parked: pełne dane meczowe (składy, strzelcy, zmiany) z `laczynaspilka.pl` — API za reCAPTCHA v3, niedostępne z backendu; przyszłe rozszerzenie przez przechwyt z przeglądarki administratora (zob. `context/changes/gated-news-generation/research-scraping-90minut.md`).
 
 ## Done
 
