@@ -1,9 +1,10 @@
 ---
 change_id: gated-news-generation
 title: Gated news generation
-status: impl_reviewed
+status: archived
 created: 2026-07-08
 updated: 2026-07-08
+archived_at: 2026-07-08T21:32:31Z
 ---
 
 ## Notes

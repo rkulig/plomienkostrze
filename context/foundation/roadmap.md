@@ -44,7 +44,7 @@ propozycje są na tyle dobre, że administrator akceptuje co najmniej 75% z nich
 | ---- | ---------------------- | --------------------------------------------------------------------- | ------------- | ---------------------------- | -------- |
 | S-01 | public-news-reading    | Gość czyta listę i treść opublikowanych aktualności bez logowania      | —             | US-02, FR-009                | ready    |
 | S-02 | manual-news-publishing | Administrator loguje się i publikuje wpis utworzony ręcznie            | S-01          | FR-001, FR-006               | done |
-| S-03 | gated-news-generation  | Administrator generuje propozycję wpisu z wyniku ostatniego meczu (scrape z 90minut.pl) i publikuje ją po akceptacji | S-02          | US-01, FR-003, FR-004, FR-005 | proposed |
+| S-03 | gated-news-generation  | Administrator generuje propozycję wpisu z wyniku ostatniego meczu (scrape z 90minut.pl) i publikuje ją po akceptacji | S-02          | US-01, FR-003, FR-004, FR-005 | done |
 | S-04 | news-post-management   | Administrator edytuje i usuwa opublikowane wpisy                       | S-02          | FR-007, FR-008               | proposed |
 
 ## Baseline
@@ -108,7 +108,7 @@ pracą horyzontalną bez odbiorcy.
   - ~~Który dostawca/model LLM generuje propozycje?~~ — rozstrzygnięte 2026-07-04: OpenRouter (zob. sekcję AI/LLM layer w `tech-stack-backend.md`); konkretny model wybierany w `/10x-plan` tego slice'a.
   - Jak zliczać akceptacje/odrzucenia propozycji, by zmierzyć próg 75% z Kryteriów sukcesu? — Owner: team. Block: no.
 - **Risk:** To gwiazda przewodnia i najryzykowniejsze założenie produktu — jeśli jakość generacji nie dowiezie progu 75% akceptacji, rdzeń wartości wymaga rewizji; dlatego slice wchodzi natychmiast po tym, jak S-02 da ścieżkę publikacji, na której można oprzeć bramkę akceptacji. **Dodatkowe ryzyko chudego wejścia:** przy samym wyniku (bez składów/strzelców) prompt musi twardo zabraniać modelowi zmyślania nazwisk i przebiegu bramek — inaczej konfabulacje obniżą akceptację.
-- **Status:** proposed
+- **Status:** done
 
 ### S-04: Administrator edytuje i usuwa opublikowane wpisy
 
@@ -152,3 +152,4 @@ statusy z tego pliku (synchronizowane 2026-07-04).
 (Empty on first generation. `/10x-archive` appends an entry here — and flips that item's `Status` to `done` — when a change whose `Change ID` matches the item is archived. Do NOT pre-populate.)
 
 - **S-02: Administrator loguje się kontem zewnętrznego dostawcy tożsamości, tworzy wpis ręcznie i publikuje go — wpis natychmiast widać w publicznych aktualnościach z S-01.** — Archived 2026-07-06 → `context/archive/2026-07-06-manual-news-publishing/`. Lesson: —.
+- **S-03: Administrator jednym kliknięciem generuje propozycję wpisu z wyniku ostatniego meczu (zaciągniętego automatycznie z 90minut.pl), edytuje ją w razie potrzeby i publikuje po jawnej akceptacji (albo odrzuca) — nic nie trafia do publicznych aktualności samoczynnie.** — Archived 2026-07-08 → `context/archive/2026-07-08-gated-news-generation/`. Lesson: —.
