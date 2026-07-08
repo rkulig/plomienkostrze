@@ -23,6 +23,11 @@ export interface NewsPostList {
   total: number;
 }
 
+export interface NewsPostProposal {
+  title: string;
+  content: string;
+}
+
 /**
  * Jedyne miejsce rozmowy SPA z API newsów (/api/news-posts) — komponenty nie
  * dotykają HttpClient. Zapis (create) wymaga admina; token dokleja interceptor.
@@ -42,5 +47,10 @@ export class NewsApi {
 
   create(title: string, content: string): Observable<NewsPost> {
     return this.http.post<NewsPost>(this.url, { title, content });
+  }
+
+  /** Propozycja wpisu z ostatniego meczu (S-03); bez body — backend sam scrapuje wynik. */
+  generateFromLastMatch(): Observable<NewsPostProposal> {
+    return this.http.post<NewsPostProposal>(`${this.url}/generate`, null);
   }
 }

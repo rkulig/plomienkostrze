@@ -479,30 +479,30 @@ S-03 (np. persystowane szkice, albo przechwyt składów/strzelców z ŁNP przez 
 
 #### Automated
 
-- [x] 1.1 Build + test offline zielone: `cd backend && ./mvnw test` (bez klucza w środowisku)
+- [x] 1.1 Build + test offline zielone: `cd backend && ./mvnw test` (bez klucza w środowisku) — b9ac18d
 
 #### Manual
 
-- [x] 1.2 Slug `anthropic/claude-sonnet-4.6` potwierdzony na openrouter.ai/models
-- [x] 1.3 Scraper zwraca poprawny ostatni mecz (rywal, dom/wyjazd, wynik, rozgrywki); polskie znaki OK
-- [x] 1.4 Lokalna generacja z realnym kluczem: polska notka zgodna z wynikiem, bez zmyślonych strzelców/zdarzeń
-- [x] 1.5 Bez tokena/roli admina → 401/403
-- [x] 1.6 Brak danych meczu → czytelny 502/424 (nie wiszące żądanie)
-- [x] 1.7 Zły klucz/brak sieci LLM → 502 w rozsądnym czasie
+- [x] 1.2 Slug `anthropic/claude-sonnet-4.6` potwierdzony na openrouter.ai/models — b9ac18d
+- [x] 1.3 Scraper zwraca poprawny ostatni mecz (rywal, dom/wyjazd, wynik, rozgrywki); polskie znaki OK — b9ac18d
+- [x] 1.4 Lokalna generacja z realnym kluczem: polska notka zgodna z wynikiem, bez zmyślonych strzelców/zdarzeń — b9ac18d
+- [x] 1.5 Bez tokena/roli admina → 401/403 — b9ac18d
+- [x] 1.6 Brak danych meczu → czytelny 502/424 (nie wiszące żądanie) — b9ac18d
+- [x] 1.7 Zły klucz/brak sieci LLM → 502 w rozsądnym czasie — b9ac18d
 
 ### Phase 2: Frontend — przycisk „Generuj z ostatniego meczu" w panelu /admin
 
 #### Automated
 
-- [ ] 2.1 Build frontendu zielony: `cd frontend && npm run build`
-- [ ] 2.2 Backend sanity: `cd backend && ./mvnw test`
+- [x] 2.1 Build frontendu zielony: `cd frontend && npm run build`
+- [x] 2.2 Backend sanity: `cd backend && ./mvnw test`
 
 #### Manual
 
-- [ ] 2.3 Lokalne e2e: „Generuj z ostatniego meczu" → „Generowanie…" → edytuj → publikuj → widoczne publicznie
-- [ ] 2.4 „Odrzuć" czyści propozycję; ponowna generacja działa
-- [ ] 2.5 Błąd backendu (zły klucz / brak danych meczu) → polski komunikat, przycisk odzyskuje używalność
-- [ ] 2.6 Nie-admin nadal przekierowywany z `/admin`
+- [x] 2.3 Lokalne e2e: „Generuj z ostatniego meczu" → „Generowanie…" → edytuj → publikuj → widoczne publicznie
+- [x] 2.4 „Odrzuć" czyści propozycję; ponowna generacja działa
+- [x] 2.5 Błąd backendu (zły klucz / brak danych meczu) → polski komunikat, przycisk odzyskuje używalność
+- [x] 2.6 Nie-admin nadal przekierowywany z `/admin`
 
 ### Phase 3: Produkcja — sekret, min-instances, weryfikacja e2e
 
