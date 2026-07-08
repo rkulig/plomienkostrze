@@ -494,15 +494,15 @@ S-03 (np. persystowane szkice, albo przechwyt składów/strzelców z ŁNP przez 
 
 #### Automated
 
-- [x] 2.1 Build frontendu zielony: `cd frontend && npm run build`
-- [x] 2.2 Backend sanity: `cd backend && ./mvnw test`
+- [x] 2.1 Build frontendu zielony: `cd frontend && npm run build` — 29889a4
+- [x] 2.2 Backend sanity: `cd backend && ./mvnw test` — 29889a4
 
 #### Manual
 
-- [x] 2.3 Lokalne e2e: „Generuj z ostatniego meczu" → „Generowanie…" → edytuj → publikuj → widoczne publicznie
-- [x] 2.4 „Odrzuć" czyści propozycję; ponowna generacja działa
-- [x] 2.5 Błąd backendu (zły klucz / brak danych meczu) → polski komunikat, przycisk odzyskuje używalność
-- [x] 2.6 Nie-admin nadal przekierowywany z `/admin`
+- [x] 2.3 Lokalne e2e: „Generuj z ostatniego meczu" → „Generowanie…" → edytuj → publikuj → widoczne publicznie — 29889a4
+- [x] 2.4 „Odrzuć" czyści propozycję; ponowna generacja działa — 29889a4
+- [x] 2.5 Błąd backendu (zły klucz / brak danych meczu) → polski komunikat, przycisk odzyskuje używalność — 29889a4
+- [x] 2.6 Nie-admin nadal przekierowywany z `/admin` — 29889a4
 
 ### Phase 3: Produkcja — sekret, min-instances, weryfikacja e2e
 
@@ -512,7 +512,7 @@ S-03 (np. persystowane szkice, albo przechwyt składów/strzelców z ŁNP przez 
 
 #### Manual
 
-- [ ] 3.2 Rewizja Cloud Run ma `OPENROUTER_API_KEY` i `min-instances=1`
+- [x] 3.2 Rewizja Cloud Run ma `OPENROUTER_API_KEY` i `min-instances=1` — zweryfikowane 2026-07-08 (`gcloud describe`: rewizja plomien-api-00010-x7d, minScale=1, sekret openrouter-api-key:latest)
 - [ ] 3.3 Pełne e2e na produkcji: generuj z ostatniego meczu → edytuj → publikuj → widoczne publicznie
 - [ ] 3.4 Odrzucenie na produkcji bez śladu w publicznej liście
-- [ ] 3.5 Runbook deploymentu zaktualizowany (nazwa sekretu + odhaczone checkboxy)
+- [x] 3.5 Runbook deploymentu zaktualizowany (nazwa sekretu + odhaczone checkboxy) — 2026-07-08

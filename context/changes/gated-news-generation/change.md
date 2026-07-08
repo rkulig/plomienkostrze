@@ -1,7 +1,7 @@
 ---
 change_id: gated-news-generation
 title: Gated news generation
-status: implementing
+status: impl_reviewed
 created: 2026-07-08
 updated: 2026-07-08
 ---
@@ -28,3 +28,8 @@ updated: 2026-07-08
   meczu", scraper jsoup (team+season w configu; `id=3154`, sezon bumpowany raz na
   rok), guardrail przeciw konfabulacji strzelców. `docs-spring-ai-openai.md` bez
   zmian — mechanika Spring AI 2.0 niezależna od kształtu wejścia.
+- 2026-07-08: `/10x-impl-review` (fazy 1–2) — raport `reviews/impl-review.md` (APPROVED,
+  1 warning). F1/Fix A: operacje fazy 3 (sekret + min-instances) wykonano przed formalnym
+  startem fazy — potwierdzone `gcloud describe` (rewizja `plomien-api-00010-x7d`);
+  odhaczono 3.2/3.5, edycja runbooka wcommitowana. Uwaga: usługa Cloud Run nazywa się
+  `plomien-api`, nie `plomien-kostrze-api` jak w kontrakcie fazy 3 planu.
