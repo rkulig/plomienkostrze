@@ -292,12 +292,12 @@ Zgodnie z konwencją repo (S-01→S-03): **brak nowych testów automatycznych**;
 
 #### Automated
 
-- [ ] 3.1 CI zielone dla obu jobów na PR i po merge
-- [ ] 3.2 `gcloud run services describe plomien-api --region europe-central2` pokazuje nową aktywną rewizję
+- [x] 3.1 CI zielone dla obu jobów na PR i po merge
+- [x] 3.2 `gcloud run services describe plomien-api --region europe-central2` pokazuje nową aktywną rewizję
 
 #### Manual
 
-- [ ] 3.3 Edycja opublikowanego wpisu na produkcji natychmiast widoczna publicznie
-- [ ] 3.4 Usunięcie wpisu na produkcji: znika z publicznej listy i szczegółu
-- [ ] 3.5 Nie-admin/gość nie widzi akcji i nie może wywołać endpointów (403/401)
-- [ ] 3.6 Brak regresji w czytaniu listy/szczegółu i tworzeniu/generacji wpisów
+- [x] 3.3 Edycja opublikowanego wpisu na produkcji natychmiast widoczna publicznie
+- [x] 3.4 Usunięcie wpisu na produkcji: znika z publicznej listy i szczegółu
+- [x] 3.5 Nie-admin/gość nie widzi akcji i nie może wywołać endpointów (403/401)
+- [x] 3.6 Brak regresji w czytaniu listy/szczegółu i tworzeniu/generacji wpisów
