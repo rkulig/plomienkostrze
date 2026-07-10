@@ -1,8 +1,9 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { DatePipe } from '@angular/common';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
+import { AdminStatus } from '../auth/admin-status';
 import { NewsApi, NewsPost } from './news-api';
 
 /**
@@ -18,11 +19,18 @@ import { NewsApi, NewsPost } from './news-api';
 export class NewsDetail {
   private readonly api = inject(NewsApi);
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly adminStatus = inject(AdminStatus);
+
+  protected readonly isAdmin = this.adminStatus.isAdmin;
 
   protected readonly post = signal<NewsPost | null>(null);
   protected readonly busy = signal(true);
   protected readonly notFound = signal(false);
   protected readonly error = signal<string | null>(null);
+  protected readonly confirmingDelete = signal(false);
+  protected readonly deleting = signal(false);
+  protected readonly deleteError = signal<string | null>(null);
 
   protected readonly paragraphs = computed(() => {
     const post = this.post();
@@ -54,6 +62,31 @@ export class NewsDetail {
           this.error.set(`Nie udało się pobrać wpisu (HTTP ${err.status})`);
         }
         this.busy.set(false);
+      }
+    });
+  }
+
+  protected askDelete(): void {
+    this.confirmingDelete.set(true);
+    this.deleteError.set(null);
+  }
+
+  protected cancelDelete(): void {
+    this.confirmingDelete.set(false);
+  }
+
+  protected confirmDelete(): void {
+    const post = this.post();
+    if (!post || this.deleting()) {
+      return;
+    }
+    this.deleting.set(true);
+    this.deleteError.set(null);
+    this.api.delete(post.id).subscribe({
+      next: () => this.router.navigate(['/']),
+      error: (err: HttpErrorResponse) => {
+        this.deleteError.set(`Nie udało się usunąć wpisu (HTTP ${err.status})`);
+        this.deleting.set(false);
       }
     });
   }

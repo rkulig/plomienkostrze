@@ -14,6 +14,10 @@ export const routes: Routes = [
     loadComponent: () => import('./admin/admin-panel').then((m) => m.AdminPanel)
   },
   {
+    path: 'admin/edit/:id',
+    loadComponent: () => import('./admin/post-edit').then((m) => m.PostEdit)
+  },
+  {
     path: '**',
     redirectTo: ''
   }
