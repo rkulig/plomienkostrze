@@ -3,7 +3,7 @@ project: "Płomień Kostrze"
 version: 1
 status: draft
 created: 2026-07-04
-updated: 2026-07-08
+updated: 2026-07-10
 prd_version: 1
 main_goal: market-feedback
 top_blocker: none  # was: decisions — dostawca tożsamości i dostawca LLM rozstrzygnięci 2026-07-04
@@ -45,7 +45,7 @@ propozycje są na tyle dobre, że administrator akceptuje co najmniej 75% z nich
 | S-01 | public-news-reading    | Gość czyta listę i treść opublikowanych aktualności bez logowania      | —             | US-02, FR-009                | done    |
 | S-02 | manual-news-publishing | Administrator loguje się i publikuje wpis utworzony ręcznie            | S-01          | FR-001, FR-006               | done |
 | S-03 | gated-news-generation  | Administrator generuje propozycję wpisu z wyniku ostatniego meczu (scrape z 90minut.pl) i publikuje ją po akceptacji | S-02          | US-01, FR-003, FR-004, FR-005 | done |
-| S-04 | news-post-management   | Administrator edytuje i usuwa opublikowane wpisy                       | S-02          | FR-007, FR-008               | proposed |
+| S-04 | news-post-management   | Administrator edytuje i usuwa opublikowane wpisy                       | S-02          | FR-007, FR-008               | done |
 
 ## Baseline
 
@@ -120,7 +120,7 @@ pracą horyzontalną bez odbiorcy.
 - **Blockers:** —
 - **Unknowns:** —
 - **Risk:** Domknięcie cyklu życia wpisu; celowo za S-02 (musi istnieć co edytować) i równolegle do S-03 — nie blokuje gwiazdy przewodniej, a przed publicznym startem daje administratorowi możliwość wycofania błędnego wpisu.
-- **Status:** proposed
+- **Status:** done
 
 ## Backlog Handoff
 
@@ -154,3 +154,4 @@ statusy z tego pliku (synchronizowane 2026-07-04).
 - **S-02: Administrator loguje się kontem zewnętrznego dostawcy tożsamości, tworzy wpis ręcznie i publikuje go — wpis natychmiast widać w publicznych aktualnościach z S-01.** — Archived 2026-07-06 → `context/archive/2026-07-06-manual-news-publishing/`. Lesson: —.
 - **S-03: Administrator jednym kliknięciem generuje propozycję wpisu z wyniku ostatniego meczu (zaciągniętego automatycznie z 90minut.pl), edytuje ją w razie potrzeby i publikuje po jawnej akceptacji (albo odrzuca) — nic nie trafia do publicznych aktualności samoczynnie.** — Archived 2026-07-08 → `context/archive/2026-07-08-gated-news-generation/`. Lesson: —.
 - **S-01: Gość (bez logowania) widzi listę opublikowanych wpisów aktualności i otwiera dowolny do przeczytania.** — Archived 2026-07-08 → `context/archive/2026-07-05-public-news-reading/`. Lesson: —.
+- **S-04: Administrator poprawia treść opublikowanego wpisu oraz usuwa wpis błędny — zmiany natychmiast widoczne w publicznych aktualnościach.** — Archived 2026-07-10 → `context/archive/2026-07-10-news-post-management/`. Lesson: —.
