@@ -29,6 +29,24 @@
     overflow-wrap: anywhere;
   }
 
+  .admin-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+
+    button,
+    .edit {
+      padding: 0.4rem 1rem;
+    }
+
+    .confirm {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+  }
+
   .back {
     display: inline-block;
     margin-top: 1.5rem;

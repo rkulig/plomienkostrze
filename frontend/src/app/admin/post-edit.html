@@ -1,0 +1,39 @@
+<section class="post-edit">
+  @if (ready() === true) {
+    @if (loading()) {
+      <p class="note">Ładowanie…</p>
+    } @else if (notFound()) {
+      <p class="error">Nie znaleziono wpisu.</p>
+      <a routerLink="/">Wróć do listy aktualności</a>
+    } @else {
+      <h1>Edytuj wpis</h1>
+
+      <form [formGroup]="form" (ngSubmit)="save()">
+        <label>
+          Tytuł
+          <input type="text" formControlName="title" maxlength="200" />
+        </label>
+
+        <label>
+          Treść
+          <textarea
+            formControlName="content"
+            maxlength="10000"
+            rows="12"
+            placeholder="Czysty tekst — akapity oddzielaj pustą linią."
+          ></textarea>
+        </label>
+
+        @if (error(); as error) {
+          <p class="error">{{ error }}</p>
+        }
+
+        <button type="submit" [disabled]="form.invalid || saving()">
+          {{ saving() ? 'Zapisywanie…' : 'Zapisz' }}
+        </button>
+      </form>
+    }
+  } @else {
+    <p class="note">Ładowanie…</p>
+  }
+</section>

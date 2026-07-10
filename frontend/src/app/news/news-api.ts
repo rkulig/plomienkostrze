@@ -49,6 +49,14 @@ export class NewsApi {
     return this.http.post<NewsPost>(this.url, { title, content });
   }
 
+  update(id: number, title: string, content: string): Observable<NewsPost> {
+    return this.http.put<NewsPost>(`${this.url}/${id}`, { title, content });
+  }
+
+  delete(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.url}/${id}`);
+  }
+
   /** Propozycja wpisu z ostatniego meczu (S-03); bez body — backend sam scrapuje wynik. */
   generateFromLastMatch(): Observable<NewsPostProposal> {
     return this.http.post<NewsPostProposal>(`${this.url}/generate`, null);

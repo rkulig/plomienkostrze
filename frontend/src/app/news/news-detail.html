@@ -17,6 +17,28 @@
       <p class="paragraph">{{ paragraph }}</p>
     }
 
+    @if (isAdmin() === true) {
+      <div class="admin-actions">
+        <a class="edit" [routerLink]="['/admin/edit', post.id]">Edytuj</a>
+        @if (confirmingDelete()) {
+          <span class="confirm">
+            Na pewno?
+            <button type="button" (click)="confirmDelete()" [disabled]="deleting()">
+              {{ deleting() ? 'Usuwanie…' : 'Tak' }}
+            </button>
+            <button type="button" (click)="cancelDelete()" [disabled]="deleting()">
+              Anuluj
+            </button>
+          </span>
+        } @else {
+          <button type="button" (click)="askDelete()">Usuń</button>
+        }
+      </div>
+      @if (deleteError(); as deleteError) {
+        <p class="error">{{ deleteError }}</p>
+      }
+    }
+
     <a class="back" routerLink="/">← Wróć do listy</a>
   }
 </article>

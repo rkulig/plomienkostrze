@@ -262,31 +262,31 @@ Zgodnie z konwencją repo (S-01→S-03): **brak nowych testów automatycznych**;
 
 #### Automated
 
-- [x] 1.1 Backend buduje się i przechodzi testy: `cd backend && ./mvnw -B verify`
-- [x] 1.2 Migracja V6 waliduje się względem encji (brak błędu walidacji schematu przy starcie)
+- [x] 1.1 Backend buduje się i przechodzi testy: `cd backend && ./mvnw -B verify` — af442c1
+- [x] 1.2 Migracja V6 waliduje się względem encji (brak błędu walidacji schematu przy starcie) — af442c1
 
 #### Manual
 
-- [x] 1.3 PUT bez tokenu → 401; nie-admin → 403
-- [x] 1.4 PUT admin poprawne body → 200 + zaktualizowany DetailResponse; niepoprawne → 400
-- [x] 1.5 PUT na nieistniejący id → 404
-- [x] 1.6 DELETE bez tokenu → 401; nie-admin → 403; admin istniejący → 204; admin nieistniejący → 404
-- [x] 1.7 Po PUT publiczny GET zwraca nową treść, publishedAt bez zmian; po DELETE GET → 404 i brak na liście
+- [x] 1.3 PUT bez tokenu → 401; nie-admin → 403 — af442c1
+- [x] 1.4 PUT admin poprawne body → 200 + zaktualizowany DetailResponse; niepoprawne → 400 — af442c1
+- [x] 1.5 PUT na nieistniejący id → 404 — af442c1
+- [x] 1.6 DELETE bez tokenu → 401; nie-admin → 403; admin istniejący → 204; admin nieistniejący → 404 — af442c1
+- [x] 1.7 Po PUT publiczny GET zwraca nową treść, publishedAt bez zmian; po DELETE GET → 404 i brak na liście — af442c1
 
 ### Phase 2: Frontend — UI edycji i usuwania (admin)
 
 #### Automated
 
-- [ ] 2.1 Frontend buduje się produkcyjnie: `cd frontend && npm run build`
-- [ ] 2.2 Lint/format przechodzi (jeśli skonfigurowany): `cd frontend && npm run lint`
+- [x] 2.1 Frontend buduje się produkcyjnie: `cd frontend && npm run build`
+- [x] 2.2 Lint/format przechodzi (jeśli skonfigurowany): `cd frontend && npm run lint`
 
 #### Manual
 
-- [ ] 2.3 Akcje Edytuj/Usuń widoczne tylko dla admina (gość w incognito ich nie widzi)
-- [ ] 2.4 Edycja: formularz wypełniony → zmiana → Zapisz → powrót na /news/:id z nową treścią widoczną dla gościa
-- [ ] 2.5 Usuwanie: „Na pewno?" → Anuluj nie usuwa; Tak → powrót na listę, wpis znika także dla gościa
-- [ ] 2.6 Walidacja formularza edycji (pusty/za długi tytuł/treść) blokuje Zapisz
-- [ ] 2.7 Postęp widoczny: etykiety „Zapisywanie…"/„Usuwanie…" i zablokowane przyciski
+- [x] 2.3 Akcje Edytuj/Usuń widoczne tylko dla admina (gość w incognito ich nie widzi)
+- [x] 2.4 Edycja: formularz wypełniony → zmiana → Zapisz → powrót na /news/:id z nową treścią widoczną dla gościa
+- [x] 2.5 Usuwanie: „Na pewno?" → Anuluj nie usuwa; Tak → powrót na listę, wpis znika także dla gościa
+- [x] 2.6 Walidacja formularza edycji (pusty/za długi tytuł/treść) blokuje Zapisz
+- [x] 2.7 Postęp widoczny: etykiety „Zapisywanie…"/„Usuwanie…" i zablokowane przyciski
 
 ### Phase 3: Produkcja — deploy i weryfikacja e2e
 
