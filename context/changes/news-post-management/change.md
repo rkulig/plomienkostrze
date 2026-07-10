@@ -1,7 +1,7 @@
 ---
 change_id: news-post-management
 title: Administrator edytuje i usuwa opublikowane wpisy
-status: implementing
+status: impl_reviewed
 created: 2026-07-10
 updated: 2026-07-10
 archived_at: null

@@ -277,16 +277,16 @@ Zgodnie z konwencją repo (S-01→S-03): **brak nowych testów automatycznych**;
 
 #### Automated
 
-- [x] 2.1 Frontend buduje się produkcyjnie: `cd frontend && npm run build`
-- [x] 2.2 Lint/format przechodzi (jeśli skonfigurowany): `cd frontend && npm run lint`
+- [x] 2.1 Frontend buduje się produkcyjnie: `cd frontend && npm run build` — 8522dff
+- [x] 2.2 Lint/format przechodzi (jeśli skonfigurowany): `cd frontend && npm run lint` — 8522dff
 
 #### Manual
 
-- [x] 2.3 Akcje Edytuj/Usuń widoczne tylko dla admina (gość w incognito ich nie widzi)
-- [x] 2.4 Edycja: formularz wypełniony → zmiana → Zapisz → powrót na /news/:id z nową treścią widoczną dla gościa
-- [x] 2.5 Usuwanie: „Na pewno?" → Anuluj nie usuwa; Tak → powrót na listę, wpis znika także dla gościa
-- [x] 2.6 Walidacja formularza edycji (pusty/za długi tytuł/treść) blokuje Zapisz
-- [x] 2.7 Postęp widoczny: etykiety „Zapisywanie…"/„Usuwanie…" i zablokowane przyciski
+- [x] 2.3 Akcje Edytuj/Usuń widoczne tylko dla admina (gość w incognito ich nie widzi) — 8522dff
+- [x] 2.4 Edycja: formularz wypełniony → zmiana → Zapisz → powrót na /news/:id z nową treścią widoczną dla gościa — 8522dff
+- [x] 2.5 Usuwanie: „Na pewno?" → Anuluj nie usuwa; Tak → powrót na listę, wpis znika także dla gościa — 8522dff
+- [x] 2.6 Walidacja formularza edycji (pusty/za długi tytuł/treść) blokuje Zapisz — 8522dff
+- [x] 2.7 Postęp widoczny: etykiety „Zapisywanie…"/„Usuwanie…" i zablokowane przyciski — 8522dff
 
 ### Phase 3: Produkcja — deploy i weryfikacja e2e
 
