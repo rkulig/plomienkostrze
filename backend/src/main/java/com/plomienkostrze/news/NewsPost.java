@@ -40,6 +40,9 @@ public class NewsPost {
 	@Column(name = "created_at", nullable = false)
 	private Instant createdAt;
 
+	@Column(name = "updated_at")
+	private Instant updatedAt;
+
 	protected NewsPost() {
 		// JPA
 	}
@@ -56,6 +59,18 @@ public class NewsPost {
 		post.status = NewsPostStatus.PUBLISHED;
 		post.publishedAt = Instant.now();
 		return post;
+	}
+
+	/**
+	 * Edits the post in place (roadmap S-04, FR-007): the only mutation path,
+	 * kept intentional instead of exposing setters. Replaces title and content
+	 * and stamps updated_at; deliberately leaves status and published_at alone
+	 * so the post keeps its list position and the V5 CHECK stays satisfied.
+	 */
+	public void edit(String title, String content) {
+		this.title = title;
+		this.content = content;
+		this.updatedAt = Instant.now();
 	}
 
 	@PrePersist
@@ -87,5 +102,9 @@ public class NewsPost {
 
 	public Instant getCreatedAt() {
 		return createdAt;
+	}
+
+	public Instant getUpdatedAt() {
+		return updatedAt;
 	}
 }

@@ -7,9 +7,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -67,6 +69,11 @@ public class NewsPostController {
 			@NotBlank @Size(max = 10000) String content) {
 	}
 
+	public record UpdateRequest(
+			@NotBlank @Size(max = 200) String title,
+			@NotBlank @Size(max = 10000) String content) {
+	}
+
 	@GetMapping
 	public ListResponse list(@RequestParam(defaultValue = "0") int page,
 			@RequestParam(defaultValue = "10") int size) {
@@ -100,6 +107,32 @@ public class NewsPostController {
 				.filter(post -> post.getStatus() == NewsPostStatus.PUBLISHED)
 				.map(DetailResponse::from)
 				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "news post not found"));
+	}
+
+	/**
+	 * Edits a post in place (roadmap S-04, FR-007): full replacement of title and
+	 * content. Leaves status and published_at untouched, so the post keeps its
+	 * list position. Requires ROLE_ADMIN (see SecurityConfig).
+	 */
+	@PutMapping("/{id}")
+	public DetailResponse update(@PathVariable Long id, @Valid @RequestBody UpdateRequest request) {
+		NewsPost post = repository.findById(id)
+				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "news post not found"));
+		post.edit(request.title(), request.content());
+		return DetailResponse.from(repository.save(post));
+	}
+
+	/**
+	 * Physically deletes a post (roadmap S-04, FR-008): no soft-delete, no undo.
+	 * Requires ROLE_ADMIN (see SecurityConfig).
+	 */
+	@DeleteMapping("/{id}")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void delete(@PathVariable Long id) {
+		if (!repository.existsById(id)) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "news post not found");
+		}
+		repository.deleteById(id);
 	}
 
 	/** First paragraph (up to the first blank line), truncated to 200 chars with an ellipsis. */

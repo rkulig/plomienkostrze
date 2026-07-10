@@ -74,6 +74,8 @@ public class SecurityConfig {
 						.requestMatchers(HttpMethod.GET, "/api/me").authenticated()
 						.requestMatchers(HttpMethod.POST, "/api/news-posts").hasRole("ADMIN")
 						.requestMatchers(HttpMethod.POST, "/api/news-posts/generate").hasRole("ADMIN")
+						.requestMatchers(HttpMethod.PUT, "/api/news-posts/*").hasRole("ADMIN")
+						.requestMatchers(HttpMethod.DELETE, "/api/news-posts/*").hasRole("ADMIN")
 						.anyRequest().denyAll())
 				.oauth2ResourceServer(oauth2 -> oauth2
 						.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())));
