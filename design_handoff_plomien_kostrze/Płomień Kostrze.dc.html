@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body { background: #0e0e0e; font-family: 'Barlow', system-ui, sans-serif; color: #f4f4f4; -webkit-font-smoothing: antialiased; }
+  a { color: #F5C518; text-decoration: none; }
+  a:hover { color: #ffd633; }
+  ::selection { background: #F5C518; color: #111; }
+  input, textarea, button { font-family: inherit; }
+  textarea { resize: vertical; }
+</style>
+</helmet>
+<div style="min-height:100vh;display:flex;flex-direction:column;background:#0e0e0e;">
+
+  <header style="position:sticky;top:0;z-index:40;background:#111;">
+    <div style="max-width:1120px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;">
+      <div style="display:flex;align-items:center;gap:14px;">
+        <img src="uploads/logo.jpg" alt="Herb Płomień Kostrze" style="width:52px;height:52px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 2px #F5C518;flex-shrink:0;" />
+        <div style="line-height:1;">
+          <div style="font-family:'Anton',sans-serif;font-size:24px;letter-spacing:0.5px;text-transform:uppercase;color:#F5C518;">Płomień Kostrze</div>
+          <div style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:13px;letter-spacing:1.5px;text-transform:uppercase;color:#3fb15f;margin-top:3px;">Liga Okręgowa • Kraków</div>
+        </div>
+      </div>
+      <nav style="display:flex;align-items:center;gap:10px;">
+        <sc-if value="{{ isLoggedIn }}" hint-placeholder-val="{{ false }}">
+          <span style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;color:#7a7a7a;">Zalogowany jako {{ userName }}</span>
+        </sc-if>
+        <sc-if value="{{ isAdmin }}" hint-placeholder-val="{{ false }}">
+          <button onClick="{{ openAddPost }}" style="background:#F5C518;color:#111;border:none;font-family:'Anton',sans-serif;text-transform:uppercase;letter-spacing:0.5px;padding:10px 16px;border-radius:6px;cursor:pointer;font-size:14px;" style-hover="background:#ffd633;">+ Dodaj post</button>
+        </sc-if>
+        <sc-if value="{{ isLoggedIn }}" hint-placeholder-val="{{ false }}">
+          <button onClick="{{ doLogout }}" style="background:transparent;color:#f4f4f4;border:2px solid #333;font-family:'Barlow Condensed',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;padding:8px 16px;border-radius:6px;cursor:pointer;font-size:14px;" style-hover="border-color:#D91E2A;color:#D91E2A;">Wyloguj</button>
+        </sc-if>
+        <sc-if value="{{ isLoggedOut }}" hint-placeholder-val="{{ true }}">
+          <button onClick="{{ openLogin }}" style="background:transparent;color:#F5C518;border:2px solid #F5C518;font-family:'Anton',sans-serif;text-transform:uppercase;letter-spacing:0.5px;padding:8px 18px;border-radius:6px;cursor:pointer;font-size:14px;" style-hover="background:#F5C518;color:#111;">Zaloguj</button>
+        </sc-if>
+      </nav>
+    </div>
+    <div style="border-top:1px solid #1e1e1e;">
+      <div style="max-width:1120px;margin:0 auto;padding:8px 14px;display:flex;gap:6px;overflow-x:auto;">
+        <sc-for list="{{ tabs }}" as="tab" hint-placeholder-count="4">
+          <button onClick="{{ tab.onClick }}" style="background:{{ tab.bg }};border:none;cursor:pointer;padding:9px 16px;border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:16px;letter-spacing:1px;text-transform:uppercase;white-space:nowrap;color:{{ tab.color }};" style-hover="background:rgba(255,255,255,0.06);">{{ tab.label }}</button>
+        </sc-for>
+      </div>
+    </div>
+    <div style="height:4px;background:linear-gradient(90deg,#1E8A3C 0 33.33%,#F5C518 33.33% 66.66%,#D91E2A 66.66% 100%);"></div>
+  </header>
+
+  <sc-if value="{{ isNews }}" hint-placeholder-val="{{ true }}"><div>
+  <section style="position:relative;overflow:hidden;background:radial-gradient(120% 140% at 100% 0%, #1c1c1c 0%, #0e0e0e 60%);">
+    <div style="max-width:1120px;margin:0 auto;padding:56px 20px 64px;display:flex;align-items:center;justify-content:space-between;gap:32px;">
+      <div style="position:relative;z-index:2;max-width:640px;">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:16px;letter-spacing:3px;text-transform:uppercase;color:#3fb15f;margin-bottom:10px;">Serwis kibica</div>
+        <h1 style="font-family:'Anton',sans-serif;font-weight:400;font-size:clamp(44px,8vw,88px);line-height:0.92;text-transform:uppercase;margin:0;color:#f4f4f4;letter-spacing:0.5px;">Aktualności <span style="color:#D91E2A;">klubu</span></h1>
+        <p style="font-size:clamp(16px,2.4vw,20px);line-height:1.5;color:#bdbdbd;margin:18px 0 0;max-width:520px;">{{ motto }}</p>
+      </div>
+      <sc-if value="{{ showHeroLogo }}" hint-placeholder-val="{{ true }}">
+        <img src="uploads/logo.jpg" alt="" style="width:clamp(160px,22vw,260px);height:clamp(160px,22vw,260px);border-radius:50%;object-fit:cover;flex-shrink:0;box-shadow:0 0 0 6px rgba(245,197,24,0.15), 0 24px 60px rgba(0,0,0,0.6);" />
+      </sc-if>
+    </div>
+  </section>
+
+  <main style="flex:1;max-width:1120px;width:100%;margin:0 auto;padding:40px 20px 72px;">
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:16px;border-bottom:2px solid #262626;padding-bottom:14px;margin-bottom:28px;">
+      <h2 style="font-family:'Anton',sans-serif;font-weight:400;font-size:clamp(26px,4vw,38px);text-transform:uppercase;margin:0;color:#F5C518;letter-spacing:0.5px;">Ostatnie wpisy</h2>
+      <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;letter-spacing:1px;text-transform:uppercase;color:#8a8a8a;white-space:nowrap;">{{ countLabel }}</span>
+    </div>
+
+    <sc-if value="{{ hasFeatured }}" hint-placeholder-val="{{ false }}">
+      <article style="background:#fff;color:#141414;border-radius:12px;overflow:hidden;margin-bottom:24px;box-shadow:0 14px 40px rgba(0,0,0,0.4);border-top:6px solid #D91E2A;">
+        <div style="padding:28px 30px;">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;flex-wrap:wrap;">
+            <span style="background:#D91E2A;color:#fff;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;padding:4px 10px;border-radius:4px;">Najnowsze</span>
+            <span style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:14px;letter-spacing:1px;text-transform:uppercase;color:#1E8A3C;">{{ featured.dateLabel }}</span>
+          </div>
+          <h3 style="font-family:'Anton',sans-serif;font-weight:400;font-size:clamp(26px,4vw,40px);line-height:1.02;text-transform:uppercase;margin:0 0 14px;color:#141414;">{{ featured.title }}</h3>
+          <p style="font-size:17px;line-height:1.65;color:#3a3a3a;margin:0;white-space:pre-wrap;">{{ featured.body }}</p>
+          <div style="margin-top:16px;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:13px;letter-spacing:1px;text-transform:uppercase;color:#9a9a9a;">Autor: {{ featured.author }}</div>
+        </div>
+      </article>
+    </sc-if>
+
+    <sc-if value="{{ hasNews }}" hint-placeholder-val="{{ true }}">
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:22px;">
+        <sc-for list="{{ rest }}" as="post" hint-placeholder-count="3">
+          <article style="background:#fff;color:#141414;border-radius:12px;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,0.3);display:flex;flex-direction:column;border-top:5px solid #F5C518;">
+            <div style="padding:22px 22px 24px;display:flex;flex-direction:column;gap:10px;flex:1;">
+              <span style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:13px;letter-spacing:1px;text-transform:uppercase;color:#1E8A3C;">{{ post.dateLabel }}</span>
+              <h3 style="font-family:'Anton',sans-serif;font-weight:400;font-size:22px;line-height:1.1;text-transform:uppercase;margin:0;color:#141414;">{{ post.title }}</h3>
+              <p style="font-size:15px;line-height:1.6;color:#4a4a4a;margin:0;white-space:pre-wrap;">{{ post.body }}</p>
+              <div style="margin-top:auto;padding-top:8px;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:#a8a8a8;">Autor: {{ post.author }}</div>
+            </div>
+          </article>
+        </sc-for>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isEmpty }}" hint-placeholder-val="{{ false }}">
+      <div style="text-align:center;padding:64px 20px;border:2px dashed #2c2c2c;border-radius:12px;">
+        <div style="font-family:'Anton',sans-serif;font-size:26px;text-transform:uppercase;color:#5a5a5a;">Brak aktualności</div>
+        <p style="color:#7a7a7a;margin-top:8px;">Zaloguj się jako administrator, aby dodać pierwszy wpis.</p>
+      </div>
+    </sc-if>
+  </main>
+  </div></sc-if>
+
+  <sc-if value="{{ isTable }}" hint-placeholder-val="{{ false }}"><div>
+    <section style="background:#121212;border-bottom:1px solid #1e1e1e;">
+      <div style="max-width:1120px;margin:0 auto;padding:34px 20px;">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;letter-spacing:3px;text-transform:uppercase;color:#3fb15f;margin-bottom:6px;">Liga Okręgowa • Kraków</div>
+        <h1 style="font-family:'Anton',sans-serif;font-weight:400;font-size:clamp(34px,6vw,60px);line-height:1;text-transform:uppercase;margin:0;color:#f4f4f4;">Tabela</h1>
+      </div>
+    </section>
+    <main style="max-width:1120px;width:100%;margin:0 auto;padding:32px 20px 72px;">
+      <div style="overflow-x:auto;border-radius:12px;background:#161616;border:1px solid #242424;">
+        <table style="width:100%;border-collapse:collapse;min-width:660px;">
+          <thead>
+            <tr>
+              <th style="text-align:center;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:#8a8a8a;padding:14px 8px;">#</th>
+              <th style="text-align:left;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:#8a8a8a;padding:14px 12px;">Klub</th>
+              <th style="text-align:center;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:#8a8a8a;padding:14px 8px;">M</th>
+              <th style="text-align:center;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:#8a8a8a;padding:14px 8px;">W</th>
+              <th style="text-align:center;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:#8a8a8a;padding:14px 8px;">R</th>
+              <th style="text-align:center;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:#8a8a8a;padding:14px 8px;">P</th>
+              <th style="text-align:center;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:#8a8a8a;padding:14px 8px;">Bramki</th>
+              <th style="text-align:center;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:#8a8a8a;padding:14px 8px;">+/-</th>
+              <th style="text-align:center;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:#8a8a8a;padding:14px 12px;">Pkt</th>
+            </tr>
+          </thead>
+          <tbody>
+            <sc-for list="{{ tableRows }}" as="row" hint-placeholder-count="12">
+              <tr style="background:{{ row.rowBg }};">
+                <td style="text-align:center;padding:11px 8px;border-top:1px solid #222;font-size:15px;font-weight:700;color:{{ row.rowColor }};">{{ row.pos }}</td>
+                <td style="text-align:left;padding:11px 12px;border-top:1px solid #222;font-size:15px;font-weight:{{ row.weight }};color:{{ row.rowColor }};white-space:nowrap;">{{ row.name }}</td>
+                <td style="text-align:center;padding:11px 8px;border-top:1px solid #222;font-size:15px;color:{{ row.rowColor }};">{{ row.m }}</td>
+                <td style="text-align:center;padding:11px 8px;border-top:1px solid #222;font-size:15px;color:{{ row.rowColor }};">{{ row.w }}</td>
+                <td style="text-align:center;padding:11px 8px;border-top:1px solid #222;font-size:15px;color:{{ row.rowColor }};">{{ row.d }}</td>
+                <td style="text-align:center;padding:11px 8px;border-top:1px solid #222;font-size:15px;color:{{ row.rowColor }};">{{ row.l }}</td>
+                <td style="text-align:center;padding:11px 8px;border-top:1px solid #222;font-size:15px;color:{{ row.rowColor }};white-space:nowrap;">{{ row.bramki }}</td>
+                <td style="text-align:center;padding:11px 8px;border-top:1px solid #222;font-size:15px;color:{{ row.rowColor }};">{{ row.gd }}</td>
+                <td style="text-align:center;padding:11px 12px;border-top:1px solid #222;font-size:16px;font-weight:700;color:{{ row.ptsColor }};">{{ row.pts }}</td>
+              </tr>
+            </sc-for>
+          </tbody>
+        </table>
+      </div>
+      <p style="font-size:13px;color:#7a7a7a;margin-top:14px;">M — mecze, W — wygrane, R — remisy, P — porażki, Pkt — punkty. Dane przykładowe (runda wiosenna).</p>
+    </main>
+  </div></sc-if>
+
+  <sc-if value="{{ isSchedule }}" hint-placeholder-val="{{ false }}"><div>
+    <section style="background:#121212;border-bottom:1px solid #1e1e1e;">
+      <div style="max-width:1120px;margin:0 auto;padding:34px 20px;">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;letter-spacing:3px;text-transform:uppercase;color:#3fb15f;margin-bottom:6px;">Sezon 2025/2026</div>
+        <h1 style="font-family:'Anton',sans-serif;font-weight:400;font-size:clamp(34px,6vw,60px);line-height:1;text-transform:uppercase;margin:0;color:#f4f4f4;">Terminarz</h1>
+      </div>
+    </section>
+    <main style="max-width:1120px;width:100%;margin:0 auto;padding:32px 20px 72px;">
+      <h2 style="font-family:'Anton',sans-serif;font-weight:400;font-size:24px;text-transform:uppercase;color:#F5C518;margin:0 0 16px;">Nadchodzące mecze</h2>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:38px;">
+        <sc-for list="{{ upcomingFixtures }}" as="fx" hint-placeholder-count="3">
+          <div style="display:flex;align-items:center;gap:16px;background:{{ fx.bg }};border:1px solid #242424;border-radius:10px;padding:14px 18px;flex-wrap:wrap;">
+            <div style="min-width:120px;">
+              <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;letter-spacing:1px;text-transform:uppercase;color:#3fb15f;">{{ fx.round }}</div>
+              <div style="font-size:13px;color:#9a9a9a;">{{ fx.dateLabel }}</div>
+            </div>
+            <div style="flex:1;display:flex;align-items:center;justify-content:center;gap:14px;min-width:220px;">
+              <span style="flex:1;text-align:right;font-weight:{{ fx.homeWeight }};color:{{ fx.homeColor }};font-size:15px;">{{ fx.home }}</span>
+              <span style="font-family:'Anton',sans-serif;font-size:14px;color:#8a8a8a;padding:2px 8px;">VS</span>
+              <span style="flex:1;text-align:left;font-weight:{{ fx.awayWeight }};color:{{ fx.awayColor }};font-size:15px;">{{ fx.away }}</span>
+            </div>
+            <div style="min-width:70px;text-align:right;font-family:'Anton',sans-serif;font-size:18px;color:#F5C518;">{{ fx.time }}</div>
+          </div>
+        </sc-for>
+      </div>
+      <h2 style="font-family:'Anton',sans-serif;font-weight:400;font-size:24px;text-transform:uppercase;color:#F5C518;margin:0 0 16px;">Rozegrane mecze</h2>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <sc-for list="{{ playedFixtures }}" as="fx" hint-placeholder-count="3">
+          <div style="display:flex;align-items:center;gap:16px;background:{{ fx.bg }};border:1px solid #242424;border-radius:10px;padding:14px 18px;flex-wrap:wrap;">
+            <div style="min-width:120px;">
+              <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;letter-spacing:1px;text-transform:uppercase;color:#7a7a7a;">{{ fx.round }}</div>
+              <div style="font-size:13px;color:#9a9a9a;">{{ fx.dateLabel }}</div>
+            </div>
+            <div style="flex:1;display:flex;align-items:center;justify-content:center;gap:14px;min-width:220px;">
+              <span style="flex:1;text-align:right;font-weight:{{ fx.homeWeight }};color:{{ fx.homeColor }};font-size:15px;">{{ fx.home }}</span>
+              <span style="font-family:'Anton',sans-serif;font-size:18px;color:#141414;background:#F5C518;border-radius:6px;padding:3px 12px;">{{ fx.result }}</span>
+              <span style="flex:1;text-align:left;font-weight:{{ fx.awayWeight }};color:{{ fx.awayColor }};font-size:15px;">{{ fx.away }}</span>
+            </div>
+            <div style="min-width:70px;text-align:right;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:#7a7a7a;">Koniec</div>
+          </div>
+        </sc-for>
+      </div>
+    </main>
+  </div></sc-if>
+
+  <sc-if value="{{ isForum }}" hint-placeholder-val="{{ false }}"><div>
+    <section style="background:#121212;border-bottom:1px solid #1e1e1e;">
+      <div style="max-width:1120px;margin:0 auto;padding:34px 20px;">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;letter-spacing:3px;text-transform:uppercase;color:#3fb15f;margin-bottom:6px;">Społeczność Dzików</div>
+        <h1 style="font-family:'Anton',sans-serif;font-weight:400;font-size:clamp(34px,6vw,60px);line-height:1;text-transform:uppercase;margin:0;color:#f4f4f4;">Forum kibiców</h1>
+      </div>
+    </section>
+    <main style="max-width:920px;width:100%;margin:0 auto;padding:32px 20px 72px;">
+
+      <sc-if value="{{ notInThread }}" hint-placeholder-val="{{ true }}"><div>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:22px;flex-wrap:wrap;">
+          <h2 style="font-family:'Anton',sans-serif;font-weight:400;font-size:24px;text-transform:uppercase;color:#F5C518;margin:0;">Tematy</h2>
+          <sc-if value="{{ canPost }}" hint-placeholder-val="{{ false }}">
+            <button onClick="{{ openNewThread }}" style="background:#1E8A3C;color:#fff;border:none;font-family:'Anton',sans-serif;text-transform:uppercase;letter-spacing:0.5px;padding:10px 18px;border-radius:6px;cursor:pointer;font-size:14px;" style-hover="background:#23a447;">+ Nowy temat</button>
+          </sc-if>
+        </div>
+        <sc-if value="{{ cannotPost }}" hint-placeholder-val="{{ true }}">
+          <div style="background:#161616;border:1px solid #242424;border-radius:10px;padding:14px 18px;font-size:14px;color:#9a9a9a;margin-bottom:20px;">Zaloguj się, aby zakładać tematy i odpowiadać na forum.</div>
+        </sc-if>
+        <div style="display:flex;flex-direction:column;gap:12px;">
+          <sc-for list="{{ forumThreads }}" as="thread" hint-placeholder-count="3">
+            <button onClick="{{ thread.open }}" style="text-align:left;width:100%;background:#161616;border:1px solid #242424;border-radius:12px;padding:18px 20px;cursor:pointer;" style-hover="border-color:#F5C518;">
+              <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:14px;">
+                <h3 style="font-family:'Anton',sans-serif;font-weight:400;font-size:19px;text-transform:uppercase;color:#f4f4f4;margin:0;line-height:1.15;">{{ thread.title }}</h3>
+                <span style="flex-shrink:0;background:#F5C518;color:#111;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;letter-spacing:0.5px;text-transform:uppercase;padding:3px 9px;border-radius:20px;">{{ thread.replyLabel }}</span>
+              </div>
+              <p style="font-size:14px;line-height:1.55;color:#a8a8a8;margin:8px 0 0;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;">{{ thread.body }}</p>
+              <div style="margin-top:12px;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:#3fb15f;">{{ thread.author }} • {{ thread.dateLabel }}</div>
+            </button>
+          </sc-for>
+        </div>
+        <sc-if value="{{ forumEmpty }}" hint-placeholder-val="{{ false }}">
+          <div style="text-align:center;padding:56px 20px;border:2px dashed #2c2c2c;border-radius:12px;color:#7a7a7a;">Brak tematów. Załóż pierwszy!</div>
+        </sc-if>
+      </div></sc-if>
+
+      <sc-if value="{{ inThread }}" hint-placeholder-val="{{ false }}"><div>
+        <button onClick="{{ backToForum }}" style="background:none;border:none;cursor:pointer;color:#3fb15f;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;letter-spacing:1px;text-transform:uppercase;padding:0;margin-bottom:18px;">‹ Wróć do tematów</button>
+        <article style="background:#161616;border:1px solid #242424;border-radius:12px;padding:24px;border-top:5px solid #F5C518;">
+          <h2 style="font-family:'Anton',sans-serif;font-weight:400;font-size:clamp(22px,4vw,30px);text-transform:uppercase;color:#f4f4f4;margin:0 0 8px;line-height:1.1;">{{ currentThread.title }}</h2>
+          <div style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:#3fb15f;margin-bottom:14px;">{{ currentThread.author }} • {{ currentThread.dateLabel }}</div>
+          <p style="font-size:16px;line-height:1.65;color:#d8d8d8;margin:0;white-space:pre-wrap;">{{ currentThread.body }}</p>
+        </article>
+
+        <h3 style="font-family:'Anton',sans-serif;font-weight:400;font-size:20px;text-transform:uppercase;color:#F5C518;margin:28px 0 14px;">Odpowiedzi ({{ threadReplyCount }})</h3>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <sc-for list="{{ currentThread.replies }}" as="reply" hint-placeholder-count="2">
+            <div style="background:#141414;border:1px solid #242424;border-radius:10px;padding:16px 18px;">
+              <div style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:#9a9a9a;margin-bottom:7px;">{{ reply.author }} • {{ reply.dateLabel }}</div>
+              <p style="font-size:15px;line-height:1.6;color:#d8d8d8;margin:0;white-space:pre-wrap;">{{ reply.body }}</p>
+            </div>
+          </sc-for>
+        </div>
+        <sc-if value="{{ threadNoReplies }}" hint-placeholder-val="{{ false }}">
+          <div style="color:#7a7a7a;font-size:14px;padding:8px 2px;">Brak odpowiedzi — bądź pierwszy!</div>
+        </sc-if>
+
+        <sc-if value="{{ canPost }}" hint-placeholder-val="{{ false }}">
+          <div style="margin-top:22px;">
+            <textarea value="{{ replyText }}" onInput="{{ onReplyText }}" rows="4" placeholder="Napisz odpowiedź..." style="width:100%;background:#0e0e0e;border:2px solid #333;border-radius:8px;padding:12px 14px;color:#f4f4f4;font-size:15px;line-height:1.55;min-height:96px;"></textarea>
+            <sc-if value="{{ hasReplyError }}" hint-placeholder-val="{{ false }}">
+              <div style="color:#ff5a5a;font-size:14px;font-weight:600;margin-top:6px;">{{ replyError }}</div>
+            </sc-if>
+            <div style="display:flex;justify-content:flex-end;margin-top:10px;">
+              <button onClick="{{ addReply }}" style="background:#F5C518;color:#111;border:none;font-family:'Anton',sans-serif;text-transform:uppercase;letter-spacing:0.5px;padding:10px 22px;border-radius:6px;cursor:pointer;font-size:15px;" style-hover="background:#ffd633;">Odpowiedz</button>
+            </div>
+          </div>
+        </sc-if>
+        <sc-if value="{{ cannotPost }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top:22px;background:#161616;border:1px solid #242424;border-radius:10px;padding:14px 18px;font-size:14px;color:#9a9a9a;">Zaloguj się, aby odpowiedzieć w tym temacie.</div>
+        </sc-if>
+      </div></sc-if>
+
+    </main>
+  </div></sc-if>
+
+  <footer style="background:#111;">
+    <div style="height:4px;background:linear-gradient(90deg,#D91E2A 0 33.33%,#F5C518 33.33% 66.66%,#1E8A3C 66.66% 100%);"></div>
+    <div style="max-width:1120px;margin:0 auto;padding:26px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <img src="uploads/logo.jpg" alt="" style="width:38px;height:38px;border-radius:50%;object-fit:cover;" />
+        <div style="font-family:'Anton',sans-serif;font-size:16px;text-transform:uppercase;color:#f4f4f4;letter-spacing:0.5px;">Płomień Kostrze</div>
+      </div>
+      <div style="text-align:right;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:13px;letter-spacing:1px;text-transform:uppercase;color:#9a9a9a;line-height:1.5;">
+        <div style="color:#9a9a9a;">Stadion</div>
+        <div>ul. Krzewowa 9c, 30-380 Kraków</div>
+      </div>
+    </div>
+  </footer>
+
+  <sc-if value="{{ showLogin }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeLogin }}" style="position:fixed;inset:0;z-index:100;background:rgba(0,0,0,0.72);display:flex;align-items:center;justify-content:center;padding:20px;">
+      <div onClick="{{ stopProp }}" style="background:#1a1a1a;border-radius:14px;width:100%;max-width:420px;overflow:hidden;box-shadow:0 24px 70px rgba(0,0,0,0.7);">
+        <div style="height:5px;background:linear-gradient(90deg,#1E8A3C 0 33.33%,#F5C518 33.33% 66.66%,#D91E2A 66.66% 100%);"></div>
+        <div style="padding:28px;">
+          <h3 style="font-family:'Anton',sans-serif;font-weight:400;font-size:28px;text-transform:uppercase;margin:0 0 4px;color:#F5C518;">Zaloguj się</h3>
+          <p style="font-size:14px;color:#9a9a9a;margin:0 0 20px;">Kontynuuj z kontem Google, aby wejść do serwisu kibica.</p>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <sc-for list="{{ googleAccounts }}" as="acc" hint-placeholder-count="2">
+              <button onClick="{{ acc.login }}" style="display:flex;align-items:center;gap:14px;text-align:left;background:#0e0e0e;border:2px solid #2c2c2c;border-radius:10px;padding:12px 14px;cursor:pointer;width:100%;" style-hover="border-color:#F5C518;">
+                <span style="width:40px;height:40px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:'Anton',sans-serif;font-size:18px;color:#fff;background:{{ acc.color }};">{{ acc.initial }}</span>
+                <span style="display:flex;flex-direction:column;line-height:1.25;min-width:0;">
+                  <span style="font-weight:700;font-size:15px;color:#f4f4f4;">{{ acc.name }} <span style="font-weight:600;font-size:12px;color:#8a8a8a;">· {{ acc.tag }}</span></span>
+                  <span style="font-size:13px;color:#9a9a9a;overflow:hidden;text-overflow:ellipsis;">{{ acc.email }}</span>
+                </span>
+              </button>
+            </sc-for>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;margin:18px 0 14px;">
+            <span style="flex:1;height:1px;background:#2c2c2c;"></span>
+            <span style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:#7a7a7a;">lub inne konto Google</span>
+            <span style="flex:1;height:1px;background:#2c2c2c;"></span>
+          </div>
+          <input type="email" value="{{ loginEmail }}" onInput="{{ onLoginEmail }}" onKeyDown="{{ onLoginKey }}" placeholder="twoj.adres@gmail.com" style="width:100%;background:#0e0e0e;border:2px solid #333;border-radius:8px;padding:11px 14px;color:#f4f4f4;font-size:15px;margin-bottom:8px;" />
+          <sc-if value="{{ hasLoginError }}" hint-placeholder-val="{{ false }}">
+            <div style="color:#ff5a5a;font-size:14px;font-weight:600;margin-bottom:8px;">{{ loginError }}</div>
+          </sc-if>
+          <div style="background:#141414;border:1px solid #262626;border-radius:8px;padding:10px 12px;font-size:12.5px;color:#8a8a8a;line-height:1.5;margin:6px 0 18px;">Uprawnienia administratora ma konto <b style="color:#F5C518;">{{ adminEmail }}</b>. Pozostałe konta logują się jako kibic.</div>
+          <div style="display:flex;gap:10px;justify-content:flex-end;">
+            <button onClick="{{ closeLogin }}" style="background:transparent;color:#cfcfcf;border:2px solid #333;font-family:'Barlow Condensed',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;padding:9px 16px;border-radius:6px;cursor:pointer;font-size:14px;" style-hover="border-color:#555;">Anuluj</button>
+            <button onClick="{{ loginWithEmail }}" style="display:flex;align-items:center;gap:10px;background:#fff;color:#3c4043;border:none;font-weight:700;letter-spacing:0.2px;padding:10px 18px;border-radius:6px;cursor:pointer;font-size:15px;" style-hover="background:#f0f0f0;"><span style="width:20px;height:20px;border-radius:50%;background:#1a73e8;color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Anton',sans-serif;font-size:13px;">G</span>Zaloguj z Google</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ showAddPost }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeAddPost }}" style="position:fixed;inset:0;z-index:100;background:rgba(0,0,0,0.72);display:flex;align-items:center;justify-content:center;padding:20px;">
+      <div onClick="{{ stopProp }}" style="background:#1a1a1a;border-radius:14px;width:100%;max-width:560px;overflow:hidden;box-shadow:0 24px 70px rgba(0,0,0,0.7);">
+        <div style="height:5px;background:linear-gradient(90deg,#D91E2A 0 33.33%,#F5C518 33.33% 66.66%,#1E8A3C 66.66% 100%);"></div>
+        <div style="padding:28px;">
+          <h3 style="font-family:'Anton',sans-serif;font-weight:400;font-size:28px;text-transform:uppercase;margin:0 0 4px;color:#F5C518;">Dodaj aktualność</h3>
+          <p style="font-size:14px;color:#9a9a9a;margin:0 0 20px;">Napisz wpis samodzielnie lub wygeneruj go z pomocą AI.</p>
+
+          <button onClick="{{ generatePost }}" disabled="{{ aiLoading }}" style="width:100%;background:#F5C518;color:#111;border:none;font-family:'Anton',sans-serif;text-transform:uppercase;letter-spacing:0.5px;padding:12px 16px;border-radius:8px;cursor:pointer;font-size:15px;margin-bottom:10px;" style-hover="background:#ffd633;">{{ aiButtonLabel }}</button>
+          <sc-if value="{{ hasAiError }}" hint-placeholder-val="{{ false }}">
+            <div style="color:#ff5a5a;font-size:13px;font-weight:600;margin-bottom:10px;">{{ aiError }}</div>
+          </sc-if>
+
+          <div style="display:flex;align-items:center;gap:12px;margin:6px 0 18px;">
+            <span style="flex:1;height:1px;background:#2c2c2c;"></span>
+            <span style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:#7a7a7a;">lub napisz samodzielnie</span>
+            <span style="flex:1;height:1px;background:#2c2c2c;"></span>
+          </div>
+
+          <label style="display:block;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;letter-spacing:1px;text-transform:uppercase;color:#bdbdbd;margin-bottom:6px;">Tytuł</label>
+          <input value="{{ postTitle }}" onInput="{{ onPostTitle }}" placeholder="np. Zwycięstwo w derbach!" style="width:100%;background:#0e0e0e;border:2px solid #333;border-radius:8px;padding:11px 14px;color:#f4f4f4;font-size:15px;margin-bottom:16px;" />
+          <label style="display:block;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;letter-spacing:1px;text-transform:uppercase;color:#bdbdbd;margin-bottom:6px;">Treść</label>
+          <textarea value="{{ postBody }}" onInput="{{ onPostBody }}" rows="6" placeholder="Napisz co słychać w klubie..." style="width:100%;background:#0e0e0e;border:2px solid #333;border-radius:8px;padding:11px 14px;color:#f4f4f4;font-size:15px;line-height:1.55;margin-bottom:8px;min-height:130px;"></textarea>
+          <sc-if value="{{ hasPostError }}" hint-placeholder-val="{{ false }}">
+            <div style="color:#ff5a5a;font-size:14px;font-weight:600;margin-bottom:8px;">{{ postError }}</div>
+          </sc-if>
+          <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:12px;">
+            <button onClick="{{ closeAddPost }}" style="background:transparent;color:#cfcfcf;border:2px solid #333;font-family:'Barlow Condensed',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;padding:9px 16px;border-radius:6px;cursor:pointer;font-size:14px;" style-hover="border-color:#555;">Anuluj</button>
+            <button onClick="{{ addPost }}" style="background:#1E8A3C;color:#fff;border:none;font-family:'Anton',sans-serif;text-transform:uppercase;letter-spacing:0.5px;padding:10px 22px;border-radius:6px;cursor:pointer;font-size:15px;" style-hover="background:#23a447;">Opublikuj</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ showNewThread }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeNewThread }}" style="position:fixed;inset:0;z-index:100;background:rgba(0,0,0,0.72);display:flex;align-items:center;justify-content:center;padding:20px;">
+      <div onClick="{{ stopProp }}" style="background:#1a1a1a;border-radius:14px;width:100%;max-width:560px;overflow:hidden;box-shadow:0 24px 70px rgba(0,0,0,0.7);">
+        <div style="height:5px;background:linear-gradient(90deg,#1E8A3C 0 33.33%,#F5C518 33.33% 66.66%,#D91E2A 66.66% 100%);"></div>
+        <div style="padding:28px;">
+          <h3 style="font-family:'Anton',sans-serif;font-weight:400;font-size:28px;text-transform:uppercase;margin:0 0 4px;color:#F5C518;">Nowy temat</h3>
+          <p style="font-size:14px;color:#9a9a9a;margin:0 0 20px;">Rozpocznij dyskusję na forum kibiców.</p>
+          <label style="display:block;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;letter-spacing:1px;text-transform:uppercase;color:#bdbdbd;margin-bottom:6px;">Tytuł</label>
+          <input value="{{ threadTitle }}" onInput="{{ onThreadTitle }}" placeholder="np. Wspólny wyjazd na mecz" style="width:100%;background:#0e0e0e;border:2px solid #333;border-radius:8px;padding:11px 14px;color:#f4f4f4;font-size:15px;margin-bottom:16px;" />
+          <label style="display:block;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;letter-spacing:1px;text-transform:uppercase;color:#bdbdbd;margin-bottom:6px;">Treść</label>
+          <textarea value="{{ threadBody }}" onInput="{{ onThreadBody }}" rows="5" placeholder="Napisz o czym chcesz podyskutować..." style="width:100%;background:#0e0e0e;border:2px solid #333;border-radius:8px;padding:11px 14px;color:#f4f4f4;font-size:15px;line-height:1.55;margin-bottom:8px;min-height:120px;"></textarea>
+          <sc-if value="{{ hasThreadError }}" hint-placeholder-val="{{ false }}">
+            <div style="color:#ff5a5a;font-size:14px;font-weight:600;margin-bottom:8px;">{{ threadError }}</div>
+          </sc-if>
+          <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:12px;">
+            <button onClick="{{ closeNewThread }}" style="background:transparent;color:#cfcfcf;border:2px solid #333;font-family:'Barlow Condensed',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;padding:9px 16px;border-radius:6px;cursor:pointer;font-size:14px;" style-hover="border-color:#555;">Anuluj</button>
+            <button onClick="{{ addThread }}" style="background:#1E8A3C;color:#fff;border:none;font-family:'Anton',sans-serif;text-transform:uppercase;letter-spacing:0.5px;padding:10px 22px;border-radius:6px;cursor:pointer;font-size:15px;" style-hover="background:#23a447;">Opublikuj</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1120,&quot;height&quot;:760},&quot;showHeroLogo&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Wygląd&quot;},&quot;highlightLatest&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Wygląd&quot;},&quot;motto&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Najnowsze wieści prosto z Kostrza — mecze, drużyna i życie klubu.&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Treść&quot;},&quot;adminEmail&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;klub.plomien@gmail.com&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Dostęp&quot;}}">
+const NEWS_KEY = 'plomien_news_v1';
+const SESSION_KEY = 'plomien_session_v1';
+const MONTHS = ['stycznia','lutego','marca','kwietnia','maja','czerwca','lipca','sierpnia','września','października','listopada','grudnia'];
+
+function formatDate(iso) {
+  const d = new Date(iso);
+  if (isNaN(d)) return '';
+  return d.getDate() + ' ' + MONTHS[d.getMonth()] + ' ' + d.getFullYear();
+}
+
+function seedNews() {
+  const now = Date.now();
+  const day = 86400000;
+  return [
+    { id: now - day, title: 'Wygrana w derbach! Płomień 3:1', body: 'Nasze Dziki rozniosły rywali w sobotnie popołudnie. Bramki dla Płomienia zdobyli Kowalski (dwie) oraz Nowak. Trybuny w Kostrzu dopingowały do ostatniego gwizdka — dziękujemy kibicom za atmosferę!', author: 'admin', date: new Date(now - day).toISOString() },
+    { id: now - 5 * day, title: 'Rusza runda wiosenna — wracamy na murawę', body: 'Po zimowej przerwie zawodnicy wrócili do pełnych treningów. Sztab przygotował intensywny plan, a celem na wiosnę jest awans w tabeli. Pierwszy sparing już w ten weekend.', author: 'admin', date: new Date(now - 5 * day).toISOString() },
+    { id: now - 12 * day, title: 'Nowy zawodnik w kadrze', body: 'Do drużyny dołącza doświadczony pomocnik, który wzmocni środek pola. Witamy w rodzinie Płomienia i życzymy wielu goli w barwach klubu!', author: 'admin', date: new Date(now - 12 * day).toISOString() },
+    { id: now - 20 * day, title: 'Turniej młodzików w Kostrzu', body: 'W najbliższą niedzielę na naszym boisku odbędzie się turniej dla najmłodszych roczników. Zapraszamy rodziców i kibiców do wspólnego kibicowania przyszłym gwiazdom.', author: 'admin', date: new Date(now - 20 * day).toISOString() }
+  ];
+}
+
+const FORUM_KEY = 'plomien_forum_v1';
+const US = 'Płomień Kostrze';
+
+const TABLE = [
+  { name: 'Sokół Nowa Wieś', m: 18, w: 13, d: 3, l: 2, gf: 44, ga: 18 },
+  { name: 'Grom Zabierzów', m: 18, w: 12, d: 3, l: 3, gf: 40, ga: 20 },
+  { name: 'Wisła II Kraków', m: 18, w: 11, d: 4, l: 3, gf: 38, ga: 22 },
+  { name: 'Płomień Kostrze', m: 18, w: 10, d: 4, l: 4, gf: 35, ga: 23 },
+  { name: 'Orzeł Piaski', m: 18, w: 9, d: 4, l: 5, gf: 31, ga: 26 },
+  { name: 'Huragan Bibice', m: 18, w: 8, d: 5, l: 5, gf: 29, ga: 27 },
+  { name: 'Iskra Zielonki', m: 18, w: 7, d: 5, l: 6, gf: 27, ga: 28 },
+  { name: 'Zryw Węgrzce', m: 18, w: 6, d: 5, l: 7, gf: 24, ga: 30 },
+  { name: 'Naprzód Skawina', m: 18, w: 6, d: 3, l: 9, gf: 25, ga: 34 },
+  { name: 'Start Mydlniki', m: 18, w: 4, d: 5, l: 9, gf: 20, ga: 33 },
+  { name: 'Tęcza Tyniec', m: 18, w: 3, d: 4, l: 11, gf: 18, ga: 40 },
+  { name: 'Dąb Bielany', m: 18, w: 2, d: 3, l: 13, gf: 15, ga: 45 }
+];
+
+const SCHEDULE = [
+  { round: 'Kolejka 16', dateLabel: '22 lutego 2026', home: 'Płomień Kostrze', away: 'Orzeł Piaski', result: '2:0', done: true },
+  { round: 'Kolejka 17', dateLabel: '1 marca 2026', home: 'Grom Zabierzów', away: 'Płomień Kostrze', result: '1:1', done: true },
+  { round: 'Kolejka 18', dateLabel: '8 marca 2026', home: 'Płomień Kostrze', away: 'Sokół Nowa Wieś', result: '3:1', done: true },
+  { round: 'Kolejka 19', dateLabel: '15 marca 2026', home: 'Wisła II Kraków', away: 'Płomień Kostrze', time: '15:00', done: false },
+  { round: 'Kolejka 20', dateLabel: '22 marca 2026', home: 'Płomień Kostrze', away: 'Huragan Bibice', time: '16:00', done: false },
+  { round: 'Kolejka 21', dateLabel: '29 marca 2026', home: 'Iskra Zielonki', away: 'Płomień Kostrze', time: '11:00', done: false }
+];
+
+function seedForum() {
+  const now = Date.now();
+  const day = 86400000;
+  return [
+    { id: now - 2 * day, title: 'Wspólny wyjazd na mecz do Zabierzowa', body: 'Organizujemy wyjazd na kolejny mecz wyjazdowy. Kto jedzie? Możemy ogarnąć wspólny transport spod stadionu. Piszcie w komentarzach!', author: 'kibic.dzik', date: new Date(now - 2 * day).toISOString(), replies: [ { id: now - 2 * day + 3600000, author: 'sebastian88', body: 'Ja jadę! Mam 3 wolne miejsca w aucie.', date: new Date(now - 2 * day + 3600000).toISOString() } ] },
+    { id: now - 6 * day, title: 'Brawa dla obrony w ostatnim meczu!', body: 'Czyste konto na wyjeździe to podstawa. Stoperzy zagrali koncertowo. Dziki trzymają się mocno!', author: 'kibic.dzik', date: new Date(now - 6 * day).toISOString(), replies: [] },
+    { id: now - 10 * day, title: 'Zbiórka na nowe szaliki klubowe', body: 'Robimy zamówienie zbiorowe na szaliki w barwach klubu. Chętni niech dają znać, ile sztuk potrzebują.', author: 'ania_k', date: new Date(now - 10 * day).toISOString(), replies: [] }
+  ];
+}
+
+const AV_COLORS = ['#1E8A3C', '#D91E2A', '#E0A400', '#2f74d0', '#9b59b6', '#0f8f86'];
+function avatar(name) {
+  const n = name || '?';
+  let h = 0;
+  for (let i = 0; i < n.length; i++) h = (h * 31 + n.charCodeAt(i)) >>> 0;
+  return { color: AV_COLORS[h % AV_COLORS.length], initial: n.charAt(0).toUpperCase() };
+}
+
+class Component extends DCLogic {
+  state = {
+    news: [],
+    session: null,
+    showLogin: false,
+    showAddPost: false,
+    loginEmail: '',
+    loginError: '',
+    postTitle: '',
+    postBody: '',
+    postError: '',
+    aiLoading: false,
+    aiError: '',
+    activeTab: 'news',
+    forum: [],
+    forumView: 'list',
+    showNewThread: false,
+    threadTitle: '',
+    threadBody: '',
+    threadError: '',
+    replyText: '',
+    replyError: ''
+  };
+
+  componentDidMount() {
+    let news = null, session = null, forum = null;
+    try {
+      const rawN = localStorage.getItem(NEWS_KEY);
+      if (rawN) news = JSON.parse(rawN);
+    } catch (e) {}
+    try {
+      const rawS = localStorage.getItem(SESSION_KEY);
+      if (rawS) session = JSON.parse(rawS);
+    } catch (e) {}
+    try {
+      const rawF = localStorage.getItem(FORUM_KEY);
+      if (rawF) forum = JSON.parse(rawF);
+    } catch (e) {}
+    if (!Array.isArray(news)) {
+      news = seedNews();
+      this.persistNews(news);
+    }
+    if (!Array.isArray(forum)) {
+      forum = seedForum();
+      this.persistForum(forum);
+    }
+    this.setState({ news, session, forum });
+  }
+
+  persistNews(news) {
+    try { localStorage.setItem(NEWS_KEY, JSON.stringify(news)); } catch (e) {}
+  }
+  persistForum(forum) {
+    try { localStorage.setItem(FORUM_KEY, JSON.stringify(forum)); } catch (e) {}
+  }
+  persistSession(session) {
+    try {
+      if (session) localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+      else localStorage.removeItem(SESSION_KEY);
+    } catch (e) {}
+  }
+
+  adminEmail() { return (this.props.adminEmail || 'klub.plomien@gmail.com').toLowerCase(); }
+
+  openLogin = () => this.setState({ showLogin: true, loginEmail: '', loginError: '' });
+  closeLogin = () => this.setState({ showLogin: false });
+  openAddPost = () => this.setState({ showAddPost: true, postTitle: '', postBody: '', postError: '', matchDetails: '', aiError: '' });
+  closeAddPost = () => this.setState({ showAddPost: false });
+  stopProp = (e) => e.stopPropagation();
+
+  onLoginEmail = (e) => this.setState({ loginEmail: e.target.value });
+  onLoginKey = (e) => { if (e.key === 'Enter') this.loginWithGoogle(this.state.loginEmail); };
+  onPostTitle = (e) => this.setState({ postTitle: e.target.value });
+  onPostBody = (e) => this.setState({ postBody: e.target.value });
+  onThreadTitle = (e) => this.setState({ threadTitle: e.target.value });
+  onThreadBody = (e) => this.setState({ threadBody: e.target.value });
+  onReplyText = (e) => this.setState({ replyText: e.target.value });
+
+  setTab = (tab) => this.setState({ activeTab: tab, forumView: 'list' });
+  openThread = (id) => this.setState({ forumView: id, replyText: '', replyError: '' });
+  backToForum = () => this.setState({ forumView: 'list' });
+  openNewThread = () => this.setState({ showNewThread: true, threadTitle: '', threadBody: '', threadError: '' });
+  closeNewThread = () => this.setState({ showNewThread: false });
+
+  addThread = () => {
+    if (!this.state.session) return;
+    const t = (this.state.threadTitle || '').trim();
+    const b = (this.state.threadBody || '').trim();
+    if (!t || !b) { this.setState({ threadError: 'Uzupełnij tytuł i treść.' }); return; }
+    const thread = { id: Date.now(), title: t, body: b, author: this.state.session.name, date: new Date().toISOString(), replies: [] };
+    const forum = [thread, ...this.state.forum];
+    this.persistForum(forum);
+    this.setState({ forum, showNewThread: false, threadTitle: '', threadBody: '', threadError: '', forumView: thread.id });
+  };
+
+  addReply = () => {
+    if (!this.state.session) return;
+    const b = (this.state.replyText || '').trim();
+    if (!b) { this.setState({ replyError: 'Napisz treść odpowiedzi.' }); return; }
+    const id = this.state.forumView;
+    const reply = { id: Date.now(), author: this.state.session.name, body: b, date: new Date().toISOString() };
+    const forum = this.state.forum.map(t => t.id === id ? { ...t, replies: [...t.replies, reply] } : t);
+    this.persistForum(forum);
+    this.setState({ forum, replyText: '', replyError: '' });
+  };
+
+  loginWithGoogle = (email) => {
+    const e = (email || '').trim().toLowerCase();
+    if (!e || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(e)) {
+      this.setState({ loginError: 'Podaj poprawny adres e-mail Google.' });
+      return;
+    }
+    const role = e === this.adminEmail() ? 'admin' : 'kibic';
+    const name = e.split('@')[0];
+    const session = { name, email: e, role };
+    this.persistSession(session);
+    this.setState({ session, showLogin: false, loginEmail: '', loginError: '' });
+  };
+
+  doLogout = () => {
+    this.persistSession(null);
+    this.setState({ session: null, showAddPost: false });
+  };
+
+  generatePost = async () => {
+    if (this.state.aiLoading) return;
+    this.setState({ aiLoading: true, aiError: '', postError: '' });
+    const prompt = 'Jesteś redaktorem serwisu kibica klubu piłkarskiego "Płomień Kostrze" (liga okręgowa, Kraków; maskotką klubu jest dzik, a barwy to żółty, zielony i czerwony). ' +
+      'Napisz krótką, energiczną aktualność relacjonującą ostatni rozegrany mecz Płomienia. Wymyśl realistyczny wynik, nazwę przeciwnika z ligi okręgowej w Krakowie oraz strzelców bramek. ' +
+      'Ton klubowy, z pazurem, po polsku, nawiązania do "Dzików" mile widziane. ' +
+      'Zwróć WYŁĄCZNIE poprawny JSON w formacie {"title": "...", "body": "..."} bez żadnego dodatkowego tekstu ani znaczników. ' +
+      'Tytuł do 60 znaków. Treść 3-5 zdań.';
+    try {
+      const raw = await window.claude.complete({ max_tokens: 800, messages: [{ role: 'user', content: prompt }] });
+      let txt = (raw || '').trim();
+      const m = txt.match(/\{[\s\S]*\}/);
+      if (m) txt = m[0];
+      const obj = JSON.parse(txt);
+      if (!obj || !obj.title || !obj.body) throw new Error('bad');
+      this.setState({ postTitle: String(obj.title).trim(), postBody: String(obj.body).trim(), aiLoading: false, postError: '' });
+    } catch (err) {
+      this.setState({ aiLoading: false, aiError: 'Nie udało się wygenerować posta. Spróbuj ponownie.' });
+    }
+  };
+
+  addPost = () => {
+    const t = (this.state.postTitle || '').trim();
+    const b = (this.state.postBody || '').trim();
+    if (!t || !b) { this.setState({ postError: 'Uzupełnij tytuł i treść.' }); return; }
+    const post = {
+      id: Date.now(),
+      title: t,
+      body: b,
+      author: this.state.session ? this.state.session.name : 'admin',
+      date: new Date().toISOString()
+    };
+    const news = [post, ...this.state.news];
+    this.persistNews(news);
+    this.setState({ news, showAddPost: false, postTitle: '', postBody: '', postError: '' });
+  };
+
+  renderVals() {
+    const news = (this.state.news || []).map(n => ({ ...n, dateLabel: formatDate(n.date) }));
+    const isAdmin = this.state.session && this.state.session.role === 'admin';
+    const isLoggedIn = !!this.state.session;
+    const highlight = this.props.highlightLatest ?? true;
+    let featured = null, rest = news;
+    if (highlight && news.length) { featured = news[0]; rest = news.slice(1); }
+    const count = news.length;
+    const adminEmail = this.adminEmail();
+    const accountDefs = [
+      { email: adminEmail, name: 'Klub Płomień', tag: 'Administrator', color: '#D91E2A' },
+      { email: 'kibic.dzik@gmail.com', name: 'Kibic Dzik', tag: 'Kibic', color: '#1E8A3C' }
+    ];
+    const googleAccounts = accountDefs.map(a => ({
+      email: a.email,
+      name: a.name,
+      tag: a.tag,
+      color: a.color,
+      initial: a.name.charAt(0).toUpperCase(),
+      login: () => this.loginWithGoogle(a.email)
+    }));
+    const tab = this.state.activeTab;
+    const tabDefs = [['news', 'Aktualności'], ['table', 'Tabela'], ['schedule', 'Terminarz'], ['forum', 'Forum']];
+    const tabs = tabDefs.map(([key, label]) => ({ key, label, active: tab === key, color: tab === key ? '#ffffff' : '#9a9a9a', bg: tab === key ? 'rgba(255,255,255,0.12)' : 'transparent', onClick: () => this.setTab(key) }));
+
+    const tableRows = TABLE.map((t, i) => {
+      const pts = t.w * 3 + t.d;
+      const diff = t.gf - t.ga;
+      const us = t.name === US;
+      return { pos: i + 1, name: t.name, m: t.m, w: t.w, d: t.d, l: t.l, bramki: t.gf + ':' + t.ga, gd: (diff > 0 ? '+' : '') + diff, pts, rowBg: us ? '#1E8A3C' : 'transparent', rowColor: us ? '#ffffff' : '#dcdcdc', weight: us ? '700' : '500', ptsColor: us ? '#ffffff' : '#F5C518' };
+    });
+
+    const mapFx = (fx) => {
+      const homeUs = fx.home === US, awayUs = fx.away === US;
+      return { round: fx.round, dateLabel: fx.dateLabel, home: fx.home, away: fx.away, result: fx.result, time: fx.time, homeColor: homeUs ? '#F5C518' : '#e8e8e8', awayColor: awayUs ? '#F5C518' : '#e8e8e8', homeWeight: homeUs ? '700' : '500', awayWeight: awayUs ? '700' : '500', bg: (homeUs || awayUs) ? '#181818' : 'transparent' };
+    };
+    const upcomingFixtures = SCHEDULE.filter(f => !f.done).map(mapFx);
+    const playedFixtures = SCHEDULE.filter(f => f.done).map(mapFx);
+
+    const forumThreads = (this.state.forum || []).map(t => ({ id: t.id, title: t.title, body: t.body, author: t.author, dateLabel: formatDate(t.date), replyLabel: t.replies.length + (t.replies.length === 1 ? ' odpowiedź' : ' odpowiedzi'), open: () => this.openThread(t.id) }));
+    const inThreadObj = typeof this.state.forumView === 'number' ? (this.state.forum || []).find(t => t.id === this.state.forumView) : null;
+    const ctAv = inThreadObj ? avatar(inThreadObj.author) : { color: '#333', initial: '?' };
+    const currentThread = inThreadObj ? { title: inThreadObj.title, body: inThreadObj.body, author: inThreadObj.author, dateLabel: formatDate(inThreadObj.date), avatarColor: ctAv.color, initial: ctAv.initial, replies: inThreadObj.replies.map(r => { const av = avatar(r.author); return { author: r.author, body: r.body, dateLabel: formatDate(r.date), avatarColor: av.color, initial: av.initial }; }) } : { title: '', body: '', author: '', dateLabel: '', avatarColor: '#333', initial: '?', replies: [] };
+    const inThread = !!inThreadObj;
+    const myAv = avatar(isLoggedIn ? this.state.session.name : '?');
+
+    return {
+      isNews: tab === 'news',
+      isTable: tab === 'table',
+      isSchedule: tab === 'schedule',
+      isForum: tab === 'forum',
+      tabs,
+      tableRows,
+      upcomingFixtures,
+      playedFixtures,
+      forumThreads,
+      forumEmpty: forumThreads.length === 0,
+      inThread,
+      notInThread: !inThread,
+      currentThread,
+      threadReplyCount: currentThread.replies.length,
+      threadNoReplies: currentThread.replies.length === 0,
+      myAvatarColor: myAv.color,
+      myInitial: myAv.initial,
+      canPost: isLoggedIn,
+      cannotPost: !isLoggedIn,
+      showNewThread: this.state.showNewThread,
+      threadTitle: this.state.threadTitle,
+      threadBody: this.state.threadBody,
+      threadError: this.state.threadError,
+      hasThreadError: !!this.state.threadError,
+      replyText: this.state.replyText,
+      replyError: this.state.replyError,
+      hasReplyError: !!this.state.replyError,
+      openNewThread: this.openNewThread,
+      closeNewThread: this.closeNewThread,
+      addThread: this.addThread,
+      addReply: this.addReply,
+      backToForum: this.backToForum,
+      onThreadTitle: this.onThreadTitle,
+      onThreadBody: this.onThreadBody,
+      onReplyText: this.onReplyText,
+      news,
+      featured,
+      rest,
+      hasFeatured: !!featured,
+      hasNews: rest.length > 0,
+      isEmpty: count === 0,
+      countLabel: count === 1 ? '1 wpis' : (count >= 2 && count <= 4 ? count + ' wpisy' : count + ' wpisów'),
+      isLoggedIn,
+      isLoggedOut: !isLoggedIn,
+      isAdmin: !!isAdmin,
+      userName: isLoggedIn ? this.state.session.name : '',
+      motto: this.props.motto || 'Najnowsze wieści prosto z Kostrza — mecze, drużyna i życie klubu, o którym dbają Dziki.',
+      showHeroLogo: this.props.showHeroLogo ?? true,
+      adminEmail,
+      googleAccounts,
+      loginEmail: this.state.loginEmail,
+      showLogin: this.state.showLogin,
+      showAddPost: this.state.showAddPost,
+      loginError: this.state.loginError,
+      hasLoginError: !!this.state.loginError,
+      postTitle: this.state.postTitle,
+      postBody: this.state.postBody,
+      postError: this.state.postError,
+      hasPostError: !!this.state.postError,
+      matchDetails: this.state.matchDetails,
+      aiLoading: this.state.aiLoading,
+      aiError: this.state.aiError,
+      hasAiError: !!this.state.aiError,
+      aiButtonLabel: this.state.aiLoading ? 'Generuję…' : 'Generuj post z ostatniego meczu',
+      openLogin: this.openLogin,
+      closeLogin: this.closeLogin,
+      openAddPost: this.openAddPost,
+      closeAddPost: this.closeAddPost,
+      stopProp: this.stopProp,
+      doLogout: this.doLogout,
+      addPost: this.addPost,
+      generatePost: this.generatePost,
+      loginWithEmail: () => this.loginWithGoogle(this.state.loginEmail),
+      onLoginEmail: this.onLoginEmail,
+      onLoginKey: this.onLoginKey,
+      onPostTitle: this.onPostTitle,
+      onPostBody: this.onPostBody
+    };
+  }
+}
+</script>
+</body>
+</html>
