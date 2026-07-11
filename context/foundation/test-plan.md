@@ -41,7 +41,7 @@ zadanie research, zob. §1 zasada #3).
 | # | Ryzyko (scenariusz porażki) | Impact | Likelihood | Source (dowód — nie anchor) |
 |---|------------------------------|--------|------------|------------------------------|
 | 1 | Gość / zalogowany kibic sięga po operacje admina (create / edit / delete / generate / publish) — bramka sprawdza „czy zalogowany", a nie „czy Twoja rola" *(abuse: authorization)* | High | High | PRD §Access Control + §Guardrails; interview Q2, Q3; hot-spot `backend/src/main/.../security` (3 commity), `frontend/src/app` (`app.routes.ts` 7×) |
-| 2 | Propozycja / draft trafia do publicznych aktualności bez jawnej akceptacji admina — złamany guardrail „system nigdy nie publikuje sam" | High | Medium | PRD §Guardrails + US-01 AC; hot-spot `backend/src/main/.../news` (status wpisu); migracja `V5 published_check` |
+| 2 | Wygenerowana propozycja trafia do publicznych aktualności bez jawnej akceptacji admina — złamany guardrail „system nigdy nie publikuje sam". Mechanizm: publiczny odczyt zwraca wyłącznie `PUBLISHED`, a generacja **niczego nie persystuje** (proposal żyje w przeglądarce admina; nie ma statusu `DRAFT` ani `save`) | High | Medium | PRD §Guardrails + US-01 AC; hot-spot `backend/src/main/.../news` (kontroler odczytu + `/generate` bez `save`); migracja `V5 published_check` jako dowód integralności danych (PUBLISHED ⇒ `published_at NOT NULL`), nie bramka widoczności |
 | 3 | Migracja Flyway (changeset) niekompatybilna wstecz / psuje dane na prodzie — Cloud Run cofa rewizję, baza nie | High | Medium | interview Q2 (przeżyte); `tech-stack-backend.md` (forward-only + rollback caveat); `backend/src/main/resources/db/migration` (6 migracji) |
 | 4 | Regresja CORS/Security blokuje legalny ruch (front dostaje 401/403 wszędzie) albo cicho rozluźnia bramkę | Medium | Medium | interview Q2, Q3; hot-spot `backend/src/main/.../security`, `backend/src/main/.../web` (CORS) |
 | 5 | Ścieżka generowania publikuje zmyślony wynik zamiast czystego błędu, gdy brak danych meczowych *(kontrakt deterministyczny, nie jakość prozy LLM)* | High | Medium | PRD S-03 risk „chude wejście"; roadmap decyzja 2026-07-08; hot-spot `backend/src/main/.../news` |
@@ -67,7 +67,7 @@ obserwowalności/alertingu, nie do testu — zob. §7.
 | Risk | Co dowodzi ochrony | Co zakwestionować | Kontekst do ugruntowania przez `/10x-research` | Najtańsza warstwa | Anti-pattern do uniknięcia |
 |------|--------------------|-------------------|-----------------------------------------------|-------------------|----------------------------|
 | #1 | Gość i zalogowany kibic dostają 403 na każdym write / generate / publish / delete; tylko admin przechodzi | „happy-path logowania admina dowodzi, że kibic jest odcięty" | punkt wejścia każdego chronionego endpointu, kształt roli/claimu admina, mapowanie tokenu na autoryzację | integration (MockMvc, macierz ról × endpoint) | testować wyłącznie ścieżkę admina; over-mock filtra bezpieczeństwa |
-| #2 | Publiczny odczyt zwraca wyłącznie `PUBLISHED`; generacja tworzy draft, niczego nie publikując | „201/200 z generacji znaczy, że wpis jest widoczny publicznie" | przejście statusu draft→published, zapytanie listy publicznej, gdzie egzekwowany jest gate | integration + test zapytania repo | assert skopiowany z logiki statusu (oracle problem) |
+| #2 | Publiczny odczyt zwraca wyłącznie `PUBLISHED`; generacja niczego nie persystuje (proposal żyje w przeglądarce admina — brak statusu `DRAFT`, brak `save`), więc `/generate` sam z siebie nie może nic upublicznić | „200 z generacji znaczy, że wpis jest widoczny publicznie" | zapytanie listy publicznej (`findByStatus(PUBLISHED)`), filtr detalu (404 na nie-published), potwierdzenie że `/generate` nie woła `repository.save` | integration (MockMvc) + test zapytania repo | assert skopiowany z logiki statusu (oracle problem); traktowanie `200-no-save` jak `201-publishes` |
 | #3 | Pełny łańcuch migracji stawia się na czystym Postgresie i zachowuje istniejące dane | „migracja przeszła na H2/staging, więc przejdzie na prod PG" | kolejność migracji, ograniczenia (`published_check`, `updated_at`), zgodność wstecz z poprzednią rewizją app | integration (Testcontainers Postgres) | testować przeciw H2/in-memory zamiast realnego PG |
 | #4 | Preflight/CORS przepuszcza legalny origin, a chroniony endpoint dalej wymaga ważnego tokenu | „ustawiony nagłówek CORS = auth działa" | konfiguracja CORS, kolejność filtrów, które ścieżki są `permitAll` vs chronione | integration (MockMvc) | assert na samym nagłówku bez sprawdzenia ścieżki auth |
 | #5 | Brak danych meczowych → czysty błąd (`MatchDataUnavailableException` / 4xx-5xx), zero auto-publikacji; nic zmyślonego nie ląduje jako draft/published | „200 znaczy, że treść jest prawdziwa" | granica klienta LLM i klienta scrapera, co dzieje się przy pustych/niekompletnych danych, gdzie powstaje draft | integration z zamockowaną granicą sieci (LLM + scraper) | asertować wygenerowany tekst słowo-w-słowo (oracle problem) |
@@ -82,7 +82,7 @@ aktualizuje Status, gdy artefakty pojawiają się na dysku.
 
 | # | Phase name | Goal (one line) | Risks covered | Test types | Status | Change folder |
 |---|------------|-----------------|---------------|------------|--------|---------------|
-| 1 | Backend harness + bramka dostępu i publikacji | Postawić runner backendu i dowieść macierz ról oraz gate publikacji na najtańszej warstwie; wpiąć CI gate „backend tests" | #1, #2, #4 | integration (MockMvc), @WebMvcTest | researched | context/changes/testing-backend-access-publish-gate/ |
+| 1 | Backend harness + bramka dostępu i publikacji | Postawić runner backendu i dowieść macierz ról oraz gate publikacji na najtańszej warstwie; wpiąć CI gate „backend tests" | #1, #2, #4 | integration (MockMvc), @WebMvcTest | complete | context/changes/testing-backend-access-publish-gate/ |
 | 2 | Warstwa danych i granice zewnętrzne | Migracje na realnym Postgresie, kontrakt scrapera, deterministyczny kontrakt błędu generacji (brak auto-publikacji) | #3, #6, #5 | integration (Testcontainers), contract/fixture | not started | — |
 | 3 | Wyciek sekretu + utwardzenie security gate | Sekrety nie wyciekają w błędach/logach; zablokować testy bezpieczeństwa jako wymaganą bramkę CI | #7 | integration ścieżki błędu | not started | — |
 | 4 | Frontend — testy podstawowe | Bootstrap Vitest (Angular 22 `@angular/build:unit-test`) + smoke: publiczna lista pokazuje tylko `PUBLISHED`, guard panelu admina | #1, #2 (poziom widoku) | unit/component (Vitest + TestBed) | not started | — |
@@ -131,12 +131,18 @@ wcześniej bramka jest `planned`.
 | Gate | Where | Required? | Catches |
 |------|-------|-----------|---------|
 | build + typecheck (Maven `verify`, `ng build`) | local + CI | required | dryf składni/typów, błędy kompilacji |
-| unit + integration (backend) | local + CI | required after §3 Phase 1 | regresje logiki, bramka dostępu, gate publikacji |
+| unit + integration (backend) | local + CI | ✅ required (aktywna) | regresje logiki, bramka dostępu, gate publikacji |
 | integration DB (Testcontainers) | CI on PR | required after §3 Phase 2 | migracje psujące schemat/dane, kontrakt scrapera |
 | security tests (authz + wyciek sekretu) | CI on PR | required after §3 Phase 3 | rozluźnienie bramki, wyciek klucza/tokenu |
 | unit/component (frontend) | local + CI | required after §3 Phase 4 | regresje widoku published-only, guard admina |
 | post-edit hook | local (agent loop) | optional | regresje w czasie edycji |
 | pre-prod smoke | between merge + prod | optional | awarie specyficzne dla środowiska (Cloud Run/Cloud SQL) |
+
+Mechanizm egzekucji bramki „unit + integration (backend)": `./mvnw -B verify`
+uruchamia Surefire na każdym PR (`.github/workflows/backend.yml`, job `build-test`)
+oraz przy push na `master` (job `deploy`) i wywala build przy pierwszej porażce
+testu — żadnej zmiany w workflow nie trzeba było dodawać, bramkę aktywuje sam
+fakt, że Faza 1 rolloutu dostarczyła testy.
 
 ## 6. Cookbook Patterns
 
@@ -145,11 +151,59 @@ odpowiednia faza rolloutu wejdzie; wcześniej brzmi „TBD — see §3 Phase <N>
 
 ### 6.1 Adding a backend unit test
 
-- TBD — see §3 Phase 1.
+Warstwa domyślna dla ryzyk na granicy HTTP to **slice `@WebMvcTest`** (bootuje
+tylko warstwę web + łańcuch security; bez JPA, bez DB — sub-sekundowe). Przepis:
+
+```java
+@WebMvcTest                                 // bez value → skanuje wszystkie kontrolery
+@Import({ SecurityConfig.class, CorsConfig.class })  // realny łańcuch, nie test-default Boota
+class FooTest {
+    @Autowired MockMvc mvc;
+    @MockitoBean NewsPostRepository repository;        // @MockitoBean, nie @MockBean
+    @MockitoBean NewsGenerationService generationService;
+}
+```
+
+- **Importuj realny `SecurityConfig` (+ `CorsConfig`)** przez `@Import`, inaczej
+  `@WebMvcTest` podstawi domyślne security Boota zamiast produkcyjnego łańcucha
+  (`hasRole("ADMIN")`, CSRF off, STATELESS).
+- **`@MockitoBean` dla `NewsPostRepository` i `NewsGenerationService`** — to
+  zależności kontrolerów; bez nich kontekst slice'a się nie podniesie.
+- **Trzy `@Value`-e konstruktora `SecurityConfig` (JWKS URI, issuer, `app.admin.uids`)
+  są już w `src/test/resources/application.properties`** — żadnego `@TestPropertySource`
+  per-klasa nie trzeba dodawać.
+- **Bez CSRF-tokenu w POST/PUT/DELETE** — `SecurityConfig` wyłącza CSRF i sesje są
+  STATELESS, więc MockMvc nie potrzebuje `.with(csrf())`.
+- Wzorzec na żywo: `backend/src/test/java/com/plomienkostrze/web/PublishGateTest.java`.
 
 ### 6.2 Adding a backend integration test (MockMvc / role matrix)
 
-- TBD — see §3 Phase 1.
+Symulacja principala idzie przez `SecurityMockMvcRequestPostProcessors`, opakowane
+we współdzielony helper `backend/src/test/java/com/plomienkostrze/web/MockPrincipals.java`:
+
+```java
+adminJwt() → jwt().authorities(new SimpleGrantedAuthority("ROLE_ADMIN"))  // admin
+userJwt()  → jwt()                                                        // zalogowany nie-admin
+// anonymous → BRAK post-processora (nie wysyłaj credentiali)
+```
+
+- **`app.admin.uids` jest puste w test-propsach — wstrzykuj `ROLE_ADMIN` wprost**,
+  nie licz na produkcyjny konwerter UID→rola. String musi być **dokładnie
+  `"ROLE_ADMIN"`**, bo `hasRole("ADMIN")` sam dokleja prefiks `ROLE_`. `jwt()`
+  omija `JwtDecoder` — zero fetchu Firebase/JWKS, zero DB.
+- **Rozróżnienie 401 vs 403 to dwa osobne wiersze**: anonymous (brak credentiali)
+  → **401**; zalogowany bez roli → **403**. Każdy write musi mieć oba.
+- **Macierz ról jako dane, nie jako osobne testy**: `@ParameterizedTest` +
+  `@MethodSource` dający krotki `(caller, endpoint, expectedStatus)`. Dodanie
+  endpointu to jeden wiersz, a strukturalnie trudno pominąć wiersze anon-401 /
+  non-admin-403, które naiwny „happy-path admina" by przeoczył. Dla authorized
+  callera asertuj **„nie 401/403"** (`clearsSecurityGate()`), nie dokładny kod
+  biznesowy — kody biznesowe pinuje `PublishGateTest`, macierz trzyma się granicy
+  autoryzacji.
+- **Zastub benign business returns w `@BeforeEach`** (mockowane repo/serwis), żeby
+  request admina dobił do statusu biznesowego (201/200/204), a nie do 500, który
+  mylnie wyglądałby jak „przeszedł".
+- Wzorzec na żywo: `backend/src/test/java/com/plomienkostrze/web/AuthorizationMatrixTest.java`.
 
 ### 6.3 Adding a DB/migration integration test (Testcontainers)
 
@@ -167,6 +221,20 @@ odpowiednia faza rolloutu wejdzie; wcześniej brzmi „TBD — see §3 Phase <N>
 
 (Opcjonalne. Po wejściu każdej fazy `/10x-implement` dopisuje tu 2–3 linie z
 tym, czego faza nauczyła — np. lokalizacja fixture'ów, wspólny helper.)
+
+**Faza 1 (backend harness — #1, #2, #4):**
+- Dodano `spring-security-test` (test-scope) do `backend/pom.xml` — to jedyny
+  brakujący dependency; wersję zarządza Boot BOM (bez `<version>`).
+- Slice'y żyją w `backend/src/test/java/com/plomienkostrze/web/`: `MockPrincipals`
+  (wspólne post-processory), `AuthorizationMatrixTest` (#1), `PublishGateTest` (#2),
+  `CorsOrthogonalityTest` (#4).
+- Oracle „generacja niczego nie publikuje" = `verifyNoInteractions(repository)` po
+  `/generate`; oracle „lista tylko PUBLISHED" = `ArgumentCaptor` na argumencie
+  statusu w `findByStatus`.
+- Filtr PUBLISHED na poziomie DB (że derived query `findByStatus` naprawdę filtruje
+  w bazie) **odłożony do Fazy 2 (Testcontainers PG)** — Faza 1 pina wyłącznie
+  kontrakt kontrolera. Branch „nie-published istnieje → 404" jest dziś
+  unreachable-by-construction (enum ma tylko `PUBLISHED`).
 
 ## 7. What We Deliberately Don't Test
 

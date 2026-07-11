@@ -542,21 +542,21 @@ behavior change.
 
 #### Automated
 
-- [x] 4.1 `CorsOrthogonalityTest` passes (`./mvnw -B -Dtest=CorsOrthogonalityTest test`)
-- [x] 4.2 Full suite green (`./mvnw -B verify`)
+- [x] 4.1 `CorsOrthogonalityTest` passes (`./mvnw -B -Dtest=CorsOrthogonalityTest test`) — 13d91a0
+- [x] 4.2 Full suite green (`./mvnw -B verify`) — 13d91a0
 
 #### Manual
 
-- [x] 4.3 Preflight assertion checks the actual allowed Origin value, not just header presence
+- [x] 4.3 Preflight assertion checks the actual allowed Origin value, not just header presence — 13d91a0
 
 ### Phase 5: CI gate activation + test-plan documentation
 
 #### Automated
 
-- [ ] 5.1 Full suite green (`./mvnw -B verify`)
-- [ ] 5.2 No remaining "TBD — see §3 Phase 1" in §6.1/§6.2 (`! grep ...`)
+- [x] 5.1 Full suite green (`./mvnw -B verify`)
+- [x] 5.2 No remaining "TBD — see §3 Phase 1" in §6.1/§6.2 (`! grep ...`)
 
 #### Manual
 
-- [ ] 5.3 §2 risk #2 wording no longer implies a persisted draft; §5 gate reads as active
-- [ ] 5.4 Cookbook §6.2 is copy-pasteable for the next contributor
+- [x] 5.3 §2 risk #2 wording no longer implies a persisted draft; §5 gate reads as active
+- [x] 5.4 Cookbook §6.2 is copy-pasteable for the next contributor
