@@ -81,7 +81,8 @@ class AuthorizationMatrixTest {
 	private enum Access {
 		PERMIT_ALL,
 		AUTHENTICATED,
-		ADMIN
+		ADMIN,
+		DENY_ALL
 	}
 
 	/** The three principals the matrix exercises. */
@@ -125,7 +126,11 @@ class AuthorizationMatrixTest {
 				new Endpoint("PUT /api/news-posts/1", Access.ADMIN,
 						() -> put("/api/news-posts/1").contentType(APPLICATION_JSON).content(VALID_BODY)),
 				new Endpoint("DELETE /api/news-posts/1", Access.ADMIN,
-						() -> delete("/api/news-posts/1")));
+						() -> delete("/api/news-posts/1")),
+				// Unmatched path — pins the anyRequest().denyAll() default (denies everyone,
+				// admin included), so a new endpoint added without a rule fails closed.
+				new Endpoint("GET /api/unknown", Access.DENY_ALL,
+						() -> get("/api/unknown")));
 	}
 
 	static Stream<Arguments> matrix() {
@@ -157,6 +162,9 @@ class AuthorizationMatrixTest {
 				case NON_ADMIN -> status().isForbidden();
 				case ADMIN -> clearsSecurityGate();
 			};
+			// denyAll rejects everyone: 401 without credentials, 403 with any token
+			// (admin included — the default is not an admin gate).
+			case DENY_ALL -> caller == Caller.ANONYMOUS ? status().isUnauthorized() : status().isForbidden();
 		};
 	}
 
