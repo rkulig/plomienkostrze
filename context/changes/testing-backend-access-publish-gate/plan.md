@@ -553,10 +553,10 @@ behavior change.
 
 #### Automated
 
-- [x] 5.1 Full suite green (`./mvnw -B verify`)
-- [x] 5.2 No remaining "TBD — see §3 Phase 1" in §6.1/§6.2 (`! grep ...`)
+- [x] 5.1 Full suite green (`./mvnw -B verify`) — de24ebd
+- [x] 5.2 No remaining "TBD — see §3 Phase 1" in §6.1/§6.2 (`! grep ...`) — de24ebd
 
 #### Manual
 
-- [x] 5.3 §2 risk #2 wording no longer implies a persisted draft; §5 gate reads as active
-- [x] 5.4 Cookbook §6.2 is copy-pasteable for the next contributor
+- [x] 5.3 §2 risk #2 wording no longer implies a persisted draft; §5 gate reads as active — de24ebd
+- [x] 5.4 Cookbook §6.2 is copy-pasteable for the next contributor — de24ebd
