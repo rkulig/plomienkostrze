@@ -82,7 +82,7 @@ aktualizuje Status, gdy artefakty pojawiają się na dysku.
 
 | # | Phase name | Goal (one line) | Risks covered | Test types | Status | Change folder |
 |---|------------|-----------------|---------------|------------|--------|---------------|
-| 1 | Backend harness + bramka dostępu i publikacji | Postawić runner backendu i dowieść macierz ról oraz gate publikacji na najtańszej warstwie; wpiąć CI gate „backend tests" | #1, #2, #4 | integration (MockMvc), @WebMvcTest | change opened | context/changes/testing-backend-access-publish-gate/ |
+| 1 | Backend harness + bramka dostępu i publikacji | Postawić runner backendu i dowieść macierz ról oraz gate publikacji na najtańszej warstwie; wpiąć CI gate „backend tests" | #1, #2, #4 | integration (MockMvc), @WebMvcTest | researched | context/changes/testing-backend-access-publish-gate/ |
 | 2 | Warstwa danych i granice zewnętrzne | Migracje na realnym Postgresie, kontrakt scrapera, deterministyczny kontrakt błędu generacji (brak auto-publikacji) | #3, #6, #5 | integration (Testcontainers), contract/fixture | not started | — |
 | 3 | Wyciek sekretu + utwardzenie security gate | Sekrety nie wyciekają w błędach/logach; zablokować testy bezpieczeństwa jako wymaganą bramkę CI | #7 | integration ścieżki błędu | not started | — |
 | 4 | Frontend — testy podstawowe | Bootstrap Vitest (Angular 22 `@angular/build:unit-test`) + smoke: publiczna lista pokazuje tylko `PUBLISHED`, guard panelu admina | #1, #2 (poziom widoku) | unit/component (Vitest + TestBed) | not started | — |
