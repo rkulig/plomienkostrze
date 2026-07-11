@@ -520,23 +520,23 @@ behavior change.
 
 #### Automated
 
-- [x] 2.1 `AuthorizationMatrixTest` passes (`./mvnw -B -Dtest=AuthorizationMatrixTest test`)
-- [x] 2.2 All parameterized cases execute (row count == principals × endpoints, no skips)
+- [x] 2.1 `AuthorizationMatrixTest` passes (`./mvnw -B -Dtest=AuthorizationMatrixTest test`) — 76dfed4
+- [x] 2.2 All parameterized cases execute (row count == principals × endpoints, no skips) — 76dfed4
 
 #### Manual
 
-- [x] 2.3 Downgrading one `hasRole("ADMIN")` to `authenticated` fails the non-admin-403 row (then revert)
+- [x] 2.3 Downgrading one `hasRole("ADMIN")` to `authenticated` fails the non-admin-403 row (then revert) — 76dfed4
 
 ### Phase 3: Risk #2 — Publish gate
 
 #### Automated
 
-- [ ] 3.1 `PublishGateTest` passes (`./mvnw -B -Dtest=PublishGateTest test`)
-- [ ] 3.2 `findByStatus` captor confirms `PUBLISHED`; `verifyNoInteractions(repository)` holds after `/generate`
+- [x] 3.1 `PublishGateTest` passes (`./mvnw -B -Dtest=PublishGateTest test`)
+- [x] 3.2 `findByStatus` captor confirms `PUBLISHED`; `verifyNoInteractions(repository)` holds after `/generate`
 
 #### Manual
 
-- [ ] 3.3 The 200-no-save vs 201-publishes distinction is legible in the class
+- [x] 3.3 The 200-no-save vs 201-publishes distinction is legible in the class
 
 ### Phase 4: Risk #4 — CORS/security orthogonality
 
