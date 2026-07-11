@@ -531,23 +531,23 @@ behavior change.
 
 #### Automated
 
-- [x] 3.1 `PublishGateTest` passes (`./mvnw -B -Dtest=PublishGateTest test`)
-- [x] 3.2 `findByStatus` captor confirms `PUBLISHED`; `verifyNoInteractions(repository)` holds after `/generate`
+- [x] 3.1 `PublishGateTest` passes (`./mvnw -B -Dtest=PublishGateTest test`) — 2feb33a
+- [x] 3.2 `findByStatus` captor confirms `PUBLISHED`; `verifyNoInteractions(repository)` holds after `/generate` — 2feb33a
 
 #### Manual
 
-- [x] 3.3 The 200-no-save vs 201-publishes distinction is legible in the class
+- [x] 3.3 The 200-no-save vs 201-publishes distinction is legible in the class — 2feb33a
 
 ### Phase 4: Risk #4 — CORS/security orthogonality
 
 #### Automated
 
-- [ ] 4.1 `CorsOrthogonalityTest` passes (`./mvnw -B -Dtest=CorsOrthogonalityTest test`)
-- [ ] 4.2 Full suite green (`./mvnw -B verify`)
+- [x] 4.1 `CorsOrthogonalityTest` passes (`./mvnw -B -Dtest=CorsOrthogonalityTest test`)
+- [x] 4.2 Full suite green (`./mvnw -B verify`)
 
 #### Manual
 
-- [ ] 4.3 Preflight assertion checks the actual allowed Origin value, not just header presence
+- [x] 4.3 Preflight assertion checks the actual allowed Origin value, not just header presence
 
 ### Phase 5: CI gate activation + test-plan documentation
 
