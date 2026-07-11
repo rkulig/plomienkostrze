@@ -509,23 +509,23 @@ behavior change.
 
 #### Automated
 
-- [x] 1.1 Dependency resolves and project compiles (`./mvnw -B test-compile`)
-- [x] 1.2 Harness smoke assertion passes (`./mvnw -B -Dtest='*Test' test`)
+- [x] 1.1 Dependency resolves and project compiles (`./mvnw -B test-compile`) — 27813eb
+- [x] 1.2 Harness smoke assertion passes (`./mvnw -B -Dtest='*Test' test`) — 27813eb
 
 #### Manual
 
-- [x] 1.3 `jwt()` / `.authorities(...)` imports resolve with no unresolved symbols
+- [x] 1.3 `jwt()` / `.authorities(...)` imports resolve with no unresolved symbols — 27813eb
 
 ### Phase 2: Risk #1 — Authorization role matrix
 
 #### Automated
 
-- [ ] 2.1 `AuthorizationMatrixTest` passes (`./mvnw -B -Dtest=AuthorizationMatrixTest test`)
-- [ ] 2.2 All parameterized cases execute (row count == principals × endpoints, no skips)
+- [x] 2.1 `AuthorizationMatrixTest` passes (`./mvnw -B -Dtest=AuthorizationMatrixTest test`)
+- [x] 2.2 All parameterized cases execute (row count == principals × endpoints, no skips)
 
 #### Manual
 
-- [ ] 2.3 Downgrading one `hasRole("ADMIN")` to `authenticated` fails the non-admin-403 row (then revert)
+- [x] 2.3 Downgrading one `hasRole("ADMIN")` to `authenticated` fails the non-admin-403 row (then revert)
 
 ### Phase 3: Risk #2 — Publish gate
 
