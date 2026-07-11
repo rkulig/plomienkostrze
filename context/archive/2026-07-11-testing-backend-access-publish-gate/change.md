@@ -1,10 +1,10 @@
 ---
 change_id: testing-backend-access-publish-gate
 title: Backend test harness — bramka dostępu, gate publikacji i CORS/security
-status: impl_reviewed
+status: archived
 created: 2026-07-11
 updated: 2026-07-11
-archived_at: null
+archived_at: 2026-07-11T14:40:46Z
 ---
 
 ## Notes
