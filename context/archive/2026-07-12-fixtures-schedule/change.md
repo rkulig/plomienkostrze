@@ -1,10 +1,10 @@
 ---
 change_id: fixtures-schedule
 title: Fixtures schedule
-status: implemented
+status: archived
 created: 2026-07-12
 updated: 2026-07-12
-archived_at: null
+archived_at: 2026-07-12T13:14:35Z
 ---
 
 ## Notes
