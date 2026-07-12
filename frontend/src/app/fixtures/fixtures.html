@@ -1,0 +1,40 @@
+<section class="fixtures">
+  <h1>Terminarz</h1>
+
+  @if (busy()) {
+    <p class="note">Ładowanie…</p>
+  } @else if (error(); as message) {
+    <p class="error">{{ message }}</p>
+  } @else if (rows().length === 0) {
+    <p class="note">Brak danych</p>
+  } @else {
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th class="round">Data</th>
+            <th class="team">Przeciwnik</th>
+            <th class="venue">Miejsce</th>
+            <th class="num">Wynik</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of rows(); track $index) {
+            <tr>
+              <td class="round">{{ row.round }}</td>
+              <td class="team">{{ row.opponent }}</td>
+              <td class="venue">{{ row.home ? 'dom' : 'wyjazd' }}</td>
+              <td class="num">
+                @if (row.played) {
+                  {{ row.goalsFor }}–{{ row.goalsAgainst }}
+                } @else {
+                  –
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</section>

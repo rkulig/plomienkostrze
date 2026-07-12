@@ -34,6 +34,7 @@ import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
 
+import com.plomienkostrze.league.FixturesService;
 import com.plomienkostrze.league.LeagueService;
 import com.plomienkostrze.news.NewsGenerationService;
 import com.plomienkostrze.news.NewsGenerationService.ProposalDraft;
@@ -72,6 +73,11 @@ class AuthorizationMatrixTest {
 	// collaborator must be present for the context to load (S-05).
 	@MockitoBean
 	private LeagueService leagueService;
+
+	// FixturesController is likewise component-scanned; its FixturesService
+	// collaborator must be present for the context to load (S-06).
+	@MockitoBean
+	private FixturesService fixturesService;
 
 	@BeforeEach
 	void stubBenignBusinessReturns() {

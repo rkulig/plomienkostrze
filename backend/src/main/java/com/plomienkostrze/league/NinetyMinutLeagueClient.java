@@ -3,6 +3,8 @@ package com.plomienkostrze.league;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -32,6 +34,13 @@ public class NinetyMinutLeagueClient {
 
 	private static final int TIMEOUT_MILLIS = 10_000;
 
+	/** Team-name text used to spot Płomień's row in a round block (no team links there). */
+	private static final String TEAM_NAME = "Płomień Kostrze";
+	/** A round header is a {@code <u>} whose text starts with e.g. "Kolejka 1". */
+	private static final Pattern ROUND_HEADER = Pattern.compile("^\\s*Kolejka\\s+\\d+");
+	/** A played score cell is "X-Y"; "-" or empty means the match is upcoming. */
+	private static final Pattern SCORE = Pattern.compile("(\\d+)-(\\d+)");
+
 	private final String leagueUrl;
 
 	public NinetyMinutLeagueClient(@Value("${app.ninetyminut.league-url}") String leagueUrl) {
@@ -56,6 +65,81 @@ public class NinetyMinutLeagueClient {
 			}
 		}
 		return rows;
+	}
+
+	/**
+	 * Fetches and parses Płomień's fixtures from the league-page terminarz (S-06),
+	 * reusing {@link #fetchPage()} — the reuse the seam was built for.
+	 *
+	 * <p>The terminarz is a sequence of round blocks, each a {@code <u>} header
+	 * ("Kolejka N - <date range>") followed by the round's {@code table.main[width=600]}
+	 * of {@code host · score · guest} rows. We walk the document in order tracking the
+	 * current round header; in each round table the one row whose text contains
+	 * {@value #TEAM_NAME} is Płomień's match. Returns one {@link FixtureRow} per round
+	 * that carries a Płomień match, in round (chronological) order; individual rows that
+	 * don't parse are skipped. Throws {@link LeagueDataUnavailableException} if the walk
+	 * yields zero rows — an empty terminarz is indistinguishable from a silent parse break.
+	 */
+	public List<FixtureRow> fetchFixtures() {
+		Document page = fetchPage();
+		List<FixtureRow> rows = new ArrayList<>();
+		String currentRound = null;
+		for (Element el : page.getAllElements()) {
+			String tag = el.tagName();
+			if (tag.equals("u")) {
+				String text = el.text().strip();
+				if (ROUND_HEADER.matcher(text).find()) {
+					currentRound = text;
+				}
+			} else if (tag.equals("table") && isFixturesTable(el) && currentRound != null) {
+				FixtureRow row = parseFixtureRow(el, currentRound);
+				if (row != null) {
+					rows.add(row);
+				}
+				currentRound = null;
+			}
+		}
+		if (rows.isEmpty()) {
+			throw new LeagueDataUnavailableException("no Płomień fixtures found on " + leagueUrl);
+		}
+		return rows;
+	}
+
+	/** A round's match table: {@code <table class="main" width="600">}. */
+	private boolean isFixturesTable(Element table) {
+		return table.hasClass("main") && "600".equals(table.attr("width"));
+	}
+
+	/**
+	 * Płomień's row in a round table: {@code td[0]}=host, {@code td[1]}=score,
+	 * {@code td[2]}=guest. Home iff Płomień is the host; opponent is the other cell.
+	 * Score "-"/empty ⇒ upcoming; "X-Y" ⇒ host-guest normalized to Płomień's
+	 * perspective. Returns null if no Płomień row is present or it is structurally short.
+	 */
+	private FixtureRow parseFixtureRow(Element table, String round) {
+		for (Element tr : table.select("tr")) {
+			if (!tr.text().contains(TEAM_NAME)) {
+				continue;
+			}
+			Elements cells = tr.select("td");
+			if (cells.size() < 3) {
+				return null;
+			}
+			String host = cells.get(0).text().strip();
+			String guest = cells.get(2).text().strip();
+			boolean home = host.contains(TEAM_NAME);
+			String opponent = home ? guest : host;
+			Matcher score = SCORE.matcher(cells.get(1).text().strip());
+			if (!score.find()) {
+				return new FixtureRow(round, opponent, home, false, null, null);
+			}
+			int hostGoals = Integer.parseInt(score.group(1));
+			int guestGoals = Integer.parseInt(score.group(2));
+			int goalsFor = home ? hostGoals : guestGoals;
+			int goalsAgainst = home ? guestGoals : hostGoals;
+			return new FixtureRow(round, opponent, home, true, goalsFor, goalsAgainst);
+		}
+		return null;
 	}
 
 	/**

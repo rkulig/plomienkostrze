@@ -68,6 +68,10 @@ class PublishGateTest {
 	@MockitoBean
 	private com.plomienkostrze.league.LeagueService leagueService;
 
+	// FixturesController is component-scanned by @WebMvcTest; mock its collaborator (S-06).
+	@MockitoBean
+	private com.plomienkostrze.league.FixturesService fixturesService;
+
 	private static final String VALID_BODY = "{\"title\":\"t\",\"content\":\"c\"}";
 
 	@Test
