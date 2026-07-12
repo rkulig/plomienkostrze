@@ -1,0 +1,24 @@
+<section class="new-thread">
+  <h1>Nowy wątek</h1>
+
+  <form [formGroup]="form" (ngSubmit)="create()">
+    <label for="thread-title">Tytuł</label>
+    <input id="thread-title" type="text" formControlName="title"
+      placeholder="O czym chcesz porozmawiać?" />
+
+    <label for="thread-body">Pierwsza wiadomość</label>
+    <textarea id="thread-body" formControlName="body" rows="8"
+      placeholder="Napisz treść otwierającą…"></textarea>
+
+    @if (error(); as error) {
+      <p class="error">{{ error }}</p>
+    }
+
+    <div class="actions">
+      <button type="submit" [disabled]="form.invalid || sending()">
+        {{ sending() ? 'Zakładanie…' : 'Załóż wątek' }}
+      </button>
+      <a routerLink="/forum">Anuluj</a>
+    </div>
+  </form>
+</section>

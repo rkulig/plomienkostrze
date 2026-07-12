@@ -1,0 +1,67 @@
+.thread-detail {
+  max-width: 40rem;
+  margin: 2rem auto;
+  padding: 0 1rem;
+
+  .note {
+    color: #666;
+  }
+
+  .error {
+    color: #b00020;
+  }
+
+  .meta {
+    color: #666;
+  }
+
+  .posts {
+    list-style: none;
+    padding: 0;
+
+    .post {
+      padding: 1rem 0;
+      border-bottom: 1px solid #eee;
+
+      .post-meta {
+        margin: 0 0 0.35rem;
+        color: #666;
+        font-size: 0.9rem;
+      }
+
+      .post-body {
+        margin: 0;
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+      }
+    }
+  }
+
+  .reply-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin: 1.5rem 0;
+
+    label {
+      font-weight: 600;
+    }
+
+    textarea {
+      font: inherit;
+      padding: 0.5rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    button {
+      align-self: flex-start;
+      padding: 0.5rem 1.25rem;
+    }
+  }
+
+  .back {
+    display: inline-block;
+    margin-top: 1rem;
+  }
+}

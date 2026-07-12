@@ -1,0 +1,51 @@
+.thread-list {
+  max-width: 40rem;
+  margin: 2rem auto;
+  padding: 0 1rem;
+
+  .thread-list-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .new-thread {
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .note {
+    color: #666;
+  }
+
+  .error {
+    color: #b00020;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+
+    li {
+      padding: 1rem 0;
+      border-bottom: 1px solid #eee;
+
+      .title {
+        font-weight: 600;
+        font-size: 1.1rem;
+      }
+
+      .meta {
+        display: block;
+        margin-top: 0.35rem;
+        color: #666;
+      }
+    }
+  }
+
+  button {
+    margin-top: 1rem;
+    padding: 0.5rem 1rem;
+  }
+}

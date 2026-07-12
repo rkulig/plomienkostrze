@@ -473,24 +473,24 @@ No data backfill; the forum launches empty.
 
 #### Automated
 
-- [x] 2.1 Backend compiles (`./mvnw -q compile`)
-- [x] 2.2 Authorization matrix passes with forum rows (`AuthorizationMatrixTest`)
-- [x] 2.3 Forum behavior tests pass (`ForumApiTest`)
-- [x] 2.4 Full backend test suite green (`./mvnw -q test`)
+- [x] 2.1 Backend compiles (`./mvnw -q compile`) — f0dd833
+- [x] 2.2 Authorization matrix passes with forum rows (`AuthorizationMatrixTest`) — f0dd833
+- [x] 2.3 Forum behavior tests pass (`ForumApiTest`) — f0dd833
+- [x] 2.4 Full backend test suite green (`./mvnw -q test`) — f0dd833
 
 #### Manual
 
-- [x] 2.5 Curls confirm anon→401, fan→200/201, reply bumps activity+count, 404/400 cases, no uid/email in responses
+- [x] 2.5 Curls confirm anon→401, fan→200/201, reply bumps activity+count, 404/400 cases, no uid/email in responses — f0dd833
 
 ### Phase 3: Frontend forum feature
 
 #### Automated
 
-- [ ] 3.1 Frontend builds (`npm run build`)
-- [ ] 3.2 Lint passes (if configured)
-- [ ] 3.3 Unit tests pass (if forum specs added; otherwise existing suite green)
+- [x] 3.1 Frontend builds (`npm run build`)
+- [x] 3.2 Lint passes (if configured)
+- [x] 3.3 Unit tests pass (if forum specs added; otherwise existing suite green)
 
 #### Manual
 
-- [ ] 3.4 Guest redirected to login at /forum, no content leaked
-- [ ] 3.5 Fan creates thread, replies; thread bubbles to top with incremented count; author labels show name (never email/UID); prod build boots
+- [x] 3.4 Guest redirected to login at /forum, no content leaked
+- [x] 3.5 Fan creates thread, replies; thread bubbles to top with incremented count; author labels show name (never email/UID); prod build boots
