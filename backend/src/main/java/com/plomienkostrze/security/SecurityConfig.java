@@ -74,6 +74,9 @@ public class SecurityConfig {
 						.requestMatchers(HttpMethod.GET, "/api/ping").permitAll()
 						.requestMatchers("/actuator/health").permitAll()
 						.requestMatchers(HttpMethod.GET, "/api/me").authenticated()
+						// The whole forum sits behind login — reads AND writes (roadmap S-07,
+						// "całe forum jest za logowaniem"). One subtree matcher covers GET+POST.
+						.requestMatchers("/api/forum/**").authenticated()
 						.requestMatchers(HttpMethod.POST, "/api/news-posts").hasRole("ADMIN")
 						.requestMatchers(HttpMethod.POST, "/api/news-posts/generate").hasRole("ADMIN")
 						.requestMatchers(HttpMethod.PUT, "/api/news-posts/*").hasRole("ADMIN")

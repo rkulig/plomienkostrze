@@ -461,26 +461,26 @@ No data backfill; the forum launches empty.
 
 #### Automated
 
-- [x] 1.1 Backend compiles (`./mvnw -q compile`)
-- [x] 1.2 Context boots / schema validates against entities (`PlomienKostrzeApiApplicationTests`)
-- [x] 1.3 Full backend test suite green (`./mvnw -q test`)
+- [x] 1.1 Backend compiles (`./mvnw -q compile`) — 3b69fe8
+- [x] 1.2 Context boots / schema validates against entities (`PlomienKostrzeApiApplicationTests`) — 3b69fe8
+- [x] 1.3 Full backend test suite green (`./mvnw -q test`) — 3b69fe8
 
 #### Manual
 
-- [x] 1.4 V7/V8 apply cleanly against real Postgres and `ddl-auto=validate` passes on startup
+- [x] 1.4 V7/V8 apply cleanly against real Postgres and `ddl-auto=validate` passes on startup — 3b69fe8
 
 ### Phase 2: Backend REST API & security
 
 #### Automated
 
-- [ ] 2.1 Backend compiles (`./mvnw -q compile`)
-- [ ] 2.2 Authorization matrix passes with forum rows (`AuthorizationMatrixTest`)
-- [ ] 2.3 Forum behavior tests pass (`ForumApiTest`)
-- [ ] 2.4 Full backend test suite green (`./mvnw -q test`)
+- [x] 2.1 Backend compiles (`./mvnw -q compile`)
+- [x] 2.2 Authorization matrix passes with forum rows (`AuthorizationMatrixTest`)
+- [x] 2.3 Forum behavior tests pass (`ForumApiTest`)
+- [x] 2.4 Full backend test suite green (`./mvnw -q test`)
 
 #### Manual
 
-- [ ] 2.5 Curls confirm anon→401, fan→200/201, reply bumps activity+count, 404/400 cases, no uid/email in responses
+- [x] 2.5 Curls confirm anon→401, fan→200/201, reply bumps activity+count, 404/400 cases, no uid/email in responses
 
 ### Phase 3: Frontend forum feature
 

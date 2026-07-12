@@ -58,6 +58,10 @@ class CorsOrthogonalityTest {
 	@MockitoBean
 	private FixturesService fixturesService;
 
+	// ForumController is component-scanned by @WebMvcTest; mock its collaborator (S-07).
+	@MockitoBean
+	private com.plomienkostrze.forum.ForumService forumService;
+
 	@Test
 	void preflightSucceedsForLegalOrigin() throws Exception {
 		mvc.perform(options("/api/news-posts")
