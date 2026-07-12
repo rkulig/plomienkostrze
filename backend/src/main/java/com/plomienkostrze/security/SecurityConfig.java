@@ -70,6 +70,7 @@ public class SecurityConfig {
 						.dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
 						.requestMatchers(HttpMethod.GET, "/api/news-posts/**").permitAll()
 						.requestMatchers(HttpMethod.GET, "/api/league-table").permitAll()
+						.requestMatchers(HttpMethod.GET, "/api/fixtures").permitAll()
 						.requestMatchers(HttpMethod.GET, "/api/ping").permitAll()
 						.requestMatchers("/actuator/health").permitAll()
 						.requestMatchers(HttpMethod.GET, "/api/me").authenticated()
