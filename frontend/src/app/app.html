@@ -1,6 +1,10 @@
 <header class="app-header">
   <a class="app-title" routerLink="/">{{ title() }}</a>
 
+  <nav class="app-nav">
+    <a routerLink="/tabela" routerLinkActive="active">Tabela</a>
+  </nav>
+
   <nav class="app-auth">
     @if (user() === null) {
       <button type="button" (click)="signIn()">Zaloguj</button>

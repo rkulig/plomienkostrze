@@ -1,0 +1,52 @@
+.league-table {
+  max-width: 40rem;
+  margin: 2rem auto;
+  padding: 0 1rem;
+
+  .note {
+    color: #666;
+  }
+
+  .error {
+    color: #b00020;
+  }
+
+  // Narrow screens: let the compact table scroll rather than overflow the page.
+  .table-scroll {
+    overflow-x: auto;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+
+    th,
+    td {
+      padding: 0.5rem 0.5rem;
+      border-bottom: 1px solid #eee;
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    th {
+      color: #666;
+      font-weight: 600;
+    }
+
+    .team {
+      width: 100%;
+      white-space: normal;
+      overflow-wrap: anywhere;
+    }
+
+    .pos,
+    .num {
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+
+    td.num:last-child {
+      font-weight: 600;
+    }
+  }
+}

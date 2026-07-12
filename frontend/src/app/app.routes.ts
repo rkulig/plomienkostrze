@@ -6,6 +6,10 @@ export const routes: Routes = [
     loadComponent: () => import('./news/news-list').then((m) => m.NewsList)
   },
   {
+    path: 'tabela',
+    loadComponent: () => import('./league/league-table').then((m) => m.LeagueTable)
+  },
+  {
     path: 'news/:id',
     loadComponent: () => import('./news/news-detail').then((m) => m.NewsDetail)
   },

@@ -349,26 +349,26 @@ None — nothing is persisted.
 
 #### Automated
 
-- [x] 1.1 Backend compiles (`mvn -q -f backend/pom.xml compile`)
-- [x] 1.2 Existing test suite still passes (`mvn -q -f backend/pom.xml test`)
+- [x] 1.1 Backend compiles (`mvn -q -f backend/pom.xml compile`) — 90f87f3
+- [x] 1.2 Existing test suite still passes (`mvn -q -f backend/pom.xml test`) — 90f87f3
 
 #### Manual
 
-- [x] 1.3 `curl /api/league-table` returns 200 JSON matching live standings (Polish intact)
-- [x] 1.4 Endpoint reachable with no auth token (public)
-- [x] 1.5 Second request within TTL served from cache (no re-scrape)
-- [x] 1.6 Bad `NINETYMINUT_LEAGUE_URL` yields 502, not 500/stack trace
+- [x] 1.3 `curl /api/league-table` returns 200 JSON matching live standings (Polish intact) — 90f87f3
+- [x] 1.4 Endpoint reachable with no auth token (public) — 90f87f3
+- [x] 1.5 Second request within TTL served from cache (no re-scrape) — 90f87f3
+- [x] 1.6 Bad `NINETYMINUT_LEAGUE_URL` yields 502, not 500/stack trace — 90f87f3
 
 ### Phase 2: Frontend — public "Tabela" tab
 
 #### Automated
 
-- [ ] 2.1 Frontend production build succeeds (`cd frontend && npm run build`)
+- [x] 2.1 Frontend production build succeeds (`cd frontend && npm run build`)
 
 #### Manual
 
-- [ ] 2.2 "Tabela" tab visible for a guest and routes to `/tabela`
-- [ ] 2.3 Table renders Poz · Drużyna · M · Pkt matching backend; Polish names correct
-- [ ] 2.4 Loading state shows; backend down produces the error message
-- [ ] 2.5 Compact table readable at mobile width
-- [ ] 2.6 No regressions in news views or existing header controls
+- [x] 2.2 "Tabela" tab visible for a guest and routes to `/tabela`
+- [x] 2.3 Table renders Poz · Drużyna · M · Pkt matching backend; Polish names correct
+- [x] 2.4 Loading state shows; backend down produces the error message
+- [x] 2.5 Compact table readable at mobile width
+- [x] 2.6 No regressions in news views or existing header controls
