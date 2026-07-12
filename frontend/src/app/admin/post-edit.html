@@ -1,39 +1,45 @@
 <section class="post-edit">
   @if (ready() === true) {
     @if (loading()) {
-      <p class="note">Ładowanie…</p>
+      <p class="state container">Ładowanie…</p>
     } @else if (notFound()) {
-      <p class="error">Nie znaleziono wpisu.</p>
-      <a routerLink="/">Wróć do listy aktualności</a>
+      <div class="form-page container">
+        <p class="form-error">Nie znaleziono wpisu.</p>
+        <a class="btn btn--ghost" routerLink="/">← Wróć do listy aktualności</a>
+      </div>
     } @else {
-      <h1>Edytuj wpis</h1>
+      <div class="band">
+        <div class="band__inner container">
+          <p class="band__eyebrow">Panel administratora</p>
+          <h1 class="band__title">Edytuj wpis</h1>
+        </div>
+      </div>
 
-      <form [formGroup]="form" (ngSubmit)="save()">
-        <label>
-          Tytuł
-          <input type="text" formControlName="title" maxlength="200" />
-        </label>
+      <form class="form form-page container" [formGroup]="form" (ngSubmit)="save()">
+        <div class="field">
+          <label class="field__label" for="edit-title">Tytuł</label>
+          <input class="input" id="edit-title" type="text" formControlName="title" maxlength="200" />
+        </div>
 
-        <label>
-          Treść
-          <textarea
-            formControlName="content"
-            maxlength="10000"
-            rows="12"
-            placeholder="Czysty tekst — akapity oddzielaj pustą linią."
-          ></textarea>
-        </label>
+        <div class="field">
+          <label class="field__label" for="edit-content">Treść</label>
+          <textarea class="textarea" id="edit-content" formControlName="content" maxlength="10000"
+            rows="12" placeholder="Czysty tekst — akapity oddzielaj pustą linią."></textarea>
+        </div>
 
         @if (error(); as error) {
-          <p class="error">{{ error }}</p>
+          <p class="form-error">{{ error }}</p>
         }
 
-        <button type="submit" [disabled]="form.invalid || saving()">
-          {{ saving() ? 'Zapisywanie…' : 'Zapisz' }}
-        </button>
+        <div class="actions">
+          <button type="submit" class="btn btn--green" [disabled]="form.invalid || saving()">
+            {{ saving() ? 'Zapisywanie…' : 'Opublikuj' }}
+          </button>
+          <a class="btn btn--ghost" routerLink="/">Anuluj</a>
+        </div>
       </form>
     }
   } @else {
-    <p class="note">Ładowanie…</p>
+    <p class="state container">Ładowanie…</p>
   }
 </section>

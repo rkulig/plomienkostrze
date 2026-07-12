@@ -1,45 +1,50 @@
-<section class="admin-panel">
+<section class="admin">
   @if (ready() === true) {
-    <h1>Nowy wpis</h1>
-
-    <div class="generate">
-      <button type="button" (click)="generate()" [disabled]="generating()">
-        {{ generating() ? 'Generowanie…' : 'Generuj z ostatniego meczu' }}
-      </button>
-      @if (hasProposal()) {
-        <button type="button" (click)="reject()">Odrzuć</button>
-      }
+    <div class="band">
+      <div class="band__inner container">
+        <p class="band__eyebrow">Panel administratora</p>
+        <h1 class="band__title">Dodaj aktualność</h1>
+      </div>
     </div>
 
-    @if (generationError(); as generationError) {
-      <p class="error">{{ generationError }}</p>
-    }
-
-    <form [formGroup]="form" (ngSubmit)="publish()">
-      <label>
-        Tytuł
-        <input type="text" formControlName="title" maxlength="200" />
-      </label>
-
-      <label>
-        Treść
-        <textarea
-          formControlName="content"
-          maxlength="10000"
-          rows="12"
-          placeholder="Czysty tekst — akapity oddzielaj pustą linią."
-        ></textarea>
-      </label>
-
-      @if (error(); as error) {
-        <p class="error">{{ error }}</p>
+    <div class="form-page container">
+      <button type="button" class="btn btn--primary btn--block" (click)="generate()" [disabled]="generating()">
+        {{ generating() ? 'Generuję…' : 'Generuj post z ostatniego meczu' }}
+      </button>
+      @if (hasProposal()) {
+        <button type="button" class="btn btn--ghost admin__reject" (click)="reject()">Odrzuć propozycję</button>
+      }
+      @if (generationError(); as generationError) {
+        <p class="form-error">{{ generationError }}</p>
       }
 
-      <button type="submit" [disabled]="form.invalid || sending()">
-        {{ sending() ? 'Publikowanie…' : 'Opublikuj' }}
-      </button>
-    </form>
+      <div class="sep">Lub napisz samodzielnie</div>
+
+      <form class="form" [formGroup]="form" (ngSubmit)="publish()">
+        <div class="field">
+          <label class="field__label" for="post-title">Tytuł</label>
+          <input class="input" id="post-title" type="text" formControlName="title" maxlength="200" />
+        </div>
+
+        <div class="field">
+          <label class="field__label" for="post-content">Treść</label>
+          <textarea class="textarea" id="post-content" formControlName="content" maxlength="10000"
+            rows="12" placeholder="Czysty tekst — akapity oddzielaj pustą linią."></textarea>
+        </div>
+
+        @if (error(); as error) {
+          <p class="form-error">{{ error }}</p>
+        }
+
+        <div class="actions">
+          <button type="submit" class="btn btn--green" [disabled]="form.invalid || sending()">
+            {{ sending() ? 'Publikowanie…' : 'Opublikuj' }}
+          </button>
+          <a class="btn btn--ghost" routerLink="/">Anuluj</a>
+        </div>
+      </form>
+    </div>
   } @else {
-    <p class="note">Ładowanie…</p>
+    <p class="state container">Ładowanie…</p>
   }
 </section>

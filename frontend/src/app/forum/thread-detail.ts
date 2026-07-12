@@ -5,7 +5,7 @@ import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angula
 import { ActivatedRoute, RouterLink } from '@angular/router';
 
 import { AuthService } from '../auth/auth-service';
-import { authorLabel } from './author-label';
+import { authorLabel, avatarFor } from './author-label';
 import { ForumApi, ForumPost, ThreadDetail as ThreadDetailDto } from './forum-api';
 import { ForumLoginGate } from './forum-login-gate';
 
@@ -33,6 +33,7 @@ export class ThreadDetail {
 
   protected readonly user = this.authService.user;
   protected readonly authorLabel = authorLabel;
+  protected readonly avatarFor = avatarFor;
   protected readonly thread = signal<ThreadDetailDto | null>(null);
   protected readonly posts = signal<ForumPost[]>([]);
   protected readonly busy = signal(true);

@@ -1,6 +1,16 @@
 <section class="forum-login-gate">
-  <h1>Forum</h1>
-  <p>Forum klubowe jest dostępne tylko dla zalogowanych kibiców. Zaloguj się, aby
-    czytać wątki i dołączać do dyskusji.</p>
-  <button type="button" (click)="signIn()">Zaloguj się przez Google</button>
+  <div class="band">
+    <div class="band__inner container container--forum">
+      <p class="band__eyebrow">Społeczność Dzików</p>
+      <h1 class="band__title">Forum kibiców</h1>
+    </div>
+  </div>
+
+  <div class="gate container container--forum">
+    <p class="gate__note">
+      Zaloguj się, aby zakładać tematy i odpowiadać na forum. Forum klubowe jest
+      dostępne tylko dla zalogowanych kibiców.
+    </p>
+    <button type="button" class="btn btn--primary" (click)="signIn()">Zaloguj się przez Google</button>
+  </div>
 </section>

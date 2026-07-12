@@ -1,42 +1,54 @@
 @if (user() === null) {
   <app-forum-login-gate />
 } @else if (user() === undefined) {
-  <p class="note thread-list-loading">Ładowanie…</p>
+  <p class="state container container--forum">Ładowanie…</p>
 } @else {
-<section class="thread-list">
-  <header class="thread-list-header">
-    <h1>Forum</h1>
-    <a class="new-thread" routerLink="/forum/nowy">Nowy wątek</a>
-  </header>
+<section class="forum">
+  <div class="band">
+    <div class="band__inner container container--forum">
+      <p class="band__eyebrow">Społeczność Dzików</p>
+      <h1 class="band__title">Forum kibiców</h1>
+    </div>
+  </div>
 
-  @if (error(); as message) {
-    <p class="error">{{ message }}</p>
-  }
+  <div class="forum__body container container--forum">
+    <div class="forum__head">
+      <h2 class="forum__heading">Tematy</h2>
+      <a class="btn btn--green" routerLink="/forum/nowy">+ Nowy temat</a>
+    </div>
 
-  @if (items().length === 0 && !busy() && !error()) {
-    <p class="note">Brak wątków — załóż pierwszy.</p>
-  }
-
-  <ul>
-    @for (thread of items(); track thread.id) {
-      <li>
-        <a class="title" [routerLink]="['/forum', thread.id]">{{ thread.title }}</a>
-        <span class="meta">
-          {{ authorLabel(thread.authorDisplayName) }}
-          · {{ thread.lastActivityAt | date: 'dd.MM.yyyy HH:mm' }}
-          · {{ thread.postCount }}
-          @if (thread.postCount === 1) { post } @else { posty/ów }
-        </span>
-      </li>
+    @if (error(); as message) {
+      <p class="state state--error">{{ message }}</p>
     }
-  </ul>
 
-  @if (busy()) {
-    <p class="note">Ładowanie…</p>
-  }
+    @if (items().length === 0 && !busy() && !error()) {
+      <p class="empty">Brak tematów. Załóż pierwszy!</p>
+    }
 
-  @if (hasMore() && !busy()) {
-    <button type="button" (click)="loadMore()">Pokaż starsze</button>
-  }
+    <div class="threads">
+      @for (thread of items(); track thread.id) {
+        <a class="thread" [routerLink]="['/forum', thread.id]">
+          <div class="thread__top">
+            <h3 class="thread__title">{{ thread.title }}</h3>
+            <span class="pill">{{ replyCountLabel(thread.postCount) }}</span>
+          </div>
+          <div class="thread__meta">
+            <span class="avatar" [style.background]="avatarFor(thread.authorDisplayName).color">
+              {{ avatarFor(thread.authorDisplayName).initial }}
+            </span>
+            <span>{{ authorLabel(thread.authorDisplayName) }} • {{ thread.lastActivityAt | date: 'dd.MM.yyyy HH:mm' }}</span>
+          </div>
+        </a>
+      }
+    </div>
+
+    @if (busy()) {
+      <p class="state">Ładowanie…</p>
+    }
+
+    @if (hasMore() && !busy()) {
+      <button type="button" class="btn btn--outline forum__more" (click)="loadMore()">Pokaż starsze</button>
+    }
+  </div>
 </section>
 }

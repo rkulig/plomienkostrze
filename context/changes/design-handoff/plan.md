@@ -579,27 +579,27 @@ edits. Rollback = revert the frontend commits; no backend or DB impact.
 
 #### Automated
 
-- [x] 4.1 Build succeeds: `cd frontend && npm run build`
-- [x] 4.2 `fixtures.ts` has `upcoming`/`played` computed; `league-table.ts` has club-match helper
+- [x] 4.1 Build succeeds: `cd frontend && npm run build` — e7443d4
+- [x] 4.2 `fixtures.ts` has `upcoming`/`played` computed; `league-table.ts` has club-match helper — e7443d4
 
 #### Manual
 
-- [x] 4.3 Tabela themed; Płomień row highlighted; points yellow; legend; scroll works
-- [x] 4.4 Terminarz split into Nadchodzące/Rozegrane by `played`; Płomień emphasized; score badges
-- [x] 4.5 Loading/empty/error states in-theme for both
+- [x] 4.3 Tabela themed; Płomień row highlighted; points yellow; legend; scroll works — e7443d4
+- [x] 4.4 Terminarz split into Nadchodzące/Rozegrane by `played`; Płomień emphasized; score badges — e7443d4
+- [x] 4.5 Loading/empty/error states in-theme for both — e7443d4
 
 ### Phase 5: Forum + Admin
 
 #### Automated
 
-- [ ] 5.1 Build succeeds: `cd frontend && npm run build`
-- [ ] 5.2 `avatarFor` helper exists; thread-list renders cards with pill + avatar
-- [ ] 5.3 Existing unit tests pass (if any)
+- [x] 5.1 Build succeeds: `cd frontend && npm run build`
+- [x] 5.2 `avatarFor` helper exists; thread-list renders cards with pill + avatar
+- [x] 5.3 Existing unit tests pass (if any)
 
 #### Manual
 
-- [ ] 5.4 Forum thread cards with avatars + reply pills; empty state themed; "+ Nowy temat" visible
-- [ ] 5.5 Thread detail themed; reply posts + appends; back link works
-- [ ] 5.6 New-thread page + login-gate themed; create navigates to thread
-- [ ] 5.7 Admin form themed; AI generate (loading/error/reject) + publish work; edit page themed + saves
-- [ ] 5.8 Guest sees themed login gate on forum
+- [x] 5.4 Forum thread cards with avatars + reply pills; empty state themed; "+ Nowy temat" visible
+- [x] 5.5 Thread detail themed; reply posts + appends; back link works
+- [x] 5.6 New-thread page + login-gate themed; create navigates to thread
+- [x] 5.7 Admin form themed; AI generate (loading/error/reject) + publish work; edit page themed + saves
+- [x] 5.8 Guest sees themed login gate on forum
