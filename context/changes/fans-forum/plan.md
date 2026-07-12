@@ -486,11 +486,11 @@ No data backfill; the forum launches empty.
 
 #### Automated
 
-- [x] 3.1 Frontend builds (`npm run build`)
-- [x] 3.2 Lint passes (if configured)
-- [x] 3.3 Unit tests pass (if forum specs added; otherwise existing suite green)
+- [x] 3.1 Frontend builds (`npm run build`) — ba6e6cf
+- [x] 3.2 Lint passes (if configured) — ba6e6cf
+- [x] 3.3 Unit tests pass (if forum specs added; otherwise existing suite green) — ba6e6cf
 
 #### Manual
 
-- [x] 3.4 Guest redirected to login at /forum, no content leaked
-- [x] 3.5 Fan creates thread, replies; thread bubbles to top with incremented count; author labels show name (never email/UID); prod build boots
+- [x] 3.4 Guest redirected to login at /forum, no content leaked — ba6e6cf
+- [x] 3.5 Fan creates thread, replies; thread bubbles to top with incremented count; author labels show name (never email/UID); prod build boots — ba6e6cf
