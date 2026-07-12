@@ -1,3 +1,6 @@
+@if (user() === null) {
+  <app-forum-login-gate />
+} @else {
 <article class="thread-detail">
   @if (busy()) {
     <p class="note">Ładowanie…</p>
@@ -43,3 +46,4 @@
     <a class="back" routerLink="/forum">← Wróć do listy wątków</a>
   }
 </article>
+}

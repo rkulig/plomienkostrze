@@ -2,35 +2,36 @@ import { Component, effect, inject, signal } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { DatePipe } from '@angular/common';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 
 import { AuthService } from '../auth/auth-service';
 import { authorLabel } from './author-label';
 import { ForumApi, ForumPost, ThreadDetail as ThreadDetailDto } from './forum-api';
+import { ForumLoginGate } from './forum-login-gate';
 
 const POSTS_PAGE_SIZE = 50;
 
 /**
  * Wątek: post otwierający i wszystkie odpowiedzi chronologicznie, plus formularz
- * odpowiedzi (S-07). Całe forum jest za logowaniem — wylogowany gość jest
- * odsyłany na stronę główną, dane ładują się dopiero po zalogowaniu. 404 z API
+ * odpowiedzi (S-07). Całe forum jest za logowaniem — wylogowany gość widzi
+ * bramkę z logowaniem, dane ładują się dopiero po zalogowaniu. 404 z API
  * pokazuje przyjazny komunikat z linkiem powrotnym.
  */
 @Component({
   selector: 'app-thread-detail',
-  imports: [DatePipe, RouterLink, ReactiveFormsModule],
+  imports: [DatePipe, RouterLink, ReactiveFormsModule, ForumLoginGate],
   templateUrl: './thread-detail.html',
   styleUrl: './thread-detail.scss'
 })
 export class ThreadDetail {
   private readonly api = inject(ForumApi);
   private readonly route = inject(ActivatedRoute);
-  private readonly router = inject(Router);
   private readonly authService = inject(AuthService);
   private readonly formBuilder = inject(NonNullableFormBuilder);
   private readonly id = Number(this.route.snapshot.paramMap.get('id'));
   private started = false;
 
+  protected readonly user = this.authService.user;
   protected readonly authorLabel = authorLabel;
   protected readonly thread = signal<ThreadDetailDto | null>(null);
   protected readonly posts = signal<ForumPost[]>([]);
@@ -47,10 +48,6 @@ export class ThreadDetail {
   constructor() {
     effect(() => {
       const user = this.authService.user();
-      if (user === null) {
-        this.router.navigate(['']);
-        return;
-      }
       if (user && !this.started) {
         this.started = true;
         this.load();
