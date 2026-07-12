@@ -537,30 +537,30 @@ edits. Rollback = revert the frontend commits; no backend or DB impact.
 
 #### Automated
 
-- [x] 1.1 Production build succeeds: `cd frontend && npm run build`
-- [x] 1.2 Lint passes (if configured)
-- [x] 1.3 `logo.jpg` and `public/fonts/*.woff2` exist
-- [x] 1.4 `styles.scss` defines `:root` custom properties and `@font-face` blocks
+- [x] 1.1 Production build succeeds: `cd frontend && npm run build` — 1683704
+- [x] 1.2 Lint passes (if configured) — 1683704
+- [x] 1.3 `logo.jpg` and `public/fonts/*.woff2` exist — 1683704
+- [x] 1.4 `styles.scss` defines `:root` custom properties and `@font-face` blocks — 1683704
 
 #### Manual
 
-- [x] 1.5 Dark background + light body text in Barlow; fonts load with no `/fonts/…` 404s
-- [x] 1.6 No console errors; views still navigable
+- [x] 1.5 Dark background + light body text in Barlow; fonts load with no `/fonts/…` 404s — 1683704
+- [x] 1.6 No console errors; views still navigable — 1683704
 
 ### Phase 2: App shell
 
 #### Automated
 
-- [ ] 2.1 Build succeeds: `cd frontend && npm run build`
-- [ ] 2.2 Header references `routerLinkActive` + Aktualności link to `/` (exact)
+- [x] 2.1 Build succeeds: `cd frontend && npm run build`
+- [x] 2.2 Header references `routerLinkActive` + Aktualności link to `/` (exact)
 
 #### Manual
 
-- [ ] 2.3 Sticky two-row header; logo + club name + subtitle render
-- [ ] 2.4 Four tabs; neutral active highlight; Aktualności active only on `/`
-- [ ] 2.5 Auth controls correct for guest / logged-in / admin
-- [ ] 2.6 Footer with reversed tricolor + stadium address; tricolor bars visible
-- [ ] 2.7 Login/logout and admin gating still work
+- [x] 2.3 Sticky two-row header; logo + club name + subtitle render
+- [x] 2.4 Four tabs; neutral active highlight; Aktualności active only on `/`
+- [x] 2.5 Auth controls correct for guest / logged-in / admin
+- [x] 2.6 Footer with reversed tricolor + stadium address; tricolor bars visible
+- [x] 2.7 Login/logout and admin gating still work
 
 ### Phase 3: Aktualności
 

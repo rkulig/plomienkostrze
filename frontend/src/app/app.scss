@@ -1,53 +1,169 @@
-.app-header {
+/* ------------------------------------------------------------- Header */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: var(--bg-header);
+}
+
+.site-header__row1 {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.75rem 1rem;
-  border-bottom: 1px solid #eee;
+  gap: 12px 20px;
+  flex-wrap: wrap;
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
 
-  .app-title {
-    font-weight: 600;
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  color: inherit;
+
+  &:hover {
     color: inherit;
-    text-decoration: none;
-  }
-
-  // Guest content tabs sit next to the title; margin-right:auto pushes the
-  // auth controls to the far right.
-  .app-nav {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    margin-right: auto;
-    margin-left: 1.5rem;
-
-    a {
-      color: inherit;
-      text-decoration: none;
-
-      &.active {
-        font-weight: 600;
-        text-decoration: underline;
-      }
-    }
-  }
-
-  .app-auth {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-
-    .add-post {
-      font-weight: 600;
-    }
-
-    button {
-      font: inherit;
-      padding: 0.25rem 0.75rem;
-      cursor: pointer;
-    }
   }
 }
 
+.brand__logo {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px var(--c-yellow);
+  object-fit: cover;
+}
+
+.brand__text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.brand__name {
+  font-family: var(--font-display);
+  font-size: 24px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--c-yellow);
+}
+
+.brand__sub {
+  font-family: var(--font-label);
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--c-green-text);
+}
+
+.auth {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.auth__who {
+  font-family: var(--font-label);
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text-muted-4);
+}
+
+/* -------------------------------------------------------------- Tabs */
+.tabs {
+  border-top: 1px solid #1e1e1e;
+}
+
+.tabs__inner {
+  display: flex;
+  gap: 6px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  overflow-x: auto;
+}
+
+.tab {
+  flex: 0 0 auto;
+  font-family: var(--font-label);
+  font-weight: 600;
+  font-size: 16px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text-muted-2);
+  padding: 9px 16px;
+  border-radius: 8px;
+  white-space: nowrap;
+
+  &:hover {
+    color: var(--text);
+    background: var(--tab-hover-bg);
+  }
+
+  &.tab--active {
+    background: var(--tab-active-bg);
+    color: #fff;
+  }
+}
+
+/* -------------------------------------------------------------- Main */
 .app-main {
-  padding: 1rem 0;
+  min-height: 60vh;
+}
+
+/* ------------------------------------------------------------ Footer */
+.site-footer {
+  background: var(--bg-header);
+  margin-top: 48px;
+}
+
+.site-footer__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding-top: 26px;
+  padding-bottom: 26px;
+}
+
+.site-footer__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.site-footer__logo {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.site-footer__name {
+  font-family: var(--font-display);
+  font-size: 16px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--text);
+}
+
+.site-footer__addr {
+  display: flex;
+  flex-direction: column;
+  text-align: right;
+  font-family: var(--font-label);
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.5px;
+  color: var(--text-muted-2);
+}
+
+.site-footer__label {
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
