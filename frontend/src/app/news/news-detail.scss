@@ -1,54 +1,77 @@
-.news-detail {
-  max-width: 40rem;
-  margin: 2rem auto;
-  padding: 0 1rem;
+.detail {
+  max-width: 780px;
+  padding-top: 40px;
+  padding-bottom: 72px;
+}
 
-  .note {
-    color: #666;
+.back {
+  display: inline-block;
+  font-family: var(--font-label);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 13px;
+  color: var(--c-green-text);
+  margin-bottom: 24px;
+
+  &:hover {
+    color: var(--c-green);
   }
+}
 
-  .error {
-    color: #b00020;
-  }
+.detail__head {
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 18px;
+  margin-bottom: 24px;
+}
 
-  header {
-    margin-bottom: 1.5rem;
+.detail__title {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  color: var(--text);
+  font-size: clamp(28px, 5vw, 44px);
+  line-height: 1.02;
+  margin: 0 0 10px;
+}
 
-    h1 {
-      margin-bottom: 0.25rem;
-    }
+.detail__date {
+  font-family: var(--font-label);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 14px;
+  color: var(--c-green-text);
+  margin: 0;
+}
 
-    .date {
-      margin: 0;
-      color: #666;
-    }
-  }
+.detail__p {
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+  color: var(--text);
+  margin: 0 0 1.1em;
+}
 
-  .paragraph {
-    line-height: 1.6;
-    overflow-wrap: anywhere;
-  }
+.detail__actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 28px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+}
 
-  .admin-actions {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    margin-top: 1.5rem;
+.detail__confirm {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text-muted);
+}
 
-    button,
-    .edit {
-      padding: 0.4rem 1rem;
-    }
+.state {
+  color: var(--text-muted-2);
+}
 
-    .confirm {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-  }
-
-  .back {
-    display: inline-block;
-    margin-top: 1.5rem;
-  }
+.state--error {
+  color: var(--err);
 }

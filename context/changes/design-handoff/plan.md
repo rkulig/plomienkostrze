@@ -551,29 +551,29 @@ edits. Rollback = revert the frontend commits; no backend or DB impact.
 
 #### Automated
 
-- [x] 2.1 Build succeeds: `cd frontend && npm run build`
-- [x] 2.2 Header references `routerLinkActive` + Aktualności link to `/` (exact)
+- [x] 2.1 Build succeeds: `cd frontend && npm run build` — caccf63
+- [x] 2.2 Header references `routerLinkActive` + Aktualności link to `/` (exact) — caccf63
 
 #### Manual
 
-- [x] 2.3 Sticky two-row header; logo + club name + subtitle render
-- [x] 2.4 Four tabs; neutral active highlight; Aktualności active only on `/`
-- [x] 2.5 Auth controls correct for guest / logged-in / admin
-- [x] 2.6 Footer with reversed tricolor + stadium address; tricolor bars visible
-- [x] 2.7 Login/logout and admin gating still work
+- [x] 2.3 Sticky two-row header; logo + club name + subtitle render — caccf63
+- [x] 2.4 Four tabs; neutral active highlight; Aktualności active only on `/` — caccf63
+- [x] 2.5 Auth controls correct for guest / logged-in / admin — caccf63
+- [x] 2.6 Footer with reversed tricolor + stadium address; tricolor bars visible — caccf63
+- [x] 2.7 Login/logout and admin gating still work — caccf63
 
 ### Phase 3: Aktualności
 
 #### Automated
 
-- [ ] 3.1 Build succeeds: `cd frontend && npm run build`
-- [ ] 3.2 News list template renders grid container + featured branch
+- [x] 3.1 Build succeeds: `cd frontend && npm run build`
+- [x] 3.2 News list template renders grid container + featured branch
 
 #### Manual
 
-- [ ] 3.3 Hero + featured newest card (no Autor line) + card grid; count plural correct
-- [ ] 3.4 Pagination + empty/loading/error states in-theme
-- [ ] 3.5 News detail themed; admin edit/delete restyled; back link works
+- [x] 3.3 Hero + featured newest card (no Autor line) + card grid; count plural correct
+- [x] 3.4 Pagination + empty/loading/error states in-theme
+- [x] 3.5 News detail themed; admin edit/delete restyled; back link works
 
 ### Phase 4: Tabela + Terminarz
 

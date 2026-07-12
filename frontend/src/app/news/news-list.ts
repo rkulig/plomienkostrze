@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
@@ -6,6 +6,20 @@ import { RouterLink } from '@angular/router';
 import { NewsApi, NewsPostSummary } from './news-api';
 
 const PAGE_SIZE = 10;
+
+/** Polska odmiana rzeczownika „wpis" dla licznika aktualności. */
+function pluralWpis(n: number): string {
+  const abs = Math.abs(n);
+  if (abs === 1) {
+    return 'wpis';
+  }
+  const mod10 = abs % 10;
+  const mod100 = abs % 100;
+  if (mod10 >= 2 && mod10 <= 4 && !(mod100 >= 12 && mod100 <= 14)) {
+    return 'wpisy';
+  }
+  return 'wpisów';
+}
 
 /**
  * Domyślny widok aplikacji: opublikowane wpisy od najnowszego (tytuł-link,
@@ -25,6 +39,11 @@ export class NewsList {
   protected readonly total = signal(0);
   protected readonly busy = signal(false);
   protected readonly error = signal<string | null>(null);
+
+  /** Najnowszy wpis wyróżniony jako karta „featured"; reszta trafia do siatki. */
+  protected readonly featured = computed(() => this.items()[0] ?? null);
+  protected readonly rest = computed(() => this.items().slice(1));
+  protected readonly countLabel = computed(() => `${this.total()} ${pluralWpis(this.total())}`);
 
   constructor() {
     this.loadMore();

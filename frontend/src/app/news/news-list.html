@@ -1,29 +1,58 @@
-<section class="news-list">
-  <h1>Aktualności</h1>
+<section class="news">
+  <div class="hero">
+    <div class="hero__inner container">
+      <div class="hero__copy">
+        <p class="hero__eyebrow">Serwis kibica</p>
+        <h1 class="hero__title">Aktualności <span class="hero__accent">klubu</span></h1>
+        <p class="hero__motto">Najświeższe wieści prosto z Kostrza — mecze, wyniki i życie klubu.</p>
+      </div>
+      <img class="hero__logo" src="/logo.jpg" alt="Herb Płomień Kostrze" width="260" height="260" />
+    </div>
+  </div>
 
-  @if (error(); as message) {
-    <p class="error">{{ message }}</p>
-  }
+  <div class="news__body container">
+    <div class="news__head">
+      <h2 class="news__heading">Ostatnie wpisy</h2>
+      @if (total() > 0) {
+        <span class="news__count">{{ countLabel() }}</span>
+      }
+    </div>
 
-  @if (items().length === 0 && !busy() && !error()) {
-    <p class="note">Brak aktualności</p>
-  }
-
-  <ul>
-    @for (post of items(); track post.id) {
-      <li>
-        <a class="title" [routerLink]="['/news', post.id]">{{ post.title }}</a>
-        <span class="date">{{ post.publishedAt | date: 'dd.MM.yyyy' }}</span>
-        <p class="excerpt">{{ post.excerpt }}</p>
-      </li>
+    @if (error(); as message) {
+      <p class="state state--error">{{ message }}</p>
     }
-  </ul>
 
-  @if (busy()) {
-    <p class="note">Ładowanie…</p>
-  }
+    @if (items().length === 0 && !busy() && !error()) {
+      <p class="empty">Brak aktualności</p>
+    }
 
-  @if (hasMore() && !busy()) {
-    <button type="button" (click)="loadMore()">Pokaż starsze</button>
-  }
+    @if (featured(); as post) {
+      <a class="featured" [routerLink]="['/news', post.id]">
+        <span class="featured__badge">Najnowsze</span>
+        <span class="featured__date">{{ post.publishedAt | date: 'dd.MM.yyyy' }}</span>
+        <h3 class="featured__title">{{ post.title }}</h3>
+        <p class="featured__excerpt">{{ post.excerpt }}</p>
+      </a>
+    }
+
+    @if (rest().length > 0) {
+      <div class="grid">
+        @for (post of rest(); track post.id) {
+          <a class="post" [routerLink]="['/news', post.id]">
+            <span class="post__date">{{ post.publishedAt | date: 'dd.MM.yyyy' }}</span>
+            <h3 class="post__title">{{ post.title }}</h3>
+            <p class="post__excerpt">{{ post.excerpt }}</p>
+          </a>
+        }
+      </div>
+    }
+
+    @if (busy()) {
+      <p class="state">Ładowanie…</p>
+    }
+
+    @if (hasMore() && !busy()) {
+      <button type="button" class="btn btn--outline news__more" (click)="loadMore()">Pokaż starsze</button>
+    }
+  </div>
 </section>
