@@ -1,10 +1,10 @@
 ---
 change_id: league-table
 title: League table
-status: implemented
+status: archived
 created: 2026-07-12
 updated: 2026-07-12
-archived_at: null
+archived_at: 2026-07-12T11:52:31Z
 ---
 
 ## Notes
