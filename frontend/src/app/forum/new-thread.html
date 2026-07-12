@@ -1,3 +1,6 @@
+@if (user() === null) {
+  <app-forum-login-gate />
+} @else {
 <section class="new-thread">
   <h1>Nowy wątek</h1>
 
@@ -22,3 +25,4 @@
     </div>
   </form>
 </section>
+}

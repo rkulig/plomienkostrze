@@ -1,19 +1,20 @@
-import { Component, effect, inject, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 
 import { AuthService } from '../auth/auth-service';
 import { ForumApi } from './forum-api';
+import { ForumLoginGate } from './forum-login-gate';
 
 /**
  * Formularz nowego wątku (tytuł + treść otwierająca, S-07). Gated na zalogowanie
- * (nie na admina): wylogowany gość jest odsyłany na stronę główną. Po sukcesie
- * nawiguje do świeżo utworzonego wątku; obrona i tak jest w backendzie.
+ * (nie na admina): wylogowany gość widzi bramkę z logowaniem zamiast formularza.
+ * Po sukcesie nawiguje do świeżo utworzonego wątku; obrona i tak jest w backendzie.
  */
 @Component({
   selector: 'app-new-thread',
-  imports: [ReactiveFormsModule, RouterLink],
+  imports: [ReactiveFormsModule, RouterLink, ForumLoginGate],
   templateUrl: './new-thread.html',
   styleUrl: './new-thread.scss'
 })
@@ -23,6 +24,7 @@ export class NewThread {
   private readonly router = inject(Router);
   private readonly formBuilder = inject(NonNullableFormBuilder);
 
+  protected readonly user = this.authService.user;
   protected readonly sending = signal(false);
   protected readonly error = signal<string | null>(null);
 
@@ -30,14 +32,6 @@ export class NewThread {
     title: ['', [Validators.required, Validators.maxLength(200)]],
     body: ['', [Validators.required, Validators.maxLength(10000)]]
   });
-
-  constructor() {
-    effect(() => {
-      if (this.authService.user() === null) {
-        this.router.navigate(['']);
-      }
-    });
-  }
 
   protected create(): void {
     if (this.form.invalid || this.sending()) {

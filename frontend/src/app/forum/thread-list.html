@@ -1,3 +1,8 @@
+@if (user() === null) {
+  <app-forum-login-gate />
+} @else if (user() === undefined) {
+  <p class="note thread-list-loading">Ładowanie…</p>
+} @else {
 <section class="thread-list">
   <header class="thread-list-header">
     <h1>Forum</h1>
@@ -34,3 +39,4 @@
     <button type="button" (click)="loadMore()">Pokaż starsze</button>
   }
 </section>
+}
