@@ -16,6 +16,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.plomienkostrze.league.LeagueService;
 import com.plomienkostrze.news.NewsGenerationService;
 import com.plomienkostrze.news.NewsPostRepository;
 import com.plomienkostrze.security.SecurityConfig;
@@ -47,6 +48,10 @@ class CorsOrthogonalityTest {
 
 	@MockitoBean
 	private NewsGenerationService generationService;
+
+	// LeagueTableController is component-scanned by @WebMvcTest; mock its collaborator (S-05).
+	@MockitoBean
+	private LeagueService leagueService;
 
 	@Test
 	void preflightSucceedsForLegalOrigin() throws Exception {
