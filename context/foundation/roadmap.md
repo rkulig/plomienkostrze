@@ -47,7 +47,7 @@ propozycje są na tyle dobre, że administrator akceptuje co najmniej 75% z nich
 | S-03 | gated-news-generation  | Administrator generuje propozycję wpisu z wyniku ostatniego meczu (scrape z 90minut.pl) i publikuje ją po akceptacji | S-02          | US-01, FR-003, FR-004, FR-005 | done |
 | S-04 | news-post-management   | Administrator edytuje i usuwa opublikowane wpisy                       | S-02          | FR-007, FR-008               | done |
 | S-05 | league-table           | Gość ogląda aktualną tabelę ligi zaciąganą z 90minut.pl                | S-01, S-03    | — (funkcja spoza PRD v1)     | done |
-| S-06 | fixtures-schedule      | Gość ogląda terminarz rozgrywek zaciągany z 90minut.pl                 | S-01, S-03    | — (funkcja spoza PRD v1)     | planned |
+| S-06 | fixtures-schedule      | Gość ogląda terminarz rozgrywek zaciągany z 90minut.pl                 | S-01, S-03    | — (funkcja spoza PRD v1)     | done |
 | S-07 | fans-forum             | Zalogowany kibic czyta i pisze na klubowym forum                       | S-02          | FR-002, FR-011–FR-016        | planned |
 
 ## Baseline
@@ -147,7 +147,7 @@ pracą horyzontalną bez odbiorcy.
 - **Blockers:** —
 - **Unknowns:** Częstotliwość i cache'owanie scrape'a (na żądanie vs. okresowo). — Owner: team. Block: no.
 - **Risk:** Niskie — jak S-05 reużywa wzorca scrapingu z 90minut.pl i publicznego widoku; główne ryzyko to kruchość parsowania przy zmianie struktury strony źródłowej.
-- **Status:** planned
+- **Status:** done
 
 ### S-07: Zalogowany kibic korzysta z forum
 
@@ -192,6 +192,7 @@ statusy z tego pliku (synchronizowane 2026-07-04).
 
 - **S-02: Administrator loguje się kontem zewnętrznego dostawcy tożsamości, tworzy wpis ręcznie i publikuje go — wpis natychmiast widać w publicznych aktualnościach z S-01.** — Archived 2026-07-06 → `context/archive/2026-07-06-manual-news-publishing/`. Lesson: —.
 - **S-03: Administrator jednym kliknięciem generuje propozycję wpisu z wyniku ostatniego meczu (zaciągniętego automatycznie z 90minut.pl), edytuje ją w razie potrzeby i publikuje po jawnej akceptacji (albo odrzuca) — nic nie trafia do publicznych aktualności samoczynnie.** — Archived 2026-07-08 → `context/archive/2026-07-08-gated-news-generation/`. Lesson: —.
+- **S-06: Gość (bez logowania) otwiera zakładkę „Terminarz" i widzi terminarz rozgrywek (rozegrane i nadchodzące mecze) zaciągnięty automatycznie z 90minut.pl.** — Archived 2026-07-12 → `context/archive/2026-07-12-fixtures-schedule/`. Lesson: —.
 - **S-01: Gość (bez logowania) widzi listę opublikowanych wpisów aktualności i otwiera dowolny do przeczytania.** — Archived 2026-07-08 → `context/archive/2026-07-05-public-news-reading/`. Lesson: —.
 - **S-04: Administrator poprawia treść opublikowanego wpisu oraz usuwa wpis błędny — zmiany natychmiast widoczne w publicznych aktualnościach.** — Archived 2026-07-10 → `context/archive/2026-07-10-news-post-management/`. Lesson: —.
 - **S-05: Gość (bez logowania) otwiera zakładkę „Tabela" i widzi aktualną tabelę ligi zaciągniętą automatycznie z 90minut.pl.** — Archived 2026-07-12 → `context/archive/2026-07-12-league-table/`. Lesson: —.
