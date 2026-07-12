@@ -49,6 +49,7 @@ propozycje są na tyle dobre, że administrator akceptuje co najmniej 75% z nich
 | S-05 | league-table           | Gość ogląda aktualną tabelę ligi zaciąganą z 90minut.pl                | S-01, S-03    | — (funkcja spoza PRD v1)     | done |
 | S-06 | fixtures-schedule      | Gość ogląda terminarz rozgrywek zaciągany z 90minut.pl                 | S-01, S-03    | — (funkcja spoza PRD v1)     | done |
 | S-07 | fans-forum             | Zalogowany kibic czyta i pisze na klubowym forum                       | S-02          | FR-002, FR-011–FR-016        | planned |
+| S-08 | design-handoff         | Gość i administrator korzystają z dopracowanego, spójnego UI wg design handoffu | S-01–S-07     | — (przekrojowy design/UX)    | planned |
 
 ## Baseline
 
@@ -161,6 +162,19 @@ pracą horyzontalną bez odbiorcy.
 - **Risk:** Rozszerza auth z S-02 z jednego administratora na logowanie kibiców (nowa rola, rejestracja, autoryzacja zapisu) — to największa zmiana w modelu dostępu od początku projektu; trzymanie MVP przy „wątki + posty" ogranicza ryzyko, moderacja i reakcje wchodzą jako fast-follow.
 - **Status:** planned
 
+### S-08: Spójny wygląd aplikacji wg design handoffu
+
+- **Outcome:** Wszystkie widoki (Aktualności, Tabela, Terminarz, Forum + modale, wspólny nagłówek z zakładkami i stopka) zostają odtworzone w wysokiej wierności według referencji z `design_handoff_plomien_kostrze/` — tokeny kolorów (barwy klubu), typografia (Anton / Barlow / Barlow Condensed), pasek tricolor i dopracowane interakcje zastępują dotychczasowe podstawowe widoki.
+- **Change ID:** design-handoff
+- **PRD refs:** — (przekrojowy design/UX; spoza PRD v1)
+- **Prerequisites:** S-01–S-07 (wszystkie widoki muszą już istnieć — ten slice je przestylowuje, nie dokłada nowych funkcji)
+- **Parallel with:** —
+- **Blockers:** —
+- **Design source:** `design_handoff_plomien_kostrze/` (README z tokenami + `Płomień Kostrze.dc.html` jako referencja hifi, `screenshots/`, `uploads/logo.jpg`).
+- **Unknowns:** —
+- **Risk:** Niskie funkcjonalnie (bez zmian w API/backendzie), ale szeroki zasięg — dotyka każdego widoku SPA; ryzyko to regresje wizualne i rozjazd między przestylowanymi a nieprzestylowanymi ekranami. `.dc.html` to prototyp, nie kod produkcyjny — odtwarzamy wygląd we wzorcach Angulara, nie kopiujemy 1:1.
+- **Status:** planned
+
 ## Backlog Handoff
 
 Backlog prowadzony w GitHub Projects (prywatny, dostęp przez zaproszenia):
@@ -182,6 +196,8 @@ statusy z tego pliku (synchronizowane 2026-07-04).
 ## Parked
 
 - **Forum i interakcje kibiców (FR-002, FR-011–FR-016: logowanie kibiców, reakcje, komentarze, moderacja, forum)** — Odblokowane 2026-07-12 jako **S-07 (fans-forum)** w wąskim zakresie (logowanie kibiców + wątki i posty na forum). Nadal parked: reakcje, komentarze i moderacja (FR-011–FR-016 poza samym forum) — fast-follow po S-07.
+- **Warstwa modali/overlay UI (login / dodaj wpis / nowy temat na forum)** — Świadomie odcięte z **S-08 (design-handoff)** 2026-07-12 (zob. `context/changes/design-handoff/frame.md`): S-08 stylizuje istniejące przepływy route'owe w miejscu i nie buduje warstwy overlay. Design handoff przewiduje te trzy przepływy jako wyśrodkowane modale, dziś realizowane jako osobne strony (`/admin`, `/forum/nowy`) i popup Firebase. Fast-follow, gdy pojawi się potrzeba UX modali (wymaga `@angular/cdk` Dialog albo ręcznego `<dialog>`; uwaga na utratę deep-linków, jeśli trasy zastąpić modalami).
+- **Pola danych widoków spoza obecnego API (autor wpisu, pełna tabela: W/R/P + bramki + różnica, data i godzina meczu w terminarzu)** — Świadomie odcięte z **S-08 (design-handoff)** 2026-07-12 (zob. `frame.md`): design handoff pokazuje te pola, ale obecny kontrakt API ich nie dostarcza, więc S-08 renderuje elementy zależne w wariancie na dzisiejszych polach (featured bez linii „Autor", tabela w obecnych kolumnach, terminarz bez godziny). Fast-follow wymaga pracy backendowej: rozszerzenie modelu newsa o autora oraz scrape'a 90minut.pl o pełne standingi i datę/godzinę meczu.
 - **Import plików (PDF/DOCX itp.) przy tworzeniu wpisów** — Why parked: PRD §Non-Goals — dane meczowe wprowadzane luźnym tekstem.
 - **Natywna aplikacja mobilna (iOS/Android)** — Why parked: PRD §Non-Goals — na początek wyłącznie web; odsprzęglone API trzyma tę furtkę otwartą bez dodatkowej pracy teraz.
 - **Automatyczne pobieranie danych meczowych z zewnętrznych źródeł** — Częściowo odblokowane 2026-07-08 dla S-03: **wynik meczu** jest teraz automatycznie scrapowany z 90minut.pl (odwrócenie tego Non-Goala w wąskim zakresie — jedynie publiczny wynik, źródło statyczne i bez auth). Nadal parked: pełne dane meczowe (składy, strzelcy, zmiany) z `laczynaspilka.pl` — API za reCAPTCHA v3, niedostępne z backendu; przyszłe rozszerzenie przez przechwyt z przeglądarki administratora (zob. `context/changes/gated-news-generation/research-scraping-90minut.md`).
