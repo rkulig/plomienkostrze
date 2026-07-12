@@ -11,6 +11,26 @@
     text-decoration: none;
   }
 
+  // Guest content tabs sit next to the title; margin-right:auto pushes the
+  // auth controls to the far right.
+  .app-nav {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-right: auto;
+    margin-left: 1.5rem;
+
+    a {
+      color: inherit;
+      text-decoration: none;
+
+      &.active {
+        font-weight: 600;
+        text-decoration: underline;
+      }
+    }
+  }
+
   .app-auth {
     display: flex;
     align-items: center;

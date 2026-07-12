@@ -1,0 +1,34 @@
+<section class="league-table">
+  <h1>Tabela</h1>
+
+  @if (busy()) {
+    <p class="note">Ładowanie…</p>
+  } @else if (error(); as message) {
+    <p class="error">{{ message }}</p>
+  } @else if (rows().length === 0) {
+    <p class="note">Brak danych</p>
+  } @else {
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th class="pos">Poz</th>
+            <th class="team">Drużyna</th>
+            <th class="num">M</th>
+            <th class="num">Pkt</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of rows(); track row.team) {
+            <tr>
+              <td class="pos">{{ row.position ?? '–' }}</td>
+              <td class="team">{{ row.team }}</td>
+              <td class="num">{{ row.played }}</td>
+              <td class="num">{{ row.points }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</section>

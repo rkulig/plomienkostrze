@@ -69,6 +69,7 @@ public class SecurityConfig {
 						// Clients cannot forge a dispatcher type; direct GET /error stays denied.
 						.dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
 						.requestMatchers(HttpMethod.GET, "/api/news-posts/**").permitAll()
+						.requestMatchers(HttpMethod.GET, "/api/league-table").permitAll()
 						.requestMatchers(HttpMethod.GET, "/api/ping").permitAll()
 						.requestMatchers("/actuator/health").permitAll()
 						.requestMatchers(HttpMethod.GET, "/api/me").authenticated()
