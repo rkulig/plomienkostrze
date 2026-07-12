@@ -10,6 +10,10 @@ export const routes: Routes = [
     loadComponent: () => import('./league/league-table').then((m) => m.LeagueTable)
   },
   {
+    path: 'terminarz',
+    loadComponent: () => import('./fixtures/fixtures').then((m) => m.Fixtures)
+  },
+  {
     path: 'news/:id',
     loadComponent: () => import('./news/news-detail').then((m) => m.NewsDetail)
   },

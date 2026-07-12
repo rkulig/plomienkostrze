@@ -386,26 +386,26 @@ None — nothing is persisted.
 
 #### Automated
 
-- [x] 1.1 Backend compiles (`./mvnw -q -f backend/pom.xml compile`)
-- [x] 1.2 Existing test suite still passes (`./mvnw -q -f backend/pom.xml test`)
+- [x] 1.1 Backend compiles (`./mvnw -q -f backend/pom.xml compile`) — 7a2543f
+- [x] 1.2 Existing test suite still passes (`./mvnw -q -f backend/pom.xml test`) — 7a2543f
 
 #### Manual
 
-- [x] 1.3 `curl /api/fixtures` returns 200 JSON matching Płomień's line per round (Polish intact, home/away + score correct)
-- [x] 1.4 Endpoint reachable with no auth token (public)
-- [x] 1.5 Second request within TTL served from cache (no re-scrape)
-- [x] 1.6 Bad `NINETYMINUT_LEAGUE_URL` yields 502, not 500/stack trace
+- [x] 1.3 `curl /api/fixtures` returns 200 JSON matching Płomień's line per round (Polish intact, home/away + score correct) — 7a2543f
+- [x] 1.4 Endpoint reachable with no auth token (public) — 7a2543f
+- [x] 1.5 Second request within TTL served from cache (no re-scrape) — 7a2543f
+- [x] 1.6 Bad `NINETYMINUT_LEAGUE_URL` yields 502, not 500/stack trace — 7a2543f
 
 ### Phase 2: Frontend — public "Terminarz" tab
 
 #### Automated
 
-- [ ] 2.1 Frontend production build succeeds (`cd frontend && npm run build`)
+- [x] 2.1 Frontend production build succeeds (`cd frontend && npm run build`)
 
 #### Manual
 
-- [ ] 2.2 "Terminarz" tab visible for a guest and routes to `/terminarz`; "Tabela" still works
-- [ ] 2.3 Table renders Data · Przeciwnik · Miejsce · Wynik matching backend; Polish names correct; upcoming show "–"
-- [ ] 2.4 Loading state shows; backend down produces the error message
-- [ ] 2.5 Compact table readable at mobile width
-- [ ] 2.6 No regressions in news views, "Tabela", or existing header controls
+- [x] 2.2 "Terminarz" tab visible for a guest and routes to `/terminarz`; "Tabela" still works
+- [x] 2.3 Table renders Data · Przeciwnik · Miejsce · Wynik matching backend; Polish names correct; upcoming show "–"
+- [x] 2.4 Loading state shows; backend down produces the error message
+- [x] 2.5 Compact table readable at mobile width
+- [x] 2.6 No regressions in news views, "Tabela", or existing header controls
