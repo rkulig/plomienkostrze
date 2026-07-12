@@ -3,7 +3,7 @@ project: "Płomień Kostrze"
 version: 1
 status: draft
 created: 2026-07-04
-updated: 2026-07-10
+updated: 2026-07-12
 prd_version: 1
 main_goal: market-feedback
 top_blocker: none  # was: decisions — dostawca tożsamości i dostawca LLM rozstrzygnięci 2026-07-04
@@ -46,6 +46,9 @@ propozycje są na tyle dobre, że administrator akceptuje co najmniej 75% z nich
 | S-02 | manual-news-publishing | Administrator loguje się i publikuje wpis utworzony ręcznie            | S-01          | FR-001, FR-006               | done |
 | S-03 | gated-news-generation  | Administrator generuje propozycję wpisu z wyniku ostatniego meczu (scrape z 90minut.pl) i publikuje ją po akceptacji | S-02          | US-01, FR-003, FR-004, FR-005 | done |
 | S-04 | news-post-management   | Administrator edytuje i usuwa opublikowane wpisy                       | S-02          | FR-007, FR-008               | done |
+| S-05 | league-table           | Gość ogląda aktualną tabelę ligi zaciąganą z 90minut.pl                | S-01, S-03    | — (funkcja spoza PRD v1)     | done |
+| S-06 | fixtures-schedule      | Gość ogląda terminarz rozgrywek zaciągany z 90minut.pl                 | S-01, S-03    | — (funkcja spoza PRD v1)     | planned |
+| S-07 | fans-forum             | Zalogowany kibic czyta i pisze na klubowym forum                       | S-02          | FR-002, FR-011–FR-016        | planned |
 
 ## Baseline
 
@@ -122,6 +125,42 @@ pracą horyzontalną bez odbiorcy.
 - **Risk:** Domknięcie cyklu życia wpisu; celowo za S-02 (musi istnieć co edytować) i równolegle do S-03 — nie blokuje gwiazdy przewodniej, a przed publicznym startem daje administratorowi możliwość wycofania błędnego wpisu.
 - **Status:** done
 
+### S-05: Gość ogląda aktualną tabelę ligi
+
+- **Outcome:** Gość (bez logowania) otwiera zakładkę „Tabela" i widzi aktualną tabelę ligi zaciągniętą automatycznie z 90minut.pl.
+- **Change ID:** league-table
+- **PRD refs:** — (funkcja spoza PRD v1; rozszerzenie scrapingu 90minut.pl z S-03)
+- **Prerequisites:** S-01, S-03
+- **Parallel with:** S-07 (niezależny tor). **Nie** równolegle z S-06 — współdzielą scraper 90minut.pl i konfigurację routingu; realizować sekwencyjnie: S-05 ustawia wzorzec scrape→endpoint→zakładka, S-06 go powiela.
+- **Blockers:** —
+- **Unknowns:** Częstotliwość i cache'owanie scrape'a (na żądanie vs. okresowo). — Owner: team. Block: no.
+- **Risk:** Niskie — reużywa wzorca scrapingu z 90minut.pl (jsoup, statyczny HTML, `ISO-8859-2`, bez auth) z S-03 i publicznego widoku z S-01; główne ryzyko to kruchość parsowania przy zmianie struktury strony źródłowej.
+- **Status:** done
+
+### S-06: Gość ogląda terminarz rozgrywek
+
+- **Outcome:** Gość (bez logowania) otwiera zakładkę „Terminarz" i widzi terminarz rozgrywek (rozegrane i nadchodzące mecze) zaciągnięty automatycznie z 90minut.pl.
+- **Change ID:** fixtures-schedule
+- **PRD refs:** — (funkcja spoza PRD v1; rozszerzenie scrapingu 90minut.pl z S-03)
+- **Prerequisites:** S-01, S-03
+- **Parallel with:** S-07 (niezależny tor). **Nie** równolegle z S-05 — współdzielą scraper 90minut.pl i konfigurację routingu; realizować sekwencyjnie po S-05.
+- **Blockers:** —
+- **Unknowns:** Częstotliwość i cache'owanie scrape'a (na żądanie vs. okresowo). — Owner: team. Block: no.
+- **Risk:** Niskie — jak S-05 reużywa wzorca scrapingu z 90minut.pl i publicznego widoku; główne ryzyko to kruchość parsowania przy zmianie struktury strony źródłowej.
+- **Status:** planned
+
+### S-07: Zalogowany kibic korzysta z forum
+
+- **Outcome:** Kibic loguje się kontem zewnętrznego dostawcy tożsamości, czyta wątki na klubowym forum i sam pisze wpisy — forum dostępne wyłącznie dla zalogowanych.
+- **Change ID:** fans-forum
+- **PRD refs:** FR-002, FR-011–FR-016, §Access Control
+- **Prerequisites:** S-02
+- **Parallel with:** S-05, S-06 (inna warstwa — auth kibiców + domena forum; styka się z torem tabeli/terminarza tylko przez app shell i pasek zakładek).
+- **Blockers:** —
+- **Unknowns:** Zakres MVP forum (wątki + posty vs. reakcje/komentarze/moderacja z FR-011–FR-016). — Owner: team. Block: no.
+- **Risk:** Rozszerza auth z S-02 z jednego administratora na logowanie kibiców (nowa rola, rejestracja, autoryzacja zapisu) — to największa zmiana w modelu dostępu od początku projektu; trzymanie MVP przy „wątki + posty" ogranicza ryzyko, moderacja i reakcje wchodzą jako fast-follow.
+- **Status:** planned
+
 ## Backlog Handoff
 
 Backlog prowadzony w GitHub Projects (prywatny, dostęp przez zaproszenia):
@@ -142,7 +181,7 @@ statusy z tego pliku (synchronizowane 2026-07-04).
 
 ## Parked
 
-- **Forum i interakcje kibiców (FR-002, FR-011–FR-016: logowanie kibiców, reakcje, komentarze, moderacja, forum)** — Why parked: PRD §Non-Goals — jawnie poza MVP jako fast-follow; MVP obsługuje wyłącznie publikację i czytanie aktualności.
+- **Forum i interakcje kibiców (FR-002, FR-011–FR-016: logowanie kibiców, reakcje, komentarze, moderacja, forum)** — Odblokowane 2026-07-12 jako **S-07 (fans-forum)** w wąskim zakresie (logowanie kibiców + wątki i posty na forum). Nadal parked: reakcje, komentarze i moderacja (FR-011–FR-016 poza samym forum) — fast-follow po S-07.
 - **Import plików (PDF/DOCX itp.) przy tworzeniu wpisów** — Why parked: PRD §Non-Goals — dane meczowe wprowadzane luźnym tekstem.
 - **Natywna aplikacja mobilna (iOS/Android)** — Why parked: PRD §Non-Goals — na początek wyłącznie web; odsprzęglone API trzyma tę furtkę otwartą bez dodatkowej pracy teraz.
 - **Automatyczne pobieranie danych meczowych z zewnętrznych źródeł** — Częściowo odblokowane 2026-07-08 dla S-03: **wynik meczu** jest teraz automatycznie scrapowany z 90minut.pl (odwrócenie tego Non-Goala w wąskim zakresie — jedynie publiczny wynik, źródło statyczne i bez auth). Nadal parked: pełne dane meczowe (składy, strzelcy, zmiany) z `laczynaspilka.pl` — API za reCAPTCHA v3, niedostępne z backendu; przyszłe rozszerzenie przez przechwyt z przeglądarki administratora (zob. `context/changes/gated-news-generation/research-scraping-90minut.md`).
@@ -155,3 +194,4 @@ statusy z tego pliku (synchronizowane 2026-07-04).
 - **S-03: Administrator jednym kliknięciem generuje propozycję wpisu z wyniku ostatniego meczu (zaciągniętego automatycznie z 90minut.pl), edytuje ją w razie potrzeby i publikuje po jawnej akceptacji (albo odrzuca) — nic nie trafia do publicznych aktualności samoczynnie.** — Archived 2026-07-08 → `context/archive/2026-07-08-gated-news-generation/`. Lesson: —.
 - **S-01: Gość (bez logowania) widzi listę opublikowanych wpisów aktualności i otwiera dowolny do przeczytania.** — Archived 2026-07-08 → `context/archive/2026-07-05-public-news-reading/`. Lesson: —.
 - **S-04: Administrator poprawia treść opublikowanego wpisu oraz usuwa wpis błędny — zmiany natychmiast widoczne w publicznych aktualnościach.** — Archived 2026-07-10 → `context/archive/2026-07-10-news-post-management/`. Lesson: —.
+- **S-05: Gość (bez logowania) otwiera zakładkę „Tabela" i widzi aktualną tabelę ligi zaciągniętą automatycznie z 90minut.pl.** — Archived 2026-07-12 → `context/archive/2026-07-12-league-table/`. Lesson: —.
