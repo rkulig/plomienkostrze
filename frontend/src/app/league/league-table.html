@@ -1,34 +1,45 @@
-<section class="league-table">
-  <h1>Tabela</h1>
-
-  @if (busy()) {
-    <p class="note">Ładowanie…</p>
-  } @else if (error(); as message) {
-    <p class="error">{{ message }}</p>
-  } @else if (rows().length === 0) {
-    <p class="note">Brak danych</p>
-  } @else {
-    <div class="table-scroll">
-      <table>
-        <thead>
-          <tr>
-            <th class="pos">Poz</th>
-            <th class="team">Drużyna</th>
-            <th class="num">M</th>
-            <th class="num">Pkt</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (row of rows(); track row.team) {
-            <tr>
-              <td class="pos">{{ row.position ?? '–' }}</td>
-              <td class="team">{{ row.team }}</td>
-              <td class="num">{{ row.played }}</td>
-              <td class="num">{{ row.points }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
+<section class="league">
+  <div class="band">
+    <div class="band__inner">
+      <p class="band__eyebrow">Liga okręgowa • Kraków</p>
+      <h1 class="band__title">Tabela</h1>
     </div>
-  }
+  </div>
+
+  <div class="league__body container">
+    @if (busy()) {
+      <p class="state">Ładowanie…</p>
+    } @else if (error(); as message) {
+      <p class="state state--error">{{ message }}</p>
+    } @else if (rows().length === 0) {
+      <p class="state">Brak danych</p>
+    } @else {
+      <div class="table-scroll card">
+        <table>
+          <thead>
+            <tr>
+              <th class="pos">#</th>
+              <th class="team">Klub</th>
+              <th class="num">M</th>
+              <th class="num">Pkt</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (row of rows(); track row.team) {
+              <tr [class.is-plomien]="isPlomien(row)">
+                <td class="pos">{{ row.position ?? '–' }}</td>
+                <td class="team">{{ row.team }}</td>
+                <td class="num">{{ row.played }}</td>
+                <td class="num pts">{{ row.points }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <p class="legend">
+        M — rozegrane mecze, Pkt — punkty. Wiersz Płomienia wyróżniony. Dane przykładowe.
+      </p>
+    }
+  </div>
 </section>

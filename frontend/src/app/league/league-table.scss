@@ -1,52 +1,86 @@
-.league-table {
-  max-width: 40rem;
-  margin: 2rem auto;
-  padding: 0 1rem;
+.league__body {
+  padding-top: 32px;
+  padding-bottom: 64px;
+}
 
-  .note {
-    color: #666;
+.state {
+  color: var(--text-muted-2);
+}
+
+.state--error {
+  color: var(--err);
+}
+
+.table-scroll {
+  overflow-x: auto;
+  padding: 0;
+}
+
+table {
+  width: 100%;
+  min-width: 480px;
+  border-collapse: collapse;
+
+  th,
+  td {
+    padding: 12px 14px;
+    text-align: left;
+    white-space: nowrap;
   }
 
-  .error {
-    color: #b00020;
+  thead th {
+    font-family: var(--font-label);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 12px;
+    color: var(--text-muted-3);
+    border-bottom: 1px solid var(--border);
   }
 
-  // Narrow screens: let the compact table scroll rather than overflow the page.
-  .table-scroll {
-    overflow-x: auto;
+  tbody tr {
+    border-top: 1px solid #222;
   }
 
-  table {
+  tbody tr:first-child {
+    border-top: none;
+  }
+
+  .team {
     width: 100%;
-    border-collapse: collapse;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
 
-    th,
+  .pos,
+  .num {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Points in club yellow (except the highlighted Płomień row). */
+  .pts {
+    color: var(--c-yellow);
+    font-weight: 700;
+  }
+
+  /* Highlighted own-club row. */
+  tr.is-plomien {
+    background: var(--c-green);
+
     td {
-      padding: 0.5rem 0.5rem;
-      border-bottom: 1px solid #eee;
-      text-align: left;
-      white-space: nowrap;
+      color: #fff;
+      font-weight: 700;
     }
 
-    th {
-      color: #666;
-      font-weight: 600;
-    }
-
-    .team {
-      width: 100%;
-      white-space: normal;
-      overflow-wrap: anywhere;
-    }
-
-    .pos,
-    .num {
-      text-align: right;
-      font-variant-numeric: tabular-nums;
-    }
-
-    td.num:last-child {
-      font-weight: 600;
+    .pts {
+      color: #fff;
     }
   }
+}
+
+.legend {
+  margin-top: 16px;
+  color: var(--text-muted-4);
+  font-size: 13px;
 }

@@ -566,27 +566,27 @@ edits. Rollback = revert the frontend commits; no backend or DB impact.
 
 #### Automated
 
-- [x] 3.1 Build succeeds: `cd frontend && npm run build`
-- [x] 3.2 News list template renders grid container + featured branch
+- [x] 3.1 Build succeeds: `cd frontend && npm run build` — 4a07997
+- [x] 3.2 News list template renders grid container + featured branch — 4a07997
 
 #### Manual
 
-- [x] 3.3 Hero + featured newest card (no Autor line) + card grid; count plural correct
-- [x] 3.4 Pagination + empty/loading/error states in-theme
-- [x] 3.5 News detail themed; admin edit/delete restyled; back link works
+- [x] 3.3 Hero + featured newest card (no Autor line) + card grid; count plural correct — 4a07997
+- [x] 3.4 Pagination + empty/loading/error states in-theme — 4a07997
+- [x] 3.5 News detail themed; admin edit/delete restyled; back link works — 4a07997
 
 ### Phase 4: Tabela + Terminarz
 
 #### Automated
 
-- [ ] 4.1 Build succeeds: `cd frontend && npm run build`
-- [ ] 4.2 `fixtures.ts` has `upcoming`/`played` computed; `league-table.ts` has club-match helper
+- [x] 4.1 Build succeeds: `cd frontend && npm run build`
+- [x] 4.2 `fixtures.ts` has `upcoming`/`played` computed; `league-table.ts` has club-match helper
 
 #### Manual
 
-- [ ] 4.3 Tabela themed; Płomień row highlighted; points yellow; legend; scroll works
-- [ ] 4.4 Terminarz split into Nadchodzące/Rozegrane by `played`; Płomień emphasized; score badges
-- [ ] 4.5 Loading/empty/error states in-theme for both
+- [x] 4.3 Tabela themed; Płomień row highlighted; points yellow; legend; scroll works
+- [x] 4.4 Terminarz split into Nadchodzące/Rozegrane by `played`; Płomień emphasized; score badges
+- [x] 4.5 Loading/empty/error states in-theme for both
 
 ### Phase 5: Forum + Admin
 
