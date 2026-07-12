@@ -363,12 +363,12 @@ None — nothing is persisted.
 
 #### Automated
 
-- [x] 2.1 Frontend production build succeeds (`cd frontend && npm run build`)
+- [x] 2.1 Frontend production build succeeds (`cd frontend && npm run build`) — db6f2df
 
 #### Manual
 
-- [x] 2.2 "Tabela" tab visible for a guest and routes to `/tabela`
-- [x] 2.3 Table renders Poz · Drużyna · M · Pkt matching backend; Polish names correct
-- [x] 2.4 Loading state shows; backend down produces the error message
-- [x] 2.5 Compact table readable at mobile width
-- [x] 2.6 No regressions in news views or existing header controls
+- [x] 2.2 "Tabela" tab visible for a guest and routes to `/tabela` — db6f2df
+- [x] 2.3 Table renders Poz · Drużyna · M · Pkt matching backend; Polish names correct — db6f2df
+- [x] 2.4 Loading state shows; backend down produces the error message — db6f2df
+- [x] 2.5 Compact table readable at mobile width — db6f2df
+- [x] 2.6 No regressions in news views or existing header controls — db6f2df
