@@ -1,24 +1,52 @@
-<header class="app-header">
-  <a class="app-title" routerLink="/">{{ title() }}</a>
+<header class="site-header">
+  <div class="site-header__row1 container">
+    <a class="brand" routerLink="/">
+      <img class="brand__logo" src="/logo.jpg" alt="Herb Płomień Kostrze" width="52" height="52" />
+      <span class="brand__text">
+        <span class="brand__name">Płomień Kostrze</span>
+        <span class="brand__sub">Liga okręgowa • Kraków</span>
+      </span>
+    </a>
 
-  <nav class="app-nav">
-    <a routerLink="/tabela" routerLinkActive="active">Tabela</a>
-    <a routerLink="/terminarz" routerLinkActive="active">Terminarz</a>
-    <a routerLink="/forum" routerLinkActive="active">Forum</a>
-  </nav>
-
-  <nav class="app-auth">
-    @if (user() === null) {
-      <button type="button" (click)="signIn()">Zaloguj</button>
-    } @else if (user()) {
-      @if (isAdmin() === true) {
-        <a class="add-post" routerLink="/admin">Dodaj post</a>
+    <nav class="auth">
+      @if (user() === null) {
+        <button type="button" class="btn btn--outline" (click)="signIn()">Zaloguj</button>
+      } @else if (user()) {
+        @if (isAdmin() === true) {
+          <a class="btn btn--primary" routerLink="/admin">+ Dodaj post</a>
+        }
+        <span class="auth__who">Zalogowany jako {{ nick() }}</span>
+        <button type="button" class="btn btn--ghost" (click)="signOut()">Wyloguj</button>
       }
-      <button type="button" (click)="signOut()">Wyloguj</button>
-    }
+    </nav>
+  </div>
+
+  <nav class="tabs">
+    <div class="tabs__inner container">
+      <a class="tab" routerLink="/" routerLinkActive="tab--active" [routerLinkActiveOptions]="{ exact: true }">Aktualności</a>
+      <a class="tab" routerLink="/tabela" routerLinkActive="tab--active">Tabela</a>
+      <a class="tab" routerLink="/terminarz" routerLinkActive="tab--active">Terminarz</a>
+      <a class="tab" routerLink="/forum" routerLinkActive="tab--active">Forum</a>
+    </div>
   </nav>
+
+  <div class="tricolor"></div>
 </header>
 
 <main class="app-main">
   <router-outlet />
 </main>
+
+<footer class="site-footer">
+  <div class="tricolor--rev"></div>
+  <div class="site-footer__row container">
+    <div class="site-footer__brand">
+      <img class="site-footer__logo" src="/logo.jpg" alt="Herb Płomień Kostrze" width="38" height="38" />
+      <span class="site-footer__name">Płomień Kostrze</span>
+    </div>
+    <div class="site-footer__addr">
+      <span class="site-footer__label">Stadion</span>
+      <span>ul. Krzewowa 9c, 30-380 Kraków</span>
+    </div>
+  </div>
+</footer>

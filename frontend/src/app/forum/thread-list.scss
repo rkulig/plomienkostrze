@@ -1,58 +1,84 @@
-.thread-list-loading {
-  max-width: 40rem;
-  margin: 2rem auto;
-  padding: 0 1rem;
-  color: #666;
+.forum__body {
+  padding-top: 28px;
+  padding-bottom: 64px;
 }
 
-.thread-list {
-  max-width: 40rem;
-  margin: 2rem auto;
-  padding: 0 1rem;
+.forum__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+}
 
-  .thread-list-header {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 1rem;
+.forum__heading {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  color: var(--c-yellow);
+  font-size: clamp(22px, 4vw, 30px);
+  margin: 0;
+}
+
+.state {
+  color: var(--text-muted-2);
+}
+
+.state--error {
+  color: var(--err);
+}
+
+.empty {
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--r-card);
+  padding: 32px;
+  text-align: center;
+  color: var(--text-muted-2);
+}
+
+.threads {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.thread {
+  display: block;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px 20px;
+  color: var(--text);
+
+  &:hover {
+    color: var(--text);
+    border-color: var(--c-yellow);
   }
+}
 
-  .new-thread {
-    font-weight: 600;
-    white-space: nowrap;
-  }
+.thread__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
 
-  .note {
-    color: #666;
-  }
+.thread__title {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  font-size: 19px;
+  margin: 0;
+  color: var(--text);
+}
 
-  .error {
-    color: #b00020;
-  }
+.thread__meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+  color: var(--c-green-text);
+  font-size: 14px;
+}
 
-  ul {
-    list-style: none;
-    padding: 0;
-
-    li {
-      padding: 1rem 0;
-      border-bottom: 1px solid #eee;
-
-      .title {
-        font-weight: 600;
-        font-size: 1.1rem;
-      }
-
-      .meta {
-        display: block;
-        margin-top: 0.35rem;
-        color: #666;
-      }
-    }
-  }
-
-  button {
-    margin-top: 1rem;
-    padding: 0.5rem 1rem;
-  }
+.forum__more {
+  margin-top: 24px;
 }

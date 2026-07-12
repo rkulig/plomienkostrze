@@ -1,51 +1,117 @@
-.fixtures {
-  max-width: 40rem;
-  margin: 2rem auto;
-  padding: 0 1rem;
+.fixtures__body {
+  padding-top: 32px;
+  padding-bottom: 64px;
+}
 
-  .note {
-    color: #666;
+.state {
+  color: var(--text-muted-2);
+}
+
+.state--error {
+  color: var(--err);
+}
+
+.section-head {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  color: var(--c-yellow);
+  font-size: 24px;
+  margin: 28px 0 14px;
+}
+
+.matches {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.match {
+  display: flex;
+  align-items: center;
+  gap: 12px 20px;
+  flex-wrap: wrap;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 18px;
+  background: transparent;
+
+  &.is-plomien {
+    background: #181818;
   }
+}
 
-  .error {
-    color: #b00020;
-  }
+.match__meta {
+  display: flex;
+  flex-direction: column;
+  min-width: 120px;
+  gap: 2px;
+}
 
-  // Narrow screens: let the compact table scroll rather than overflow the page.
-  .table-scroll {
-    overflow-x: auto;
-  }
+.match__round {
+  font-family: var(--font-label);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 12px;
+  color: var(--text-muted-3);
+}
 
-  table {
-    width: 100%;
-    border-collapse: collapse;
+.match__round--up {
+  color: var(--c-green-text);
+}
 
-    th,
-    td {
-      padding: 0.5rem 0.5rem;
-      border-bottom: 1px solid #eee;
-      text-align: left;
-      white-space: nowrap;
-    }
+.match__venue {
+  font-size: 13px;
+  color: var(--text-muted-4);
+}
 
-    th {
-      color: #666;
-      font-weight: 600;
-    }
+.match__teams {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1 1 auto;
+  flex-wrap: wrap;
+}
 
-    // Opponent takes the flexible remaining width. Unlike Tabela (whose first
-    // column is a short position number), the "Data" column here holds a long
-    // round label, so letting the name break per-character collapses it into a
-    // one-letter stack on mobile. Keep names on one line and let .table-scroll
-    // provide horizontal scroll on narrow screens instead.
-    .team {
-      width: 100%;
-    }
+.team {
+  color: var(--text);
+}
 
-    .venue,
-    .num {
-      text-align: right;
-      font-variant-numeric: tabular-nums;
-    }
-  }
+.team--plomien {
+  font-weight: 700;
+  color: var(--c-yellow);
+}
+
+.team__sep {
+  font-family: var(--font-label);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 12px;
+  color: var(--text-muted-4);
+}
+
+.score {
+  display: inline-flex;
+  align-items: center;
+  background: var(--c-yellow);
+  color: var(--text-on-light);
+  font-family: var(--font-display);
+  border-radius: 6px;
+  padding: 2px 10px;
+  font-variant-numeric: tabular-nums;
+}
+
+.match__right {
+  margin-left: auto;
+  text-align: right;
+}
+
+.match__end {
+  font-family: var(--font-label);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 12px;
+  color: var(--text-muted-4);
 }

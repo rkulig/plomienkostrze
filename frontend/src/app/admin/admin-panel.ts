@@ -1,7 +1,7 @@
 import { Component, effect, inject, signal } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 import { AdminStatus } from '../auth/admin-status';
 import { AuthService } from '../auth/auth-service';
@@ -20,7 +20,7 @@ import { NewsApi } from '../news/news-api';
  */
 @Component({
   selector: 'app-admin-panel',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './admin-panel.html',
   styleUrl: './admin-panel.scss'
 })

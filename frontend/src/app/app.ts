@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 
 import { AdminStatus } from './auth/admin-status';
@@ -18,6 +18,16 @@ export class App {
   protected readonly title = signal('Płomień Kostrze');
   protected readonly user = this.authService.user;
   protected readonly isAdmin = this.adminStatus.isAdmin;
+
+  // Krótki nick do nagłówka: displayName z Google, w ostateczności część
+  // adresu e-mail przed @, a gdy i tego brak — "Kibic".
+  protected readonly nick = computed(() => {
+    const current = this.user();
+    if (!current) {
+      return '';
+    }
+    return current.displayName || current.email?.split('@')[0] || 'Kibic';
+  });
 
   protected signIn(): void {
     this.authService.signInWithGoogle();

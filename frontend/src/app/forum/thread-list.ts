@@ -4,11 +4,25 @@ import { DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 
 import { AuthService } from '../auth/auth-service';
-import { authorLabel } from './author-label';
+import { authorLabel, avatarFor } from './author-label';
 import { ForumApi, ThreadSummary } from './forum-api';
 import { ForumLoginGate } from './forum-login-gate';
 
 const PAGE_SIZE = 10;
+
+/** Polska odmiana „odpowiedź" dla pigułki licznika. */
+function pluralOdpowiedzi(n: number): string {
+  const abs = Math.abs(n);
+  if (abs === 1) {
+    return 'odpowiedź';
+  }
+  const mod10 = abs % 10;
+  const mod100 = abs % 100;
+  if (mod10 >= 2 && mod10 <= 4 && !(mod100 >= 12 && mod100 <= 14)) {
+    return 'odpowiedzi';
+  }
+  return 'odpowiedzi';
+}
 
 /**
  * Lista wątków forum od najświeższej aktywności (S-07). Całe forum jest za
@@ -30,6 +44,7 @@ export class ThreadList {
 
   protected readonly user = this.authService.user;
   protected readonly authorLabel = authorLabel;
+  protected readonly avatarFor = avatarFor;
   protected readonly items = signal<ThreadSummary[]>([]);
   protected readonly total = signal(0);
   protected readonly busy = signal(false);
@@ -70,5 +85,9 @@ export class ThreadList {
 
   protected hasMore(): boolean {
     return this.items().length < this.total();
+  }
+
+  protected replyCountLabel(count: number): string {
+    return `${count} ${pluralOdpowiedzi(count)}`;
   }
 }

@@ -1,49 +1,58 @@
 @if (user() === null) {
   <app-forum-login-gate />
 } @else {
-<article class="thread-detail">
+<article class="thread-detail container container--forum">
   @if (busy()) {
-    <p class="note">Ładowanie…</p>
+    <p class="state">Ładowanie…</p>
   } @else if (notFound()) {
-    <p class="error">Nie znaleziono wątku.</p>
-    <a routerLink="/forum">Wróć do listy wątków</a>
+    <p class="state state--error">Nie znaleziono wątku.</p>
+    <a class="back" routerLink="/forum">← Wróć do tematów</a>
   } @else if (error(); as error) {
-    <p class="error">{{ error }}</p>
-    <a routerLink="/forum">Wróć do listy wątków</a>
+    <p class="state state--error">{{ error }}</p>
+    <a class="back" routerLink="/forum">← Wróć do tematów</a>
   } @else if (thread(); as thread) {
-    <header>
-      <h1>{{ thread.title }}</h1>
-      <p class="meta">
-        {{ authorLabel(thread.authorDisplayName) }}
-        · {{ thread.createdAt | date: 'dd.MM.yyyy HH:mm' }}
+    <a class="back" routerLink="/forum">‹ Wróć do tematów</a>
+
+    <div class="lead">
+      <h1 class="lead__title">{{ thread.title }}</h1>
+      <p class="lead__meta">
+        {{ authorLabel(thread.authorDisplayName) }} • {{ thread.createdAt | date: 'dd.MM.yyyy HH:mm' }}
       </p>
-    </header>
+    </div>
 
-    <ul class="posts">
-      @for (post of posts(); track post.id) {
-        <li class="post">
-          <p class="post-meta">
-            {{ authorLabel(post.authorDisplayName) }}
-            · {{ post.createdAt | date: 'dd.MM.yyyy HH:mm' }}
-          </p>
-          <p class="post-body">{{ post.body }}</p>
-        </li>
-      }
-    </ul>
+    <h2 class="replies-head">Odpowiedzi ({{ thread.postCount }})</h2>
 
-    <form class="reply-form" [formGroup]="form" (ngSubmit)="submitReply()">
-      <label for="reply-body">Odpowiedz</label>
-      <textarea id="reply-body" formControlName="body" rows="4"
-        placeholder="Napisz odpowiedź…"></textarea>
+    @if (posts().length === 0) {
+      <p class="state">Brak odpowiedzi — bądź pierwszy!</p>
+    } @else {
+      <ul class="posts">
+        @for (post of posts(); track post.id) {
+          <li class="post">
+            <div class="post__meta">
+              <span class="avatar" [style.background]="avatarFor(post.authorDisplayName).color">
+                {{ avatarFor(post.authorDisplayName).initial }}
+              </span>
+              <span>{{ authorLabel(post.authorDisplayName) }} • {{ post.createdAt | date: 'dd.MM.yyyy HH:mm' }}</span>
+            </div>
+            <p class="post__body">{{ post.body }}</p>
+          </li>
+        }
+      </ul>
+    }
+
+    <form class="form reply" [formGroup]="form" (ngSubmit)="submitReply()">
+      <div class="field">
+        <label class="field__label" for="reply-body">Odpowiedz</label>
+        <textarea class="textarea" id="reply-body" formControlName="body" rows="4"
+          placeholder="Napisz odpowiedź…"></textarea>
+      </div>
       @if (replyError(); as replyError) {
-        <p class="error">{{ replyError }}</p>
+        <p class="form-error">{{ replyError }}</p>
       }
-      <button type="submit" [disabled]="form.invalid || sending()">
-        {{ sending() ? 'Wysyłanie…' : 'Wyślij' }}
+      <button type="submit" class="btn btn--primary reply__submit" [disabled]="form.invalid || sending()">
+        {{ sending() ? 'Wysyłanie…' : 'Odpowiedz' }}
       </button>
     </form>
-
-    <a class="back" routerLink="/forum">← Wróć do listy wątków</a>
   }
 </article>
 }

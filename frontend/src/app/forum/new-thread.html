@@ -2,26 +2,35 @@
   <app-forum-login-gate />
 } @else {
 <section class="new-thread">
-  <h1>Nowy wątek</h1>
+  <div class="band">
+    <div class="band__inner container container--forum">
+      <p class="band__eyebrow">Społeczność Dzików</p>
+      <h1 class="band__title">Nowy temat</h1>
+    </div>
+  </div>
 
-  <form [formGroup]="form" (ngSubmit)="create()">
-    <label for="thread-title">Tytuł</label>
-    <input id="thread-title" type="text" formControlName="title"
-      placeholder="O czym chcesz porozmawiać?" />
+  <form class="form form-page container container--forum" [formGroup]="form" (ngSubmit)="create()">
+    <div class="field">
+      <label class="field__label" for="thread-title">Tytuł</label>
+      <input class="input" id="thread-title" type="text" formControlName="title"
+        placeholder="O czym chcesz porozmawiać?" />
+    </div>
 
-    <label for="thread-body">Pierwsza wiadomość</label>
-    <textarea id="thread-body" formControlName="body" rows="8"
-      placeholder="Napisz treść otwierającą…"></textarea>
+    <div class="field">
+      <label class="field__label" for="thread-body">Pierwsza wiadomość</label>
+      <textarea class="textarea" id="thread-body" formControlName="body" rows="8"
+        placeholder="Napisz treść otwierającą…"></textarea>
+    </div>
 
     @if (error(); as error) {
-      <p class="error">{{ error }}</p>
+      <p class="form-error">{{ error }}</p>
     }
 
     <div class="actions">
-      <button type="submit" [disabled]="form.invalid || sending()">
-        {{ sending() ? 'Zakładanie…' : 'Załóż wątek' }}
+      <button type="submit" class="btn btn--green" [disabled]="form.invalid || sending()">
+        {{ sending() ? 'Zakładanie…' : 'Opublikuj' }}
       </button>
-      <a routerLink="/forum">Anuluj</a>
+      <a class="btn btn--ghost" routerLink="/forum">Anuluj</a>
     </div>
   </form>
 </section>

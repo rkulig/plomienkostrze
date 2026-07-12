@@ -3,6 +3,9 @@ import { HttpErrorResponse } from '@angular/common/http';
 
 import { LeagueApi, StandingRow } from './league-api';
 
+/** Nazwa własnego klubu — do podświetlenia wiersza w tabeli (case-insensitive). */
+const CLUB_NAME = 'płomień';
+
 /**
  * Publiczna tabela ligowa (S-05): pozycja, drużyna, mecze, punkty — scrapowana
  * z 90minut.pl przez backend. Stan ładowania/błędu/pustki jak w NewsList.
@@ -36,5 +39,10 @@ export class LeagueTable {
         this.busy.set(false);
       }
     });
+  }
+
+  /** Wiersz naszego klubu — podświetlany na zielono w tabeli. */
+  protected isPlomien(row: StandingRow): boolean {
+    return row.team.toLowerCase().includes(CLUB_NAME);
   }
 }

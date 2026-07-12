@@ -1,44 +1,44 @@
-<article class="news-detail">
+<article class="detail container">
   @if (busy()) {
-    <p class="note">Ładowanie…</p>
+    <p class="state">Ładowanie…</p>
   } @else if (notFound()) {
-    <p class="error">Nie znaleziono wpisu.</p>
-    <a routerLink="/">Wróć do listy aktualności</a>
+    <p class="state state--error">Nie znaleziono wpisu.</p>
+    <a class="back" routerLink="/">← Wróć do listy aktualności</a>
   } @else if (error(); as error) {
-    <p class="error">{{ error }}</p>
-    <a routerLink="/">Wróć do listy aktualności</a>
+    <p class="state state--error">{{ error }}</p>
+    <a class="back" routerLink="/">← Wróć do listy aktualności</a>
   } @else if (post(); as post) {
-    <header>
-      <h1>{{ post.title }}</h1>
-      <p class="date">{{ post.publishedAt | date: 'dd.MM.yyyy' }}</p>
+    <a class="back" routerLink="/">← Wróć do listy</a>
+
+    <header class="detail__head">
+      <h1 class="detail__title">{{ post.title }}</h1>
+      <p class="detail__date">{{ post.publishedAt | date: 'dd.MM.yyyy' }}</p>
     </header>
 
     @for (paragraph of paragraphs(); track $index) {
-      <p class="paragraph">{{ paragraph }}</p>
+      <p class="detail__p">{{ paragraph }}</p>
     }
 
     @if (isAdmin() === true) {
-      <div class="admin-actions">
-        <a class="edit" [routerLink]="['/admin/edit', post.id]">Edytuj</a>
+      <div class="detail__actions">
+        <a class="btn btn--outline" [routerLink]="['/admin/edit', post.id]">Edytuj</a>
         @if (confirmingDelete()) {
-          <span class="confirm">
+          <span class="detail__confirm">
             Na pewno?
-            <button type="button" (click)="confirmDelete()" [disabled]="deleting()">
+            <button type="button" class="btn btn--ghost" (click)="confirmDelete()" [disabled]="deleting()">
               {{ deleting() ? 'Usuwanie…' : 'Tak' }}
             </button>
-            <button type="button" (click)="cancelDelete()" [disabled]="deleting()">
+            <button type="button" class="btn btn--ghost" (click)="cancelDelete()" [disabled]="deleting()">
               Anuluj
             </button>
           </span>
         } @else {
-          <button type="button" (click)="askDelete()">Usuń</button>
+          <button type="button" class="btn btn--ghost" (click)="askDelete()">Usuń</button>
         }
       </div>
       @if (deleteError(); as deleteError) {
-        <p class="error">{{ deleteError }}</p>
+        <p class="state state--error">{{ deleteError }}</p>
       }
     }
-
-    <a class="back" routerLink="/">← Wróć do listy</a>
   }
 </article>

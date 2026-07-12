@@ -1,40 +1,76 @@
 <section class="fixtures">
-  <h1>Terminarz</h1>
-
-  @if (busy()) {
-    <p class="note">Ładowanie…</p>
-  } @else if (error(); as message) {
-    <p class="error">{{ message }}</p>
-  } @else if (rows().length === 0) {
-    <p class="note">Brak danych</p>
-  } @else {
-    <div class="table-scroll">
-      <table>
-        <thead>
-          <tr>
-            <th class="round">Data</th>
-            <th class="team">Przeciwnik</th>
-            <th class="venue">Miejsce</th>
-            <th class="num">Wynik</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (row of rows(); track $index) {
-            <tr>
-              <td class="round">{{ row.round }}</td>
-              <td class="team">{{ row.opponent }}</td>
-              <td class="venue">{{ row.home ? 'dom' : 'wyjazd' }}</td>
-              <td class="num">
-                @if (row.played) {
-                  {{ row.goalsFor }}–{{ row.goalsAgainst }}
-                } @else {
-                  –
-                }
-              </td>
-            </tr>
-          }
-        </tbody>
-      </table>
+  <div class="band">
+    <div class="band__inner">
+      <p class="band__eyebrow">Sezon 2025/2026</p>
+      <h1 class="band__title">Terminarz</h1>
     </div>
-  }
+  </div>
+
+  <div class="fixtures__body container">
+    @if (busy()) {
+      <p class="state">Ładowanie…</p>
+    } @else if (error(); as message) {
+      <p class="state state--error">{{ message }}</p>
+    } @else if (rows().length === 0) {
+      <p class="state">Brak danych</p>
+    } @else {
+      <h2 class="section-head">Nadchodzące mecze</h2>
+      @if (upcoming().length === 0) {
+        <p class="state">Brak nadchodzących meczów.</p>
+      } @else {
+        <div class="matches">
+          @for (row of upcoming(); track $index) {
+            <div class="match" [class.is-plomien]="true">
+              <div class="match__meta">
+                <span class="match__round match__round--up">{{ row.round }}</span>
+                <span class="match__venue">{{ row.home ? 'Dom' : 'Wyjazd' }}</span>
+              </div>
+              <div class="match__teams">
+                @if (row.home) {
+                  <span class="team team--plomien">Płomień</span>
+                  <span class="team__sep">vs</span>
+                  <span class="team">{{ row.opponent }}</span>
+                } @else {
+                  <span class="team">{{ row.opponent }}</span>
+                  <span class="team__sep">vs</span>
+                  <span class="team team--plomien">Płomień</span>
+                }
+              </div>
+              <div class="match__right"></div>
+            </div>
+          }
+        </div>
+      }
+
+      <h2 class="section-head">Rozegrane mecze</h2>
+      @if (played().length === 0) {
+        <p class="state">Brak rozegranych meczów.</p>
+      } @else {
+        <div class="matches">
+          @for (row of played(); track $index) {
+            <div class="match" [class.is-plomien]="true">
+              <div class="match__meta">
+                <span class="match__round">{{ row.round }}</span>
+                <span class="match__venue">{{ row.home ? 'Dom' : 'Wyjazd' }}</span>
+              </div>
+              <div class="match__teams">
+                @if (row.home) {
+                  <span class="team team--plomien">Płomień</span>
+                  <span class="score">{{ row.goalsFor }}–{{ row.goalsAgainst }}</span>
+                  <span class="team">{{ row.opponent }}</span>
+                } @else {
+                  <span class="team">{{ row.opponent }}</span>
+                  <span class="score">{{ row.goalsAgainst }}–{{ row.goalsFor }}</span>
+                  <span class="team team--plomien">Płomień</span>
+                }
+              </div>
+              <div class="match__right">
+                <span class="match__end">Koniec</span>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    }
+  </div>
 </section>

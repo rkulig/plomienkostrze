@@ -1,1 +1,497 @@
-/* You can add global styles to this file, and also import other style files */
+/* =========================================================================
+   Płomień Kostrze — global visual foundation (design handoff S-08)
+   Self-hosted fonts + design tokens + base/reset + reusable structural classes.
+   Dark theme only. Component SCSS consumes the var(--…) tokens below.
+   ========================================================================= */
+
+/* ------------------------------------------------------------------ Fonts */
+/* Self-hosted (public/fonts/*.woff2), latin + latin-ext subsets so Polish
+   diacritics (ł ń ś ż ą ę ć ź) render. No Google CDN dependency. */
+
+/* Anton 400 */
+@font-face {
+  font-family: 'Anton';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/fonts/1Ptgg87LROyAm3K9-C8QSw.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Anton';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/fonts/1Ptgg87LROyAm3Kz-C8.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* Barlow 400 */
+@font-face {
+  font-family: 'Barlow';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/fonts/7cHpv4kjgoGqM7E_Ass52Hs.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Barlow';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/fonts/7cHpv4kjgoGqM7E_DMs5.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* Barlow 500 */
+@font-face {
+  font-family: 'Barlow';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url(/fonts/7cHqv4kjgoGqM7E3_-gs6VospT4.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Barlow';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url(/fonts/7cHqv4kjgoGqM7E3_-gs51os.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* Barlow 600 */
+@font-face {
+  font-family: 'Barlow';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url(/fonts/7cHqv4kjgoGqM7E30-8s6VospT4.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Barlow';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url(/fonts/7cHqv4kjgoGqM7E30-8s51os.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* Barlow 700 */
+@font-face {
+  font-family: 'Barlow';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(/fonts/7cHqv4kjgoGqM7E3t-4s6VospT4.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Barlow';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(/fonts/7cHqv4kjgoGqM7E3t-4s51os.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* Barlow Condensed 600 */
+@font-face {
+  font-family: 'Barlow Condensed';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url(/fonts/HTxwL3I-JCGChYJ8VI-L6OO_au7B4873z3jWuZEC.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Barlow Condensed';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url(/fonts/HTxwL3I-JCGChYJ8VI-L6OO_au7B4873z3bWuQ.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* Barlow Condensed 700 */
+@font-face {
+  font-family: 'Barlow Condensed';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(/fonts/HTxwL3I-JCGChYJ8VI-L6OO_au7B46r2z3jWuZEC.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Barlow Condensed';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(/fonts/HTxwL3I-JCGChYJ8VI-L6OO_au7B46r2z3bWuQ.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* ----------------------------------------------------------------- Tokens */
+:root {
+  /* Club colors */
+  --c-yellow: #F5C518;
+  --c-yellow-hover: #ffd633;
+  --c-green: #1E8A3C;
+  --c-green-text: #3fb15f;
+  --c-green-hover: #23a447;
+  --c-red: #D91E2A;
+
+  /* Neutral active-tab highlight */
+  --tab-active-bg: rgba(255, 255, 255, 0.12);
+  --tab-hover-bg: rgba(255, 255, 255, 0.06);
+
+  /* Backgrounds */
+  --bg-page: #0e0e0e;
+  --bg-header: #111;
+  --bg-band: #121212;
+  --bg-card: #161616;
+  --bg-card-alt: #141414;
+
+  /* Borders */
+  --border: #242424;
+  --border-strong: #333;
+  --border-soft: #262626;
+
+  /* Text */
+  --text: #f4f4f4;
+  --text-muted: #bdbdbd;
+  --text-muted-2: #9a9a9a;
+  --text-muted-3: #8a8a8a;
+  --text-muted-4: #7a7a7a;
+  --text-on-light: #141414;
+  --err: #ff5a5a;
+
+  /* Fonts */
+  --font-display: 'Anton', system-ui, sans-serif;
+  --font-body: 'Barlow', system-ui, sans-serif;
+  --font-label: 'Barlow Condensed', system-ui, sans-serif;
+
+  /* Radii */
+  --r-card: 12px;
+  --r-card-lg: 14px;
+  --r-btn: 8px;
+  --r-pill: 20px;
+  --r-input: 8px;
+
+  /* Shadows */
+  --shadow-featured: 0 14px 40px rgba(0, 0, 0, 0.4);
+  --shadow-card: 0 8px 24px rgba(0, 0, 0, 0.3);
+  --shadow-modal: 0 24px 70px rgba(0, 0, 0, 0.7);
+
+  /* Container widths */
+  --w-main: 1120px;
+  --w-forum: 920px;
+
+  /* Avatar palette (hash-picked in TS: forum/author-label.ts) */
+  --avatar-1: #1E8A3C;
+  --avatar-2: #D91E2A;
+  --avatar-3: #E0A400;
+  --avatar-4: #2f74d0;
+  --avatar-5: #9b59b6;
+  --avatar-6: #0f8f86;
+
+  /* Tricolor gradient */
+  --tricolor: linear-gradient(90deg, #1E8A3C 0 33.33%, #F5C518 33.33% 66.66%, #D91E2A 66.66% 100%);
+  --tricolor-rev: linear-gradient(90deg, #D91E2A 0 33.33%, #F5C518 33.33% 66.66%, #1E8A3C 66.66% 100%);
+}
+
+/* ------------------------------------------------------------- Base/reset */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--bg-page);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  min-height: 100vh;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0 0 0.4em;
+}
+
+a {
+  color: var(--c-yellow);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--c-yellow-hover);
+}
+
+img {
+  max-width: 100%;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+/* --------------------------------------------------- Structural classes */
+
+.container {
+  max-width: var(--w-main);
+  margin: 0 auto;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.container--forum {
+  max-width: var(--w-forum);
+}
+
+/* Tricolor decorative bar (green→yellow→red); footer reverses it. */
+.tricolor {
+  height: 4px;
+  background: var(--tricolor);
+}
+
+.tricolor--rev {
+  height: 4px;
+  background: var(--tricolor-rev);
+}
+
+/* Section title band: eyebrow + H1 */
+.band {
+  background: var(--bg-band);
+  border-bottom: 1px solid var(--border);
+  padding: 40px 20px;
+}
+
+.band__inner {
+  max-width: var(--w-main);
+  margin: 0 auto;
+}
+
+.band__eyebrow {
+  font-family: var(--font-label);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 13px;
+  color: var(--c-green-text);
+  margin-bottom: 8px;
+}
+
+.band__title {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: clamp(26px, 4vw, 38px);
+  color: var(--c-yellow);
+  margin: 0;
+}
+
+/* Dark card */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-card);
+  box-shadow: var(--shadow-card);
+}
+
+/* Rounded pill label */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--c-yellow);
+  color: var(--text-on-light);
+  border-radius: var(--r-pill);
+  padding: 3px 12px;
+  font-family: var(--font-label);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: var(--font-display);
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-radius: var(--r-btn);
+  padding: 10px 18px;
+  border: 2px solid transparent;
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.btn--primary {
+  background: var(--c-yellow);
+  border-color: var(--c-yellow);
+  color: var(--text-on-light);
+}
+
+.btn--primary:not(:disabled):hover {
+  background: var(--c-yellow-hover);
+  border-color: var(--c-yellow-hover);
+}
+
+.btn--outline {
+  border-color: var(--c-yellow);
+  color: var(--c-yellow);
+}
+
+.btn--outline:not(:disabled):hover {
+  background: var(--c-yellow);
+  color: var(--text-on-light);
+}
+
+.btn--green {
+  background: var(--c-green);
+  border-color: var(--c-green);
+  color: #fff;
+}
+
+.btn--green:not(:disabled):hover {
+  background: var(--c-green-hover);
+  border-color: var(--c-green-hover);
+}
+
+.btn--ghost {
+  border-color: var(--border-strong);
+  color: var(--text-muted);
+}
+
+.btn--ghost:not(:disabled):hover {
+  border-color: var(--c-red);
+  color: var(--text);
+}
+
+.btn--block {
+  width: 100%;
+}
+
+/* Form primitives (shared by admin + forum forms) */
+.form-page {
+  max-width: 640px;
+  padding-top: 32px;
+  padding-bottom: 64px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field__label {
+  font-family: var(--font-label);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 13px;
+  color: var(--text-muted-2);
+}
+
+.input,
+.textarea {
+  font-family: var(--font-body);
+  font-size: 16px;
+  color: var(--text);
+  background: var(--bg-page);
+  border: 2px solid var(--border-strong);
+  border-radius: var(--r-input);
+  padding: 10px 12px;
+  width: 100%;
+}
+
+.input:focus,
+.textarea:focus {
+  outline: none;
+  border-color: var(--c-yellow);
+}
+
+.textarea {
+  resize: vertical;
+}
+
+.form-error {
+  color: var(--err);
+  margin: 0;
+}
+
+/* "LUB NAPISZ SAMODZIELNIE" style separator */
+.sep {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-family: var(--font-label);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 12px;
+  color: var(--text-muted-4);
+  margin: 24px 0;
+}
+
+.sep::before,
+.sep::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* Hash-colored initial avatar (forum) */
+.avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: 15px;
+  flex: 0 0 auto;
+}
