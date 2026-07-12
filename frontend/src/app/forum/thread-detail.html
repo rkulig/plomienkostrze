@@ -1,0 +1,45 @@
+<article class="thread-detail">
+  @if (busy()) {
+    <p class="note">Ładowanie…</p>
+  } @else if (notFound()) {
+    <p class="error">Nie znaleziono wątku.</p>
+    <a routerLink="/forum">Wróć do listy wątków</a>
+  } @else if (error(); as error) {
+    <p class="error">{{ error }}</p>
+    <a routerLink="/forum">Wróć do listy wątków</a>
+  } @else if (thread(); as thread) {
+    <header>
+      <h1>{{ thread.title }}</h1>
+      <p class="meta">
+        {{ authorLabel(thread.authorDisplayName) }}
+        · {{ thread.createdAt | date: 'dd.MM.yyyy HH:mm' }}
+      </p>
+    </header>
+
+    <ul class="posts">
+      @for (post of posts(); track post.id) {
+        <li class="post">
+          <p class="post-meta">
+            {{ authorLabel(post.authorDisplayName) }}
+            · {{ post.createdAt | date: 'dd.MM.yyyy HH:mm' }}
+          </p>
+          <p class="post-body">{{ post.body }}</p>
+        </li>
+      }
+    </ul>
+
+    <form class="reply-form" [formGroup]="form" (ngSubmit)="submitReply()">
+      <label for="reply-body">Odpowiedz</label>
+      <textarea id="reply-body" formControlName="body" rows="4"
+        placeholder="Napisz odpowiedź…"></textarea>
+      @if (replyError(); as replyError) {
+        <p class="error">{{ replyError }}</p>
+      }
+      <button type="submit" [disabled]="form.invalid || sending()">
+        {{ sending() ? 'Wysyłanie…' : 'Wyślij' }}
+      </button>
+    </form>
+
+    <a class="back" routerLink="/forum">← Wróć do listy wątków</a>
+  }
+</article>

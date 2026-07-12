@@ -1,0 +1,36 @@
+<section class="thread-list">
+  <header class="thread-list-header">
+    <h1>Forum</h1>
+    <a class="new-thread" routerLink="/forum/nowy">Nowy wątek</a>
+  </header>
+
+  @if (error(); as message) {
+    <p class="error">{{ message }}</p>
+  }
+
+  @if (items().length === 0 && !busy() && !error()) {
+    <p class="note">Brak wątków — załóż pierwszy.</p>
+  }
+
+  <ul>
+    @for (thread of items(); track thread.id) {
+      <li>
+        <a class="title" [routerLink]="['/forum', thread.id]">{{ thread.title }}</a>
+        <span class="meta">
+          {{ authorLabel(thread.authorDisplayName) }}
+          · {{ thread.lastActivityAt | date: 'dd.MM.yyyy HH:mm' }}
+          · {{ thread.postCount }}
+          @if (thread.postCount === 1) { post } @else { posty/ów }
+        </span>
+      </li>
+    }
+  </ul>
+
+  @if (busy()) {
+    <p class="note">Ładowanie…</p>
+  }
+
+  @if (hasMore() && !busy()) {
+    <button type="button" (click)="loadMore()">Pokaż starsze</button>
+  }
+</section>

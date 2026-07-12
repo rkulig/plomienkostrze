@@ -18,6 +18,18 @@ export const routes: Routes = [
     loadComponent: () => import('./news/news-detail').then((m) => m.NewsDetail)
   },
   {
+    path: 'forum',
+    loadComponent: () => import('./forum/thread-list').then((m) => m.ThreadList)
+  },
+  {
+    path: 'forum/nowy',
+    loadComponent: () => import('./forum/new-thread').then((m) => m.NewThread)
+  },
+  {
+    path: 'forum/:id',
+    loadComponent: () => import('./forum/thread-detail').then((m) => m.ThreadDetail)
+  },
+  {
     path: 'admin',
     loadComponent: () => import('./admin/admin-panel').then((m) => m.AdminPanel)
   },

@@ -4,6 +4,7 @@ import static com.plomienkostrze.web.MockPrincipals.adminJwt;
 import static com.plomienkostrze.web.MockPrincipals.userJwt;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -34,6 +35,10 @@ import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.RequestPostProcessor;
 
+import com.plomienkostrze.forum.ForumPost;
+import com.plomienkostrze.forum.ForumService;
+import com.plomienkostrze.forum.ForumService.ThreadWithPosts;
+import com.plomienkostrze.forum.ForumThread;
 import com.plomienkostrze.league.FixturesService;
 import com.plomienkostrze.league.LeagueService;
 import com.plomienkostrze.news.NewsGenerationService;
@@ -79,6 +84,11 @@ class AuthorizationMatrixTest {
 	@MockitoBean
 	private FixturesService fixturesService;
 
+	// ForumController is likewise component-scanned; its ForumService collaborator
+	// must be present for the context to load (S-07).
+	@MockitoBean
+	private ForumService forumService;
+
 	@BeforeEach
 	void stubBenignBusinessReturns() {
 		NewsPost post = NewsPost.published("t", "c");
@@ -87,6 +97,13 @@ class AuthorizationMatrixTest {
 		given(repository.save(any())).willReturn(post);
 		given(repository.existsById(anyLong())).willReturn(true);
 		given(generationService.generateFromLastMatch()).willReturn(new ProposalDraft("t", "c"));
+		ForumThread thread = ForumThread.openedBy("t", "uid", "Kibic");
+		given(forumService.listThreads(anyInt(), anyInt())).willReturn(Page.<ForumThread>empty());
+		given(forumService.getThread(any(), anyInt(), anyInt()))
+				.willReturn(new ThreadWithPosts(thread, Page.<ForumPost>empty()));
+		given(forumService.openThread(any(), any(), any(), any(), any())).willReturn(thread);
+		given(forumService.reply(any(), any(), any(), any(), any()))
+				.willReturn(ForumPost.in(1L, "uid", "Kibic", "b"));
 	}
 
 	/** How the security chain classifies an endpoint — drives the expected status per caller. */
@@ -117,6 +134,8 @@ class AuthorizationMatrixTest {
 	}
 
 	private static final String VALID_BODY = "{\"title\":\"t\",\"content\":\"c\"}";
+	private static final String FORUM_THREAD_BODY = "{\"title\":\"t\",\"body\":\"b\"}";
+	private static final String FORUM_POST_BODY = "{\"body\":\"b\"}";
 
 	private static List<Endpoint> endpoints() {
 		return List.of(
@@ -139,6 +158,16 @@ class AuthorizationMatrixTest {
 						() -> put("/api/news-posts/1").contentType(APPLICATION_JSON).content(VALID_BODY)),
 				new Endpoint("DELETE /api/news-posts/1", Access.ADMIN,
 						() -> delete("/api/news-posts/1")),
+				// Forum — the whole subtree is login-gated (reads AND writes): 401 anon,
+				// cleared for any signed-in fan or admin (S-07, "całe forum jest za logowaniem").
+				new Endpoint("GET /api/forum/threads", Access.AUTHENTICATED,
+						() -> get("/api/forum/threads")),
+				new Endpoint("GET /api/forum/threads/1", Access.AUTHENTICATED,
+						() -> get("/api/forum/threads/1")),
+				new Endpoint("POST /api/forum/threads", Access.AUTHENTICATED,
+						() -> post("/api/forum/threads").contentType(APPLICATION_JSON).content(FORUM_THREAD_BODY)),
+				new Endpoint("POST /api/forum/threads/1/posts", Access.AUTHENTICATED,
+						() -> post("/api/forum/threads/1/posts").contentType(APPLICATION_JSON).content(FORUM_POST_BODY)),
 				// Unmatched path — pins the anyRequest().denyAll() default (denies everyone,
 				// admin included), so a new endpoint added without a rule fails closed.
 				new Endpoint("GET /api/unknown", Access.DENY_ALL,
@@ -166,8 +195,10 @@ class AuthorizationMatrixTest {
 		return switch (access) {
 			// Open to all callers regardless of credentials.
 			case PERMIT_ALL -> clearsSecurityGate();
-			// 401 without a token; any signed-in user gets 200.
-			case AUTHENTICATED -> caller == Caller.ANONYMOUS ? status().isUnauthorized() : status().isOk();
+			// 401 without a token; any signed-in user (fan or admin) clears the gate.
+			// Not an exact 200 — forum writes return 201, and the matrix asserts the
+			// authorization boundary, not the business code.
+			case AUTHENTICATED -> caller == Caller.ANONYMOUS ? status().isUnauthorized() : clearsSecurityGate();
 			// 401 anon, 403 signed-in-non-admin, admin clears the gate.
 			case ADMIN -> switch (caller) {
 				case ANONYMOUS -> status().isUnauthorized();
