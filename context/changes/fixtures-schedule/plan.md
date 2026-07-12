@@ -400,12 +400,12 @@ None — nothing is persisted.
 
 #### Automated
 
-- [x] 2.1 Frontend production build succeeds (`cd frontend && npm run build`)
+- [x] 2.1 Frontend production build succeeds (`cd frontend && npm run build`) — 6c91113
 
 #### Manual
 
-- [x] 2.2 "Terminarz" tab visible for a guest and routes to `/terminarz`; "Tabela" still works
-- [x] 2.3 Table renders Data · Przeciwnik · Miejsce · Wynik matching backend; Polish names correct; upcoming show "–"
-- [x] 2.4 Loading state shows; backend down produces the error message
-- [x] 2.5 Compact table readable at mobile width
-- [x] 2.6 No regressions in news views, "Tabela", or existing header controls
+- [x] 2.2 "Terminarz" tab visible for a guest and routes to `/terminarz`; "Tabela" still works — 6c91113
+- [x] 2.3 Table renders Data · Przeciwnik · Miejsce · Wynik matching backend; Polish names correct; upcoming show "–" — 6c91113
+- [x] 2.4 Loading state shows; backend down produces the error message — 6c91113
+- [x] 2.5 Compact table readable at mobile width — 6c91113
+- [x] 2.6 No regressions in news views, "Tabela", or existing header controls — 6c91113
